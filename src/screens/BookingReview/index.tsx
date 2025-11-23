@@ -6,6 +6,7 @@ import { MapPin, Calendar, Users, Info } from "lucide-react";
 import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 import { useBooking } from "@context";
 import { formatFullDate } from "@/utils";
+import { PRICING } from "@constants";
 
 export default function BookingReview() {
   const navigate = useNavigate();
@@ -19,8 +20,8 @@ export default function BookingReview() {
   const nights = getNights();
   const roomPrice = booking.hotel.rooms[booking.selectedRoom]?.price || 0;
   const subtotal = nights * roomPrice;
-  const serviceFee = 15;
-  const tax = Math.round(subtotal * 0.08);
+  const serviceFee = PRICING.SERVICE_FEE;
+  const tax = Math.round(subtotal * PRICING.TAX_RATE);
   const total = calculateTotal();
 
   return (

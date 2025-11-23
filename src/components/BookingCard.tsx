@@ -1,3 +1,4 @@
+import { memo } from 'react';
 import { MapPin, Clock, ChevronRight } from 'lucide-react';
 import { ImageWithFallback } from './figma/ImageWithFallback';
 
@@ -11,7 +12,7 @@ interface BookingCardProps {
   onClick?: () => void;
 }
 
-export default function BookingCard({
+function BookingCard({
   hotel,
   location,
   dates,
@@ -63,3 +64,5 @@ export default function BookingCard({
     </div>
   );
 }
+
+export default memo(BookingCard);

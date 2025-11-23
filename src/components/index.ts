@@ -7,3 +7,4 @@ export { default as MobileScreen } from './MobileScreen';
 export { default as HeaderWithBack } from './HeaderWithBack';
 export { default as BookingCard } from './BookingCard';
 export { default as EmptyState } from './EmptyState';
+export { ErrorBoundary } from './ErrorBoundary';

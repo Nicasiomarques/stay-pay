@@ -1,7 +1,8 @@
+import { memo } from "react";
 import { Star, MapPin } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useNavigate } from "react-router-dom";
-import { useBooking } from "../context/BookingContext";
+import { useBooking } from "@context";
 import { Hotel } from "@types";
 
 interface HotelCardProps {
@@ -16,7 +17,7 @@ interface HotelCardProps {
   hotelData?: Hotel;
 }
 
-export default function HotelCard({
+function HotelCard({
   id,
   image,
   name,
@@ -75,3 +76,5 @@ export default function HotelCard({
     </div>
   );
 }
+
+export default memo(HotelCard);

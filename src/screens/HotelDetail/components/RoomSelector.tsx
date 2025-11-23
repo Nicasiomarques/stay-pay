@@ -1,8 +1,5 @@
-interface Room {
-  type: string;
-  price: number;
-  capacity: number;
-}
+import { memo } from 'react';
+import { Room } from '@types';
 
 interface RoomSelectorProps {
   rooms: Room[];
@@ -10,13 +7,14 @@ interface RoomSelectorProps {
   onSelectRoom: (index: number) => void;
 }
 
-export default function RoomSelector({ rooms, selectedRoomIndex, onSelectRoom }: RoomSelectorProps) {
+function RoomSelector({ rooms, selectedRoomIndex, onSelectRoom }: RoomSelectorProps) {
   return (
     <div className="space-y-3">
       {rooms.map((room, index) => (
         <button
-          key={index}
+          key={room.id}
           onClick={() => onSelectRoom(index)}
+          type="button"
           className={`w-full p-4 rounded-xl border-2 transition-all text-left ${
             selectedRoomIndex === index
               ? 'border-[#0E64D2] bg-[#0E64D2]/5'
@@ -38,3 +36,5 @@ export default function RoomSelector({ rooms, selectedRoomIndex, onSelectRoom }:
     </div>
   );
 }
+
+export default memo(RoomSelector);

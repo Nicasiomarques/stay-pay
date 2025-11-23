@@ -1,5 +1,5 @@
 import { LucideIcon } from 'lucide-react';
-import { ReactNode } from 'react';
+import { ReactNode, memo } from 'react';
 
 interface EmptyStateProps {
   icon: LucideIcon;
@@ -8,7 +8,7 @@ interface EmptyStateProps {
   action?: ReactNode;
 }
 
-export default function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
+function EmptyState({ icon: Icon, title, description, action }: EmptyStateProps) {
   return (
     <div className="flex flex-col items-center justify-center py-12">
       <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
@@ -20,3 +20,5 @@ export default function EmptyState({ icon: Icon, title, description, action }: E
     </div>
   );
 }
+
+export default memo(EmptyState);

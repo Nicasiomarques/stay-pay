@@ -1,6 +1,9 @@
-import { createContext, useContext, useState, ReactNode } from 'react';
+import { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 import { Hotel } from '@types';
 import { PRICING } from '@constants';
+
+export type PaymentMethod = 'card' | 'mobile' | 'property';
+export type BookingStatus = 'Confirmed' | 'Completed' | 'Cancelled';
 
 interface BookingState {
   hotel: Hotel | null;
@@ -9,7 +12,7 @@ interface BookingState {
   checkOut: Date | null;
   guests: number;
   searchLocation: string;
-  paymentMethod: string;
+  paymentMethod: PaymentMethod;
 }
 
 interface BookingContextType {
@@ -19,7 +22,7 @@ interface BookingContextType {
   setDates: (checkIn: Date | null, checkOut: Date | null) => void;
   setGuests: (guests: number) => void;
   setSearchLocation: (location: string) => void;
-  setPaymentMethod: (method: string) => void;
+  setPaymentMethod: (method: PaymentMethod) => void;
   resetBooking: () => void;
   calculateTotal: () => number;
   getNights: () => number;
@@ -40,65 +43,79 @@ const initialState: BookingState = {
 export function BookingProvider({ children }: { children: ReactNode }) {
   const [booking, setBooking] = useState<BookingState>(initialState);
 
-  const setHotel = (hotel: Hotel) => {
+  const setHotel = useCallback((hotel: Hotel) => {
     setBooking(prev => ({ ...prev, hotel }));
-  };
+  }, []);
 
-  const setSelectedRoom = (roomIndex: number) => {
+  const setSelectedRoom = useCallback((roomIndex: number) => {
     setBooking(prev => ({ ...prev, selectedRoom: roomIndex }));
-  };
+  }, []);
 
-  const setDates = (checkIn: Date | null, checkOut: Date | null) => {
+  const setDates = useCallback((checkIn: Date | null, checkOut: Date | null) => {
     setBooking(prev => ({ ...prev, checkIn, checkOut }));
-  };
+  }, []);
 
-  const setGuests = (guests: number) => {
+  const setGuests = useCallback((guests: number) => {
     setBooking(prev => ({ ...prev, guests }));
-  };
+  }, []);
 
-  const setSearchLocation = (location: string) => {
+  const setSearchLocation = useCallback((location: string) => {
     setBooking(prev => ({ ...prev, searchLocation: location }));
-  };
+  }, []);
 
-  const setPaymentMethod = (method: string) => {
+  const setPaymentMethod = useCallback((method: PaymentMethod) => {
     setBooking(prev => ({ ...prev, paymentMethod: method }));
-  };
+  }, []);
 
-  const resetBooking = () => {
+  const resetBooking = useCallback(() => {
     setBooking(initialState);
-  };
+  }, []);
 
-  const getNights = () => {
+  const getNights = useCallback(() => {
     if (!booking.checkIn || !booking.checkOut) return 0;
     const diffTime = Math.abs(booking.checkOut.getTime() - booking.checkIn.getTime());
     const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
     return diffDays;
-  };
+  }, [booking.checkIn, booking.checkOut]);
 
-  const calculateTotal = () => {
+  const calculateTotal = useCallback(() => {
     if (!booking.hotel) return 0;
     const nights = getNights();
     const roomPrice = booking.hotel.rooms[booking.selectedRoom]?.price || 0;
     const subtotal = nights * roomPrice;
     const tax = Math.round(subtotal * PRICING.TAX_RATE);
     return subtotal + PRICING.SERVICE_FEE + tax;
-  };
+  }, [booking.hotel, booking.selectedRoom, getNights]);
+
+  const value = useMemo(
+    () => ({
+      booking,
+      setHotel,
+      setSelectedRoom,
+      setDates,
+      setGuests,
+      setSearchLocation,
+      setPaymentMethod,
+      resetBooking,
+      calculateTotal,
+      getNights,
+    }),
+    [
+      booking,
+      setHotel,
+      setSelectedRoom,
+      setDates,
+      setGuests,
+      setSearchLocation,
+      setPaymentMethod,
+      resetBooking,
+      calculateTotal,
+      getNights,
+    ]
+  );
 
   return (
-    <BookingContext.Provider
-      value={{
-        booking,
-        setHotel,
-        setSelectedRoom,
-        setDates,
-        setGuests,
-        setSearchLocation,
-        setPaymentMethod,
-        resetBooking,
-        calculateTotal,
-        getNights,
-      }}
-    >
+    <BookingContext.Provider value={value}>
       {children}
     </BookingContext.Provider>
   );

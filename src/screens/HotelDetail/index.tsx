@@ -1,12 +1,12 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { MobileScreen } from '@components';
+import { MobileScreen, Button, EmptyState } from '@components';
 import ImageCarousel from './components/ImageCarousel';
 import AmenitiesGrid from './components/AmenitiesGrid';
 import ReviewCard from './components/ReviewCard';
 import RoomSelector from './components/RoomSelector';
 import BottomPriceBar from './components/BottomPriceBar';
-import { ArrowLeft, Star, MapPin, Share2, Heart } from 'lucide-react';
+import { ArrowLeft, Star, MapPin, Share2, Heart, AlertCircle } from 'lucide-react';
 import { hotels, reviews } from '@data';
 import { useBooking } from '@context';
 
@@ -18,15 +18,40 @@ export default function HotelDetail() {
 
   const hotel = hotels.find(h => h.id === Number(id));
 
-  if (!hotel) {
-    return <div>Hotel not found</div>;
-  }
-
-  const handleBookNow = () => {
+  const handleBookNow = useCallback(() => {
+    if (!hotel) return;
     setHotel(hotel);
     setSelectedRoom(selectedRoomIndex);
     navigate('/calendar');
-  };
+  }, [hotel, selectedRoomIndex, setHotel, setSelectedRoom, navigate]);
+
+  if (!hotel) {
+    return (
+      <MobileScreen className="bg-neutral-50">
+        <div className="px-6 pt-12">
+          <button
+            onClick={() => navigate('/home')}
+            type="button"
+            aria-label="Go back to home"
+            className="mb-6 text-[#0E64D2] flex items-center gap-2"
+          >
+            <ArrowLeft className="w-5 h-5" />
+            <span>Back to Home</span>
+          </button>
+          <EmptyState
+            icon={AlertCircle}
+            title="Hotel Not Found"
+            description="We couldn't find the hotel you're looking for. It may have been removed or the link is incorrect."
+            action={
+              <Button onClick={() => navigate('/home')}>
+                Browse Hotels
+              </Button>
+            }
+          />
+        </div>
+      </MobileScreen>
+    );
+  }
 
   return (
     <MobileScreen className="bg-white pb-24">
@@ -38,16 +63,26 @@ export default function HotelDetail() {
         <div className="absolute top-6 left-0 right-0 px-6 flex justify-between">
           <button
             onClick={() => navigate('/search')}
+            type="button"
+            aria-label="Go back to search results"
             className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm"
           >
-            <ArrowLeft className="w-5 h-5 text-gray-900" />
+            <ArrowLeft className="w-5 h-5 text-gray-900" aria-hidden="true" />
           </button>
           <div className="flex gap-2">
-            <button className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm">
-              <Share2 className="w-5 h-5 text-gray-900" />
+            <button
+              type="button"
+              aria-label="Share this hotel"
+              className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm"
+            >
+              <Share2 className="w-5 h-5 text-gray-900" aria-hidden="true" />
             </button>
-            <button className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm">
-              <Heart className="w-5 h-5 text-gray-900" />
+            <button
+              type="button"
+              aria-label="Add to favorites"
+              className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm"
+            >
+              <Heart className="w-5 h-5 text-gray-900" aria-hidden="true" />
             </button>
           </div>
         </div>

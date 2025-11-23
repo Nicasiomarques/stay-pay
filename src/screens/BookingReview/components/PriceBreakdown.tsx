@@ -1,3 +1,5 @@
+import { memo } from 'react';
+
 interface PriceBreakdownProps {
   items: {
     label: string;
@@ -6,11 +8,11 @@ interface PriceBreakdownProps {
   total: number;
 }
 
-export default function PriceBreakdown({ items, total }: PriceBreakdownProps) {
+function PriceBreakdown({ items, total }: PriceBreakdownProps) {
   return (
     <div className="space-y-3">
-      {items.map((item, index) => (
-        <div key={index} className="flex justify-between">
+      {items.map((item) => (
+        <div key={item.label} className="flex justify-between">
           <span className="text-gray-600">{item.label}</span>
           <span className="text-gray-900">${item.amount}</span>
         </div>
@@ -22,3 +24,5 @@ export default function PriceBreakdown({ items, total }: PriceBreakdownProps) {
     </div>
   );
 }
+
+export default memo(PriceBreakdown);

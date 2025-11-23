@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { MobileScreen, Button, HotelCard, BottomNav } from '@components';
 import SearchBar from './components/SearchBar';
@@ -12,19 +12,22 @@ export default function Home() {
   const { booking, setSearchLocation } = useBooking();
   const [location, setLocation] = useState(booking.searchLocation);
 
-  const featuredHotels = hotels.slice(0, 3);
+  const featuredHotels = useMemo(() => hotels.slice(0, 3), []);
 
-  const filters = [
-    { icon: Sparkles, label: 'Featured' },
-    { icon: Building2, label: 'Luxury' },
-    { icon: Palmtree, label: 'Resort' },
-    { icon: DollarSign, label: 'Budget' },
-  ];
+  const filters = useMemo(
+    () => [
+      { icon: Sparkles, label: 'Featured' },
+      { icon: Building2, label: 'Luxury' },
+      { icon: Palmtree, label: 'Resort' },
+      { icon: DollarSign, label: 'Budget' },
+    ],
+    []
+  );
 
-  const handleSearch = () => {
+  const handleSearch = useCallback(() => {
     setSearchLocation(location);
     navigate('/search');
-  };
+  }, [location, setSearchLocation, navigate]);
 
   return (
     <MobileScreen className="bg-neutral-50">
