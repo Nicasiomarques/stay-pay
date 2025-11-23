@@ -1,5 +1,6 @@
 import { lazy, Suspense } from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import { AnimatePresence } from 'framer-motion';
 import { BookingProvider } from '@context';
 import { ErrorBoundary, LoadingScreen } from '@components';
 
@@ -16,6 +17,28 @@ const Profile = lazy(() => import('@screens/Profile'));
 const Favorites = lazy(() => import('@screens/Favorites'));
 const Bookings = lazy(() => import('@screens/Bookings'));
 
+function AnimatedRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait" initial={false}>
+      <Routes location={location} key={location.pathname}>
+        <Route path="/" element={<Onboarding />} />
+        <Route path="/home" element={<Home />} />
+        <Route path="/search" element={<SearchResults />} />
+        <Route path="/hotel/:id" element={<HotelDetail />} />
+        <Route path="/calendar" element={<Calendar />} />
+        <Route path="/booking-review" element={<BookingReview />} />
+        <Route path="/payment" element={<Payment />} />
+        <Route path="/confirmation" element={<Confirmation />} />
+        <Route path="/profile" element={<Profile />} />
+        <Route path="/favorites" element={<Favorites />} />
+        <Route path="/bookings" element={<Bookings />} />
+      </Routes>
+    </AnimatePresence>
+  );
+}
+
 export default function App() {
   return (
     <ErrorBoundary>
@@ -23,19 +46,7 @@ export default function App() {
         <Router>
           <div className="min-h-screen bg-neutral-50">
             <Suspense fallback={<LoadingScreen />}>
-              <Routes>
-                <Route path="/" element={<Onboarding />} />
-                <Route path="/home" element={<Home />} />
-                <Route path="/search" element={<SearchResults />} />
-                <Route path="/hotel/:id" element={<HotelDetail />} />
-                <Route path="/calendar" element={<Calendar />} />
-                <Route path="/booking-review" element={<BookingReview />} />
-                <Route path="/payment" element={<Payment />} />
-                <Route path="/confirmation" element={<Confirmation />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/favorites" element={<Favorites />} />
-                <Route path="/bookings" element={<Bookings />} />
-              </Routes>
+              <AnimatedRoutes />
             </Suspense>
           </div>
         </Router>

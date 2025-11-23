@@ -1,10 +1,12 @@
 import { memo } from "react";
+import { motion } from "framer-motion";
 import { Star, MapPin } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useNavigate } from "react-router-dom";
 import { useBooking } from "@context";
 import { Hotel } from "@types";
 import { formatCurrency } from "@/utils/formatters";
+import { springs } from "@/config/animations";
 
 interface HotelCardProps {
   id: number;
@@ -40,16 +42,25 @@ function HotelCard({
   };
 
   return (
-    <div
+    <motion.div
       onClick={handleClick}
-      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer active:scale-98 transition-transform"
+      className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer"
+      whileTap={{ scale: 0.98 }}
+      whileHover={{ y: -4, boxShadow: "0 8px 16px rgba(0,0,0,0.1)" }}
+      transition={springs.smooth}
     >
       <div className="relative h-48 overflow-hidden">
-        <ImageWithFallback
-          src={image}
-          alt={name}
-          className="w-full h-full object-cover"
-        />
+        <motion.div
+          whileHover={{ scale: 1.05 }}
+          transition={{ duration: 0.3 }}
+          className="w-full h-full"
+        >
+          <ImageWithFallback
+            src={image}
+            alt={name}
+            className="w-full h-full object-cover"
+          />
+        </motion.div>
       </div>
       <div className="p-4">
         <div className="flex items-start justify-between mb-2">
@@ -74,7 +85,7 @@ function HotelCard({
           </div>
         </div>
       </div>
-    </div>
+    </motion.div>
   );
 }
 

@@ -1,5 +1,5 @@
 import { useNavigate } from 'react-router-dom';
-import { MobileScreen } from '@components';
+import { MobileScreen, PageTransition } from '@components';
 import { useBooking } from '@context';
 import { useEffect } from 'react';
 import { SuccessHeader, QRCodeVoucher, BookingDetails, ActionButtons } from './components';
@@ -27,20 +27,22 @@ export default function Confirmation() {
   };
 
   return (
-    <MobileScreen className="bg-neutral-50">
-      <div className="flex flex-col items-center justify-center min-h-screen px-6 py-12">
-        <SuccessHeader />
-        <QRCodeVoucher />
-        <BookingDetails
-          bookingNumber={bookingNumber}
-          hotel={booking.hotel}
-          checkIn={booking.checkIn}
-          checkOut={booking.checkOut}
-          guests={booking.guests}
-          total={total}
-        />
-        <ActionButtons onBackToHome={handleBackToHome} />
-      </div>
-    </MobileScreen>
+    <PageTransition>
+      <MobileScreen className="bg-neutral-50">
+        <div className="flex flex-col items-center justify-center min-h-screen px-6 py-12">
+          <SuccessHeader />
+          <QRCodeVoucher />
+          <BookingDetails
+            bookingNumber={bookingNumber}
+            hotel={booking.hotel}
+            checkIn={booking.checkIn}
+            checkOut={booking.checkOut}
+            guests={booking.guests}
+            total={total}
+          />
+          <ActionButtons onBackToHome={handleBackToHome} />
+        </div>
+      </MobileScreen>
+    </PageTransition>
   );
 }

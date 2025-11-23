@@ -1,6 +1,6 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { MobileScreen } from "@components";
+import { MobileScreen, PageTransition } from "@components";
 import { hotels } from "@data";
 import { useBooking } from "@context";
 import {
@@ -161,24 +161,26 @@ export default function SearchResults() {
 
   return (
     <>
-      <MobileScreen className="bg-neutral-50">
-        <SearchHeader
-          location={booking.searchLocation || "Luanda"}
-          checkIn={booking.checkIn}
-          checkOut={booking.checkOut}
-          guests={booking.guests}
-          onBack={() => navigate("/home")}
-          onSearchClick={() => navigate("/home")}
-          onFilterClick={() => setShowFilters(true)}
-          activeFiltersCount={activeFiltersCount}
-        />
+      <PageTransition>
+        <MobileScreen className="bg-neutral-50">
+          <SearchHeader
+            location={booking.searchLocation || "Luanda"}
+            checkIn={booking.checkIn}
+            checkOut={booking.checkOut}
+            guests={booking.guests}
+            onBack={() => navigate("/home")}
+            onSearchClick={() => navigate("/home")}
+            onFilterClick={() => setShowFilters(true)}
+            activeFiltersCount={activeFiltersCount}
+          />
 
-        <div className="px-6 pt-4">
-          <SortOptions sortBy={sortBy} onSortChange={setSortBy} />
-        </div>
+          <div className="px-6 pt-4">
+            <SortOptions sortBy={sortBy} onSortChange={setSortBy} />
+          </div>
 
-        <ResultsList hotels={filteredAndSortedHotels} />
-      </MobileScreen>
+          <ResultsList hotels={filteredAndSortedHotels} />
+        </MobileScreen>
+      </PageTransition>
 
       <FilterModal
         isOpen={showFilters}

@@ -1,5 +1,7 @@
 import { useNavigate, useLocation } from 'react-router-dom';
 import { Search, Heart, Calendar, User } from 'lucide-react';
+import { motion } from 'framer-motion';
+import { springs } from '@/config/animations';
 
 export default function BottomNav() {
   const navigate = useNavigate();
@@ -23,22 +25,41 @@ export default function BottomNav() {
         const isActive = location.pathname === item.path;
 
         return (
-          <button
+          <motion.button
             key={item.path}
             onClick={() => navigate(item.path)}
             type="button"
             aria-label={`Navigate to ${item.label}`}
             aria-current={isActive ? 'page' : undefined}
-            className="flex flex-col items-center gap-1 py-2 transition-colors"
+            className="flex flex-col items-center gap-1 py-2 relative"
+            whileTap={{ scale: 0.9 }}
+            transition={springs.smooth}
           >
-            <Icon
-              className={`w-6 h-6 ${isActive ? 'text-[#0E64D2]' : 'text-gray-400'}`}
-              aria-hidden="true"
-            />
-            <span className={`text-xs ${isActive ? 'text-[#0E64D2]' : 'text-gray-400'}`}>
+            {isActive && (
+              <motion.div
+                layoutId="activeTab"
+                className="absolute inset-0 bg-[#0E64D2]/10 rounded-xl"
+                transition={springs.smooth}
+              />
+            )}
+            <motion.div
+              className="relative z-10"
+              animate={isActive ? { y: [-2, 0], scale: [1, 1.1, 1] } : {}}
+              transition={{ duration: 0.3 }}
+            >
+              <Icon
+                className={`w-6 h-6 ${isActive ? 'text-[#0E64D2]' : 'text-gray-400'}`}
+                aria-hidden="true"
+              />
+            </motion.div>
+            <motion.span
+              className={`text-xs relative z-10 ${isActive ? 'text-[#0E64D2]' : 'text-gray-400'}`}
+              animate={{ color: isActive ? '#0E64D2' : '#9CA3AF' }}
+              transition={springs.smooth}
+            >
               {item.label}
-            </span>
-          </button>
+            </motion.span>
+          </motion.button>
         );
       })}
     </nav>

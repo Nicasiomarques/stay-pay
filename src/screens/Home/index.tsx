@@ -1,11 +1,13 @@
 import { useState, useMemo, useCallback } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { MobileScreen, Button, HotelCard, BottomNav } from '@components';
+import { motion } from 'framer-motion';
+import { MobileScreen, Button, HotelCard, BottomNav, PageTransition } from '@components';
 import SearchBar from './components/SearchBar';
 import FilterChips from './components/FilterChips';
 import { Search, Sparkles, Building2, Palmtree, DollarSign, TrendingUp, MapPin, Star } from 'lucide-react';
 import { hotels } from '@data';
 import { useBooking } from '@context';
+import { listContainerVariants, slideUpVariants } from '@/config/animations';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -51,7 +53,8 @@ export default function Home() {
   }, [setQuickFilter, navigate]);
 
   return (
-    <MobileScreen className="bg-neutral-50">
+    <PageTransition>
+      <MobileScreen className="bg-neutral-50">
       {/* Header */}
       <div className="bg-white px-6 pt-12 pb-6 shadow-sm">
         <h1 className="text-gray-900 mb-6">Encontre a sua estadia perfeita</h1>
@@ -140,24 +143,39 @@ export default function Home() {
           <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
           <h2 className="text-gray-900">Mais Populares</h2>
         </div>
-        <div className="space-y-3">
-          {popularHotels.map((hotel) => (
-            <HotelCard key={hotel.id} {...hotel} hotelData={hotel} />
+        <motion.div
+          className="space-y-3"
+          variants={listContainerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {popularHotels.map((hotel, index) => (
+            <motion.div key={hotel.id} variants={slideUpVariants}>
+              <HotelCard {...hotel} hotelData={hotel} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
       {/* All Hotels */}
       <div className="px-6 py-6 pb-24 bg-white mt-2">
         <h2 className="text-gray-900 mb-4">Todos os Hotéis</h2>
-        <div className="space-y-3">
-          {allHotels.map((hotel) => (
-            <HotelCard key={hotel.id} {...hotel} hotelData={hotel} />
+        <motion.div
+          className="space-y-3"
+          variants={listContainerVariants}
+          initial="hidden"
+          animate="visible"
+        >
+          {allHotels.map((hotel, index) => (
+            <motion.div key={hotel.id} variants={slideUpVariants}>
+              <HotelCard {...hotel} hotelData={hotel} />
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </div>
 
-      <BottomNav />
-    </MobileScreen>
+        <BottomNav />
+      </MobileScreen>
+    </PageTransition>
   );
 }
