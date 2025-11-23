@@ -1,3 +1,22 @@
+# Dependencies
+node_modules
+
+# Build output
 build
-node_modulesdev-dist/
-build/
+dev-dist
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode
+.idea
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+Thumbs.db
