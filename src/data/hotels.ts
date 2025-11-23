@@ -16,9 +16,9 @@ export const hotels = [
       'https://images.unsplash.com/photo-1729717949948-56b52db111dd?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxob3RlbCUyMHBvb2wlMjByZXNvcnR8ZW58MXx8fHwxNzYzODM3MzU5fDA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     ],
     rooms: [
-      { type: 'Standard Room', price: 189, capacity: 2 },
-      { type: 'Deluxe Suite', price: 289, capacity: 4 },
-      { type: 'Presidential Suite', price: 489, capacity: 6 },
+      { id: '1-1', type: 'Standard Room', price: 189, capacity: 2 },
+      { id: '1-2', type: 'Deluxe Suite', price: 289, capacity: 4 },
+      { id: '1-3', type: 'Presidential Suite', price: 489, capacity: 6 },
     ]
   },
   {
@@ -36,8 +36,8 @@ export const hotels = [
       'https://images.unsplash.com/photo-1694595437436-2ccf5a95591f?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBob3RlbCUyMGV4dGVyaW9yfGVufDF8fHx8MTc2MzgxMTE1N3ww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     ],
     rooms: [
-      { type: 'Standard Room', price: 149, capacity: 2 },
-      { type: 'Deluxe Room', price: 209, capacity: 3 },
+      { id: '2-1', type: 'Standard Room', price: 149, capacity: 2 },
+      { id: '2-2', type: 'Deluxe Room', price: 209, capacity: 3 },
     ]
   },
   {
@@ -55,8 +55,8 @@ export const hotels = [
       'https://images.unsplash.com/photo-1716084380738-ea83a1c17716?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjaXR5JTIwaG90ZWwlMjBuaWdodHxlbnwxfHx8fDE3NjM4NDI5MTh8MA&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     ],
     rooms: [
-      { type: 'Harbor View Room', price: 229, capacity: 2 },
-      { type: 'Premium Suite', price: 349, capacity: 4 },
+      { id: '3-1', type: 'Harbor View Room', price: 229, capacity: 2 },
+      { id: '3-2', type: 'Premium Suite', price: 349, capacity: 4 },
     ]
   },
   {
@@ -74,8 +74,8 @@ export const hotels = [
       'https://images.unsplash.com/photo-1729717949712-1c51422693d1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxiZWFjaCUyMHJlc29ydCUyMGhvdGVsfGVufDF8fHx8MTc2Mzc3NjI0Nnww&ixlib=rb-4.1.0&q=80&w=1080&utm_source=figma&utm_medium=referral',
     ],
     rooms: [
-      { type: 'Ocean View Room', price: 279, capacity: 2 },
-      { type: 'Beach Villa', price: 449, capacity: 4 },
+      { id: '4-1', type: 'Ocean View Room', price: 279, capacity: 2 },
+      { id: '4-2', type: 'Beach Villa', price: 449, capacity: 4 },
     ]
   },
 ];

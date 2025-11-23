@@ -1,21 +1,5 @@
 import { HotelCard } from "@components";
-
-interface Hotel {
-  id: string;
-  name: string;
-  location: string;
-  rating: number;
-  reviews: number;
-  price: number;
-  image: string;
-  amenities: string[];
-  rooms: Array<{
-    id: string;
-    type: string;
-    price: number;
-    capacity: number;
-  }>;
-}
+import { Hotel } from '@types';
 
 interface ResultsListProps {
   hotels: Hotel[];

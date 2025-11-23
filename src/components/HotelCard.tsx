@@ -2,9 +2,10 @@ import { Star, MapPin } from "lucide-react";
 import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useNavigate } from "react-router-dom";
 import { useBooking } from "../context/BookingContext";
+import { Hotel } from "@types";
 
 interface HotelCardProps {
-  id: string;
+  id: number;
   image: string;
   name: string;
   location: string;
@@ -12,7 +13,7 @@ interface HotelCardProps {
   reviews: number;
   price: number;
   distance?: string;
-  hotelData?: any;
+  hotelData?: Hotel;
 }
 
 export default function HotelCard({
