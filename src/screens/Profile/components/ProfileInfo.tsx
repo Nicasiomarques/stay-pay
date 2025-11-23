@@ -38,21 +38,21 @@ export function ProfileInfo({
         <div className="space-y-4">
           <Input
             type="text"
-            label="Full Name"
+            label="Nome Completo"
             value={name}
             onChange={(e) => onNameChange(e.target.value)}
             icon={<User className="w-5 h-5" />}
           />
           <Input
             type="email"
-            label="Email"
+            label="E-mail"
             value={email}
             onChange={(e) => onEmailChange(e.target.value)}
             icon={<Mail className="w-5 h-5" />}
           />
           <Input
             type="tel"
-            label="Phone"
+            label="Telefone"
             value={phone}
             onChange={(e) => onPhoneChange(e.target.value)}
             icon={<Phone className="w-5 h-5" />}

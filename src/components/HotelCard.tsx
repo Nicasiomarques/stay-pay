@@ -4,6 +4,7 @@ import { ImageWithFallback } from "./figma/ImageWithFallback";
 import { useNavigate } from "react-router-dom";
 import { useBooking } from "@context";
 import { Hotel } from "@types";
+import { formatCurrency } from "@/utils/formatters";
 
 interface HotelCardProps {
   id: number;
@@ -68,8 +69,8 @@ function HotelCard({
             <span className="text-gray-400 text-sm">({reviews})</span>
           </div>
           <div className="text-right">
-            <span className="text-gray-900">${price}</span>
-            <span className="text-gray-500 text-sm"> / night</span>
+            <span className="text-gray-900">{formatCurrency(price)}</span>
+            <span className="text-gray-500 text-sm"> / noite</span>
           </div>
         </div>
       </div>

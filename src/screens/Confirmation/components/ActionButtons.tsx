@@ -11,16 +11,16 @@ export function ActionButtons({ onBackToHome }: ActionButtonsProps) {
       <div className="space-y-3 w-full max-w-sm mb-6">
         <Button fullWidth variant="secondary">
           <Download className="w-5 h-5 mr-2 inline-block" />
-          Download Voucher
+          Descarregar Voucher
         </Button>
         <Button fullWidth variant="secondary">
           <Share2 className="w-5 h-5 mr-2 inline-block" />
-          Share Booking
+          Partilhar Reserva
         </Button>
       </div>
 
       <Button fullWidth className="max-w-sm" onClick={onBackToHome}>
-        Back to Home
+        Voltar para Início
       </Button>
     </>
   );

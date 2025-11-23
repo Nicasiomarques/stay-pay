@@ -3,7 +3,7 @@ interface SortOptionsProps {
   onSortChange: (sortBy: string) => void;
 }
 
-const sortOptions = ['Recommended', 'Price: Low to High', 'Rating', 'Distance'];
+const sortOptions = ['Recomendado', 'Preço: Baixo a Alto', 'Avaliação', 'Distância'];
 
 export function SortOptions({ sortBy, onSortChange }: SortOptionsProps) {
   return (

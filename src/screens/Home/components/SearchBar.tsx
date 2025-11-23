@@ -26,7 +26,7 @@ export default function SearchBar({
         <MapPin className="w-5 h-5 text-[#0E64D2]" />
         <input
           type="text"
-          placeholder="Where are you going?"
+          placeholder="Para onde vai?"
           className="flex-1 outline-none text-gray-900 placeholder:text-gray-400"
           value={location}
           onChange={(e) => onLocationChange(e.target.value)}
@@ -36,14 +36,14 @@ export default function SearchBar({
         <Calendar className="w-5 h-5 text-[#0E64D2]" />
         <span className="text-gray-400">
           {checkIn && checkOut
-            ? `${checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
-            : 'Check-in • Check-out'}
+            ? `${checkIn.toLocaleDateString('pt-AO', { month: 'short', day: 'numeric' })} - ${checkOut.toLocaleDateString('pt-AO', { month: 'short', day: 'numeric' })}`
+            : 'Entrada • Saída'}
         </span>
       </div>
       <div className="flex items-center gap-3">
         <Users className="w-5 h-5 text-[#0E64D2]" />
         <span className="text-gray-400">
-          {guests} {guests === 1 ? 'guest' : 'guests'}
+          {guests} {guests === 1 ? 'hóspede' : 'hóspedes'}
         </span>
       </div>
     </div>

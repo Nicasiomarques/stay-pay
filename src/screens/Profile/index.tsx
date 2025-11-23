@@ -18,14 +18,14 @@ export default function Profile() {
   return (
     <MobileScreen className="bg-neutral-50">
       <HeaderWithBack
-        title="Profile"
+        title="Perfil"
         onBack={() => navigate('/home')}
         rightActions={
           <button
             onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
             className="text-[#0E64D2]"
           >
-            {isEditing ? 'Save' : 'Edit'}
+            {isEditing ? 'Guardar' : 'Editar'}
           </button>
         }
       />

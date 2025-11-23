@@ -34,8 +34,8 @@ export function FavoritesList({ favorites }: FavoritesListProps) {
       ) : (
         <EmptyState
           icon={Heart}
-          title="No favorites yet"
-          description="Start adding hotels to your favorites"
+          title="Ainda sem favoritos"
+          description="Comece a adicionar hotéis aos seus favoritos"
         />
       )}
     </div>

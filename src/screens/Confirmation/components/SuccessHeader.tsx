@@ -9,9 +9,9 @@ export function SuccessHeader() {
         </div>
       </div>
 
-      <h1 className="text-gray-900 mb-2">Booking Confirmed!</h1>
+      <h1 className="text-gray-900 mb-2">Reserva Confirmada!</h1>
       <p className="text-gray-500">
-        Your reservation has been successfully confirmed
+        A sua reserva foi confirmada com sucesso
       </p>
     </div>
   );

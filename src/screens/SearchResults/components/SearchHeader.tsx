@@ -1,5 +1,6 @@
 import { ArrowLeft, SlidersHorizontal, MapPin } from 'lucide-react';
 import { formatDateRange } from '@/utils';
+import { formatGuestCount } from '@/utils/formatters';
 
 interface SearchHeaderProps {
   location: string;
@@ -33,7 +34,7 @@ export function SearchHeader({
             <span className="text-gray-900">{location}</span>
           </div>
           <p className="text-sm text-gray-500">
-            {formatDateRange(checkIn, checkOut)} • {guests} {guests === 1 ? 'guest' : 'guests'}
+            {formatDateRange(checkIn, checkOut)} • {formatGuestCount(guests)}
           </p>
         </div>
         <button

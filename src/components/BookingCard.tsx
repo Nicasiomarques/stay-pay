@@ -50,15 +50,15 @@ function BookingCard({
         </div>
       </div>
       <div className="flex items-center justify-between pt-3 border-t border-gray-100">
-        <span className="text-sm text-gray-500">Booking #{bookingNumber}</span>
+        <span className="text-sm text-gray-500">Reserva #{bookingNumber}</span>
         <span
           className={`px-3 py-1 rounded-lg text-sm ${
-            status === 'Confirmed'
+            status === 'Confirmed' || status === 'Confirmada'
               ? 'bg-blue-50 text-blue-700'
               : 'bg-green-50 text-green-700'
           }`}
         >
-          {status}
+          {status === 'Confirmed' ? 'Confirmada' : status === 'Completed' ? 'Concluída' : status}
         </span>
       </div>
     </div>

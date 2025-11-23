@@ -71,7 +71,7 @@ export default function Calendar() {
           onClick={handleContinue}
           disabled={!checkIn || !checkOut}
         >
-          Continue
+          Continuar
         </Button>
       </div>
     </MobileScreen>

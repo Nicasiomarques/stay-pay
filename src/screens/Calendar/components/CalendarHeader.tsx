@@ -17,7 +17,7 @@ export function CalendarHeader({ checkIn, checkOut, onBack }: CalendarHeaderProp
         >
           <ArrowLeft className="w-6 h-6 text-gray-900" />
         </button>
-        <h1 className="text-gray-900">Select Dates</h1>
+        <h1 className="text-gray-900">Selecionar Datas</h1>
       </div>
 
       {/* Selected Dates Display */}

@@ -4,6 +4,7 @@ import { MobileScreen, Button, Input, HeaderWithBack } from '@components';
 import PaymentMethodSelector from './components/PaymentMethodSelector';
 import { CreditCard, Smartphone, Building2, AlertCircle } from 'lucide-react';
 import { useBooking } from '@context';
+import { formatCurrency } from '@/utils/formatters';
 
 type PaymentMethodType = 'card' | 'mobile' | 'property';
 
@@ -36,9 +37,9 @@ export default function Payment() {
   const total = calculateTotal();
 
   const paymentMethods = [
-    { id: 'card', label: 'Credit/Debit Card', icon: CreditCard },
-    { id: 'mobile', label: 'Mobile Money', icon: Smartphone },
-    { id: 'property', label: 'Pay at Property', icon: Building2 },
+    { id: 'card', label: 'Cartão de Crédito/Débito', icon: CreditCard },
+    { id: 'mobile', label: 'Dinheiro Móvel', icon: Smartphone },
+    { id: 'property', label: 'Pagar na Propriedade', icon: Building2 },
   ];
 
   const validateCardNumber = (num: string): boolean => {
@@ -73,29 +74,29 @@ export default function Payment() {
 
     // Validate billing info for all payment methods
     if (!email || !validateEmail(email)) {
-      newErrors.email = 'Please enter a valid email address';
+      newErrors.email = 'Por favor, insira um endereço de e-mail válido';
     }
     if (!billingPhone || !validatePhone(billingPhone)) {
-      newErrors.billingPhone = 'Please enter a valid phone number';
+      newErrors.billingPhone = 'Por favor, insira um número de telefone válido';
     }
 
     // Validate payment method specific fields
     if (paymentMethod === 'card') {
       if (!cardNumber || !validateCardNumber(cardNumber)) {
-        newErrors.cardNumber = 'Please enter a valid card number (13-19 digits)';
+        newErrors.cardNumber = 'Por favor, insira um número de cartão válido (13-19 dígitos)';
       }
       if (!cardHolder || cardHolder.trim().length < 3) {
-        newErrors.cardHolder = 'Please enter the cardholder name';
+        newErrors.cardHolder = 'Por favor, insira o nome do titular do cartão';
       }
       if (!expiry || !validateExpiry(expiry)) {
-        newErrors.expiry = 'Please enter a valid expiry date (MM/YY)';
+        newErrors.expiry = 'Por favor, insira uma data de validade válida (MM/AA)';
       }
       if (!cvv || !validateCVV(cvv)) {
-        newErrors.cvv = 'Please enter a valid CVV (3-4 digits)';
+        newErrors.cvv = 'Por favor, insira um CVV válido (3-4 dígitos)';
       }
     } else if (paymentMethod === 'mobile') {
       if (!phoneNumber || !validatePhone(phoneNumber)) {
-        newErrors.phoneNumber = 'Please enter a valid phone number';
+        newErrors.phoneNumber = 'Por favor, insira um número de telefone válido';
       }
     }
 
@@ -139,12 +140,12 @@ export default function Payment() {
   return (
     <MobileScreen className="bg-neutral-50">
       {/* Header */}
-      <HeaderWithBack title="Payment" />
+      <HeaderWithBack title="Pagamento" />
 
       <div className="p-6 space-y-6 pb-32">
         {/* Payment Method Selection */}
         <div>
-          <h2 className="text-gray-900 mb-4">Payment Method</h2>
+          <h2 className="text-gray-900 mb-4">Método de Pagamento</h2>
           <PaymentMethodSelector
             methods={paymentMethods}
             selectedMethod={paymentMethod}
@@ -155,13 +156,13 @@ export default function Payment() {
         {/* Card Details Form */}
         {paymentMethod === 'card' && (
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <h2 className="text-gray-900 mb-4">Card Details</h2>
+            <h2 className="text-gray-900 mb-4">Detalhes do Cartão</h2>
             <div className="space-y-4">
               <div>
                 <Input
                   type="text"
                   placeholder="1234 5678 9012 3456"
-                  label="Card Number"
+                  label="Número do Cartão"
                   value={cardNumber}
                   onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
                   icon={<CreditCard className="w-5 h-5" />}
@@ -176,8 +177,8 @@ export default function Payment() {
               <div>
                 <Input
                   type="text"
-                  placeholder="John Doe"
-                  label="Cardholder Name"
+                  placeholder="João Silva"
+                  label="Nome do Titular"
                   value={cardHolder}
                   onChange={(e) => setCardHolder(e.target.value)}
                 />
@@ -192,8 +193,8 @@ export default function Payment() {
                 <div>
                   <Input
                     type="text"
-                    placeholder="MM/YY"
-                    label="Expiry Date"
+                    placeholder="MM/AA"
+                    label="Data de Validade"
                     value={expiry}
                     onChange={(e) => setExpiry(formatExpiry(e.target.value))}
                   />
@@ -227,13 +228,13 @@ export default function Payment() {
         {/* Mobile Money */}
         {paymentMethod === 'mobile' && (
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <h2 className="text-gray-900 mb-4">Mobile Money</h2>
+            <h2 className="text-gray-900 mb-4">Dinheiro Móvel</h2>
             <div className="space-y-4">
               <div>
                 <Input
                   type="tel"
-                  placeholder="+1 (555) 000-0000"
-                  label="Phone Number"
+                  placeholder="+244 900 000 000"
+                  label="Número de Telefone"
                   value={phoneNumber}
                   onChange={(e) => setPhoneNumber(e.target.value)}
                   icon={<Smartphone className="w-5 h-5" />}
@@ -247,7 +248,7 @@ export default function Payment() {
               </div>
               <div className="p-4 bg-[#0E64D2]/5 rounded-xl border border-[#0E64D2]/10">
                 <p className="text-sm text-gray-600">
-                  You will receive a prompt on your phone to approve the payment.
+                  Receberá uma solicitação no seu telefone para aprovar o pagamento.
                 </p>
               </div>
             </div>
@@ -257,13 +258,13 @@ export default function Payment() {
         {/* Pay at Property */}
         {paymentMethod === 'property' && (
           <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-            <h2 className="text-gray-900 mb-4">Pay at Property</h2>
+            <h2 className="text-gray-900 mb-4">Pagar na Propriedade</h2>
             <div className="p-4 bg-[#0E64D2]/5 rounded-xl border border-[#0E64D2]/10">
               <p className="text-sm text-gray-600 mb-3">
-                Pay when you arrive at the property. A deposit may be required to secure your booking.
+                Pague quando chegar à propriedade. Pode ser necessário um depósito para garantir a sua reserva.
               </p>
               <p className="text-sm text-gray-900">
-                Please note: Cancellation policies still apply.
+                Nota: As políticas de cancelamento continuam a aplicar-se.
               </p>
             </div>
           </div>
@@ -271,13 +272,13 @@ export default function Payment() {
 
         {/* Billing Information */}
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <h2 className="text-gray-900 mb-4">Billing Information</h2>
+          <h2 className="text-gray-900 mb-4">Informações de Faturação</h2>
           <div className="space-y-4">
             <div>
               <Input
                 type="email"
-                placeholder="john@example.com"
-                label="Email"
+                placeholder="joao@exemplo.com"
+                label="E-mail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
               />
@@ -291,8 +292,8 @@ export default function Payment() {
             <div>
               <Input
                 type="tel"
-                placeholder="+1 (555) 000-0000"
-                label="Phone Number"
+                placeholder="+244 900 000 000"
+                label="Número de Telefone"
                 value={billingPhone}
                 onChange={(e) => setBillingPhone(e.target.value)}
               />
@@ -310,11 +311,11 @@ export default function Payment() {
       {/* Bottom Section */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4 max-w-md mx-auto shadow-lg">
         <div className="flex items-center justify-between mb-4">
-          <span className="text-gray-600">Total Amount</span>
-          <span className="text-gray-900">${total}</span>
+          <span className="text-gray-600">Valor Total</span>
+          <span className="text-gray-900">{formatCurrency(total)}</span>
         </div>
         <Button fullWidth onClick={handlePayment} disabled={isSubmitting}>
-          {isSubmitting ? 'Processing...' : 'Complete Booking'}
+          {isSubmitting ? 'A processar...' : 'Concluir Reserva'}
         </Button>
       </div>
     </MobileScreen>

@@ -1,5 +1,6 @@
 import { ReactNode } from 'react';
 import { Button } from '@components';
+import { formatCurrency } from '@/utils/formatters';
 
 interface BottomPriceBarProps {
   price: number;
@@ -11,7 +12,7 @@ interface BottomPriceBarProps {
 
 export default function BottomPriceBar({
   price,
-  priceLabel = '/ night',
+  priceLabel = '/ noite',
   buttonText,
   onButtonClick,
   children
@@ -20,9 +21,9 @@ export default function BottomPriceBar({
     <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4 max-w-md mx-auto shadow-lg">
       <div className="flex items-center justify-between mb-3">
         <div>
-          <p className="text-gray-500 text-sm">Total price</p>
+          <p className="text-gray-500 text-sm">Preço total</p>
           <p className="text-gray-900">
-            ${price} <span className="text-gray-500">{priceLabel}</span>
+            {formatCurrency(price)} <span className="text-gray-500">{priceLabel}</span>
           </p>
         </div>
         <Button onClick={onButtonClick}>

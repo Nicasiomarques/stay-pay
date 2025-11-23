@@ -1,5 +1,6 @@
 import { Calendar, MapPin, Users } from 'lucide-react';
 import { formatDateRange } from '@/utils';
+import { formatCurrency, formatGuestCount } from '@/utils/formatters';
 
 interface Hotel {
   name: string;
@@ -26,7 +27,7 @@ export function BookingDetails({
   return (
     <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100 mb-6 w-full max-w-sm">
       <div className="mb-4 pb-4 border-b border-gray-100">
-        <p className="text-sm text-gray-500 mb-1">Booking Number</p>
+        <p className="text-sm text-gray-500 mb-1">Número da Reserva</p>
         <p className="text-gray-900">{bookingNumber}</p>
       </div>
 
@@ -36,7 +37,7 @@ export function BookingDetails({
         <div className="flex items-start gap-3">
           <MapPin className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm text-gray-500">Location</p>
+            <p className="text-sm text-gray-500">Localização</p>
             <p className="text-gray-900">{hotel.location}</p>
           </div>
         </div>
@@ -52,15 +53,15 @@ export function BookingDetails({
         <div className="flex items-start gap-3">
           <Users className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
           <div>
-            <p className="text-sm text-gray-500">Guests</p>
-            <p className="text-gray-900">{guests} guests</p>
+            <p className="text-sm text-gray-500">Hóspedes</p>
+            <p className="text-gray-900">{formatGuestCount(guests)}</p>
           </div>
         </div>
       </div>
 
       <div className="mt-4 pt-4 border-t border-gray-100 flex justify-between">
-        <span className="text-gray-600">Total Paid</span>
-        <span className="text-gray-900">${total}</span>
+        <span className="text-gray-600">Total Pago</span>
+        <span className="text-gray-900">{formatCurrency(total)}</span>
       </div>
     </div>
   );

@@ -11,10 +11,10 @@ export function OnboardingForm({ phone, onPhoneChange, onContinue }: OnboardingF
     <div className="w-full space-y-4">
       <Input
         type="tel"
-        placeholder="+1 (555) 000-0000"
+        placeholder="+244 900 000 000"
         value={phone}
         onChange={(e) => onPhoneChange(e.target.value)}
-        label="Phone Number"
+        label="Número de Telefone"
       />
 
       <Button
@@ -22,11 +22,11 @@ export function OnboardingForm({ phone, onPhoneChange, onContinue }: OnboardingF
         onClick={onContinue}
         disabled={!phone}
       >
-        Continue
+        Continuar
       </Button>
 
       <p className="text-gray-400 text-center mt-8 text-sm">
-        By continuing, you agree to our Terms of Service and Privacy Policy
+        Ao continuar, concorda com os nossos Termos de Serviço e Política de Privacidade
       </p>
     </div>
   );

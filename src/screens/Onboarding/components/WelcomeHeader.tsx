@@ -7,9 +7,9 @@ export function WelcomeHeader() {
         <Hotel className="w-10 h-10 text-white" />
       </div>
 
-      <h1 className="text-gray-900 mb-3">Welcome to StayGo</h1>
+      <h1 className="text-gray-900 mb-3">Bem-vindo ao StayGo</h1>
       <p className="text-gray-500 mb-12">
-        Book your perfect stay in seconds
+        Reserve a sua estadia perfeita em segundos
       </p>
     </div>
   );

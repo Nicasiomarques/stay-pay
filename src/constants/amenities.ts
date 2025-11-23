@@ -14,10 +14,10 @@ export const AMENITY_ICONS: Record<string, LucideIcon> = {
 
 export const AMENITY_LABELS: Record<string, string> = {
   wifi: 'WiFi',
-  pool: 'Pool',
-  gym: 'Gym',
-  parking: 'Parking',
-  restaurant: 'Restaurant',
+  pool: 'Piscina',
+  gym: 'Ginásio',
+  parking: 'Estacionamento',
+  restaurant: 'Restaurante',
   bar: 'Bar',
   spa: 'Spa',
   concierge: 'Concierge',

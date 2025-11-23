@@ -1,4 +1,5 @@
 import { memo } from 'react';
+import { formatCurrency } from '@/utils/formatters';
 
 interface PriceBreakdownProps {
   items: {
@@ -14,12 +15,12 @@ function PriceBreakdown({ items, total }: PriceBreakdownProps) {
       {items.map((item) => (
         <div key={item.label} className="flex justify-between">
           <span className="text-gray-600">{item.label}</span>
-          <span className="text-gray-900">${item.amount}</span>
+          <span className="text-gray-900">{formatCurrency(item.amount)}</span>
         </div>
       ))}
       <div className="pt-3 border-t border-gray-200 flex justify-between">
         <span className="text-gray-900">Total</span>
-        <span className="text-gray-900">${total}</span>
+        <span className="text-gray-900">{formatCurrency(total)}</span>
       </div>
     </div>
   );

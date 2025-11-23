@@ -1,5 +1,6 @@
 import { memo } from 'react';
 import { Room } from '@types';
+import { formatCurrency } from '@/utils/formatters';
 
 interface RoomSelectorProps {
   rooms: Room[];
@@ -24,11 +25,11 @@ function RoomSelector({ rooms, selectedRoomIndex, onSelectRoom }: RoomSelectorPr
           <div className="flex items-center justify-between">
             <div>
               <h3 className="text-gray-900 mb-1">{room.type}</h3>
-              <p className="text-sm text-gray-500">Up to {room.capacity} guests</p>
+              <p className="text-sm text-gray-500">Até {room.capacity} {room.capacity === 1 ? 'hóspede' : 'hóspedes'}</p>
             </div>
             <div className="text-right">
-              <p className="text-gray-900">${room.price}</p>
-              <p className="text-sm text-gray-500">per night</p>
+              <p className="text-gray-900">{formatCurrency(room.price)}</p>
+              <p className="text-sm text-gray-500">por noite</p>
             </div>
           </div>
         </button>

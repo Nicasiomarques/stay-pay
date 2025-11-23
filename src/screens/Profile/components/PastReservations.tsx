@@ -16,7 +16,7 @@ interface PastReservationsProps {
 export function PastReservations({ reservations }: PastReservationsProps) {
   return (
     <div>
-      <h2 className="text-gray-900 mb-4">Past Reservations</h2>
+      <h2 className="text-gray-900 mb-4">Reservas Anteriores</h2>
       <div className="space-y-3">
         {reservations.map((reservation) => (
           <BookingCard

@@ -6,6 +6,7 @@ import { MapPin, Calendar, Users, Info } from "lucide-react";
 import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 import { useBooking } from "@context";
 import { formatFullDate } from "@/utils";
+import { formatCurrency, formatGuestCount, formatNightCount } from "@/utils/formatters";
 import { PRICING } from "@constants";
 
 export default function BookingReview() {
@@ -27,7 +28,7 @@ export default function BookingReview() {
   return (
     <MobileScreen className="bg-neutral-50">
       {/* Header */}
-      <HeaderWithBack title="Review Booking" />
+      <HeaderWithBack title="Rever Reserva" />
 
       <div className="p-6 space-y-4 pb-32">
         {/* Hotel Info Card */}
@@ -55,7 +56,7 @@ export default function BookingReview() {
 
         {/* Booking Details */}
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <h2 className="text-gray-900 mb-4">Booking Details</h2>
+          <h2 className="text-gray-900 mb-4">Detalhes da Reserva</h2>
 
           <div className="space-y-4">
             <BookingDetailItem
@@ -72,8 +73,8 @@ export default function BookingReview() {
 
             <BookingDetailItem
               icon={Users}
-              label="Guests"
-              value={`${booking.guests} guests`}
+              label="Hóspedes"
+              value={formatGuestCount(booking.guests)}
               actions={
                 <>
                   <button
@@ -96,12 +97,12 @@ export default function BookingReview() {
 
         {/* Price Breakdown */}
         <div className="bg-white rounded-2xl p-5 shadow-sm border border-gray-100">
-          <h2 className="text-gray-900 mb-4">Price Breakdown</h2>
+          <h2 className="text-gray-900 mb-4">Discriminação de Preços</h2>
           <PriceBreakdown
             items={[
-              { label: `$${roomPrice} × ${nights} nights`, amount: subtotal },
-              { label: "Service fee", amount: serviceFee },
-              { label: "Taxes", amount: tax },
+              { label: `${formatCurrency(roomPrice)} × ${formatNightCount(nights)}`, amount: subtotal },
+              { label: "Taxa de serviço", amount: serviceFee },
+              { label: "Impostos", amount: tax },
             ]}
             total={total}
           />
@@ -112,14 +113,14 @@ export default function BookingReview() {
           <div className="flex gap-3">
             <Info className="w-5 h-5 text-[#0E64D2] flex-shrink-0 mt-0.5" />
             <div>
-              <h3 className="text-gray-900 mb-2">Cancellation Policy</h3>
+              <h3 className="text-gray-900 mb-2">Política de Cancelamento</h3>
               <p className="text-sm text-gray-600">
-                Free cancellation until{" "}
+                Cancelamento gratuito até{" "}
                 {booking.checkIn &&
                   formatFullDate(
                     new Date(booking.checkIn.getTime() - 7 * 24 * 60 * 60 * 1000)
                   )}
-                . Cancel before check-in for a partial refund.
+                . Cancele antes do check-in para reembolso parcial.
               </p>
             </div>
           </div>
@@ -129,7 +130,7 @@ export default function BookingReview() {
       {/* Bottom Button */}
       <div className="fixed bottom-0 left-0 right-0 bg-white border-t border-gray-200 px-6 py-4 max-w-md mx-auto shadow-lg">
         <Button fullWidth onClick={() => navigate("/payment")}>
-          Continue to Payment
+          Continuar para Pagamento
         </Button>
       </div>
     </MobileScreen>

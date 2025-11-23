@@ -32,19 +32,19 @@ export default function HotelDetail() {
           <button
             onClick={() => navigate('/home')}
             type="button"
-            aria-label="Go back to home"
+            aria-label="Voltar para a página inicial"
             className="mb-6 text-[#0E64D2] flex items-center gap-2"
           >
             <ArrowLeft className="w-5 h-5" />
-            <span>Back to Home</span>
+            <span>Voltar para Início</span>
           </button>
           <EmptyState
             icon={AlertCircle}
-            title="Hotel Not Found"
-            description="We couldn't find the hotel you're looking for. It may have been removed or the link is incorrect."
+            title="Hotel Não Encontrado"
+            description="Não foi possível encontrar o hotel que procura. Pode ter sido removido ou o link está incorreto."
             action={
               <Button onClick={() => navigate('/home')}>
-                Browse Hotels
+                Explorar Hotéis
               </Button>
             }
           />
@@ -64,7 +64,7 @@ export default function HotelDetail() {
           <button
             onClick={() => navigate('/search')}
             type="button"
-            aria-label="Go back to search results"
+            aria-label="Voltar aos resultados de pesquisa"
             className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm"
           >
             <ArrowLeft className="w-5 h-5 text-gray-900" aria-hidden="true" />
@@ -72,14 +72,14 @@ export default function HotelDetail() {
           <div className="flex gap-2">
             <button
               type="button"
-              aria-label="Share this hotel"
+              aria-label="Partilhar este hotel"
               className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm"
             >
               <Share2 className="w-5 h-5 text-gray-900" aria-hidden="true" />
             </button>
             <button
               type="button"
-              aria-label="Add to favorites"
+              aria-label="Adicionar aos favoritos"
               className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm"
             >
               <Heart className="w-5 h-5 text-gray-900" aria-hidden="true" />
@@ -102,28 +102,28 @@ export default function HotelDetail() {
             <div className="flex items-center gap-1">
               <Star className="w-4 h-4 fill-amber-400 text-amber-400" />
               <span className="text-gray-900">{hotel.rating}</span>
-              <span className="text-gray-500">({hotel.reviews} reviews)</span>
+              <span className="text-gray-500">({hotel.reviews} {hotel.reviews === 1 ? 'avaliação' : 'avaliações'})</span>
             </div>
           </div>
         </div>
 
         {/* Amenities */}
         <div className="mb-6">
-          <h2 className="text-gray-900 mb-4">Amenities</h2>
+          <h2 className="text-gray-900 mb-4">Comodidades</h2>
           <AmenitiesGrid amenities={hotel.amenities} />
         </div>
 
         {/* Description */}
         <div className="mb-6">
-          <h2 className="text-gray-900 mb-3">About</h2>
+          <h2 className="text-gray-900 mb-3">Sobre</h2>
           <p className="text-gray-600 leading-relaxed">{hotel.description}</p>
         </div>
 
         {/* Reviews */}
         <div className="mb-6">
           <div className="flex items-center justify-between mb-4">
-            <h2 className="text-gray-900">Reviews</h2>
-            <button className="text-[#0E64D2]">See all</button>
+            <h2 className="text-gray-900">Avaliações</h2>
+            <button className="text-[#0E64D2]">Ver todas</button>
           </div>
           <div className="space-y-4">
             {reviews.slice(0, 2).map((review) => (
@@ -140,7 +140,7 @@ export default function HotelDetail() {
 
         {/* Room Selection */}
         <div className="mb-6">
-          <h2 className="text-gray-900 mb-4">Select Room</h2>
+          <h2 className="text-gray-900 mb-4">Selecionar Quarto</h2>
           <RoomSelector
             rooms={hotel.rooms}
             selectedRoomIndex={selectedRoomIndex}
@@ -152,7 +152,7 @@ export default function HotelDetail() {
       {/* Bottom Bar */}
       <BottomPriceBar
         price={hotel.rooms[selectedRoomIndex].price}
-        buttonText="Book Now"
+        buttonText="Reservar Agora"
         onButtonClick={handleBookNow}
       />
     </MobileScreen>

@@ -15,14 +15,14 @@ export default function Bookings() {
       <div className="bg-white px-6 pt-12 pb-6 shadow-sm">
         <div className="flex items-center gap-3 mb-4">
           <Calendar className="w-8 h-8 text-[#0E64D2]" />
-          <h1 className="text-gray-900">My Bookings</h1>
+          <h1 className="text-gray-900">Minhas Reservas</h1>
         </div>
 
         {/* Tabs */}
         <TabSelector
           tabs={[
-            { id: 'upcoming', label: 'Upcoming' },
-            { id: 'past', label: 'Past' }
+            { id: 'upcoming', label: 'Próximas' },
+            { id: 'past', label: 'Anteriores' }
           ]}
           activeTab={activeTab}
           onTabChange={(tabId) => setActiveTab(tabId as 'upcoming' | 'past')}
@@ -48,8 +48,8 @@ export default function Bookings() {
         ) : (
           <EmptyState
             icon={Calendar}
-            title="No bookings yet"
-            description="Start planning your next trip"
+            title="Ainda sem reservas"
+            description="Comece a planear a sua próxima viagem"
           />
         )}
       </div>

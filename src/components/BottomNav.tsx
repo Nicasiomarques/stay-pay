@@ -6,10 +6,10 @@ export default function BottomNav() {
   const location = useLocation();
 
   const navItems = [
-    { path: '/home', icon: Search, label: 'Search' },
-    { path: '/favorites', icon: Heart, label: 'Favorites' },
-    { path: '/bookings', icon: Calendar, label: 'Bookings' },
-    { path: '/profile', icon: User, label: 'Profile' },
+    { path: '/home', icon: Search, label: 'Pesquisar' },
+    { path: '/favorites', icon: Heart, label: 'Favoritos' },
+    { path: '/bookings', icon: Calendar, label: 'Reservas' },
+    { path: '/profile', icon: User, label: 'Perfil' },
   ];
 
   return (
