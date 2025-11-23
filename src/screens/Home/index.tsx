@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { MobileScreen, Button, HotelCard, BottomNav } from '@components';
 import SearchBar from './components/SearchBar';
 import FilterChips from './components/FilterChips';
-import { Search, Sparkles, Building2, Palmtree, DollarSign } from 'lucide-react';
+import { Search, Sparkles, Building2, Palmtree, DollarSign, TrendingUp, MapPin, Star } from 'lucide-react';
 import { hotels } from '@data';
 import { useBooking } from '@context';
 
@@ -13,6 +13,8 @@ export default function Home() {
   const [location, setLocation] = useState(booking.searchLocation);
 
   const featuredHotels = useMemo(() => hotels.slice(0, 3), []);
+  const popularHotels = useMemo(() => hotels.filter(h => h.rating >= 4.7), []);
+  const allHotels = useMemo(() => hotels, []);
 
   const filters = useMemo(
     () => [
@@ -20,6 +22,16 @@ export default function Home() {
       { icon: Building2, label: 'Luxo' },
       { icon: Palmtree, label: 'Resort' },
       { icon: DollarSign, label: 'Económico' },
+    ],
+    []
+  );
+
+  const destinations = useMemo(
+    () => [
+      { name: 'Centro, Luanda', hotels: 1, icon: MapPin },
+      { name: 'Talatona, Luanda', hotels: 1, icon: MapPin },
+      { name: 'Ilha de Luanda', hotels: 1, icon: MapPin },
+      { name: 'Mussulo, Luanda', hotels: 1, icon: MapPin },
     ],
     []
   );
@@ -62,13 +74,72 @@ export default function Home() {
       </div>
 
       {/* Featured Hotels Carousel */}
-      <div className="px-6 py-6 pb-24">
-        <h2 className="text-gray-900 mb-4">Hotéis em Destaque</h2>
+      <div className="px-6 py-6 bg-white mt-2">
+        <div className="flex items-center justify-between mb-4">
+          <h2 className="text-gray-900">Hotéis em Destaque</h2>
+          <button
+            onClick={() => navigate('/search')}
+            className="text-[#0E64D2] text-sm font-medium"
+          >
+            Ver todos
+          </button>
+        </div>
         <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mr-6">
           {featuredHotels.map((hotel) => (
             <div key={hotel.id} className="flex-shrink-0 w-72">
               <HotelCard {...hotel} hotelData={hotel} />
             </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Popular Destinations */}
+      <div className="px-6 py-6 bg-white mt-2">
+        <div className="flex items-center gap-2 mb-4">
+          <TrendingUp className="w-5 h-5 text-[#0E64D2]" />
+          <h2 className="text-gray-900">Destinos Populares</h2>
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          {destinations.map((dest, index) => {
+            const Icon = dest.icon;
+            return (
+              <button
+                key={index}
+                onClick={() => {
+                  setLocation(dest.name);
+                  setSearchLocation(dest.name);
+                  navigate('/search');
+                }}
+                className="bg-gradient-to-br from-[#0E64D2]/10 to-[#0E64D2]/5 rounded-xl p-4 text-left active:scale-98 transition-transform border border-[#0E64D2]/20"
+              >
+                <Icon className="w-5 h-5 text-[#0E64D2] mb-2" />
+                <h3 className="text-gray-900 font-medium text-sm mb-1">{dest.name}</h3>
+                <p className="text-gray-500 text-xs">{dest.hotels} {dest.hotels === 1 ? 'hotel' : 'hotéis'}</p>
+              </button>
+            );
+          })}
+        </div>
+      </div>
+
+      {/* Popular Hotels */}
+      <div className="px-6 py-6 bg-white mt-2">
+        <div className="flex items-center gap-2 mb-4">
+          <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
+          <h2 className="text-gray-900">Mais Populares</h2>
+        </div>
+        <div className="space-y-3">
+          {popularHotels.map((hotel) => (
+            <HotelCard key={hotel.id} {...hotel} hotelData={hotel} />
+          ))}
+        </div>
+      </div>
+
+      {/* All Hotels */}
+      <div className="px-6 py-6 pb-24 bg-white mt-2">
+        <h2 className="text-gray-900 mb-4">Todos os Hotéis</h2>
+        <div className="space-y-3">
+          {allHotels.map((hotel) => (
+            <HotelCard key={hotel.id} {...hotel} hotelData={hotel} />
           ))}
         </div>
       </div>
