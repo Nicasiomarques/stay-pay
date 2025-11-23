@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MobileScreen from '../components/MobileScreen';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import { ArrowLeft, CreditCard, Smartphone, Building2, Check } from 'lucide-react';
-import { useBooking } from '../context/BookingContext';
+import { MobileScreen, Button, Input, HeaderWithBack } from '@components';
+import PaymentMethodSelector from './components/PaymentMethodSelector';
+import { CreditCard, Smartphone, Building2 } from 'lucide-react';
+import { useBooking } from '@context';
 
 export default function Payment() {
   const navigate = useNavigate();
@@ -35,50 +34,17 @@ export default function Payment() {
   return (
     <MobileScreen className="bg-neutral-50">
       {/* Header */}
-      <div className="bg-white px-6 py-4 shadow-sm">
-        <div className="flex items-center gap-4">
-          <button 
-            onClick={() => navigate(-1)}
-            className="p-2 -ml-2 hover:bg-gray-100 rounded-xl transition-colors"
-          >
-            <ArrowLeft className="w-6 h-6 text-gray-900" />
-          </button>
-          <h1 className="text-gray-900">Payment</h1>
-        </div>
-      </div>
+      <HeaderWithBack title="Payment" />
 
       <div className="p-6 space-y-6 pb-32">
         {/* Payment Method Selection */}
         <div>
           <h2 className="text-gray-900 mb-4">Payment Method</h2>
-          <div className="space-y-3">
-            {paymentMethods.map((method) => {
-              const Icon = method.icon;
-              return (
-                <button
-                  key={method.id}
-                  onClick={() => handlePaymentMethodChange(method.id)}
-                  className={`w-full p-4 rounded-xl border-2 transition-all flex items-center gap-3 ${
-                    paymentMethod === method.id
-                      ? 'border-[#0E64D2] bg-[#0E64D2]/5'
-                      : 'border-gray-200 bg-white'
-                  }`}
-                >
-                  <div className={`w-10 h-10 rounded-xl flex items-center justify-center ${
-                    paymentMethod === method.id ? 'bg-[#0E64D2]' : 'bg-gray-100'
-                  }`}>
-                    <Icon className={`w-5 h-5 ${
-                      paymentMethod === method.id ? 'text-white' : 'text-gray-600'
-                    }`} />
-                  </div>
-                  <span className="text-gray-900 flex-1 text-left">{method.label}</span>
-                  {paymentMethod === method.id && (
-                    <Check className="w-5 h-5 text-[#0E64D2]" />
-                  )}
-                </button>
-              );
-            })}
-          </div>
+          <PaymentMethodSelector
+            methods={paymentMethods}
+            selectedMethod={paymentMethod}
+            onMethodChange={handlePaymentMethodChange}
+          />
         </div>
 
         {/* Card Details Form */}

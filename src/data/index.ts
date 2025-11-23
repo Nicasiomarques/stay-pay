@@ -1,1 +1,1 @@
-export { hotels } from './hotels';
+export { hotels, reviews } from './hotels';

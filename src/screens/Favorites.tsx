@@ -1,10 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MobileScreen from '../components/MobileScreen';
-import HotelCard from '../components/HotelCard';
-import BottomNav from '../components/BottomNav';
+import { MobileScreen, HotelCard, BottomNav, EmptyState } from '@components';
 import { Heart } from 'lucide-react';
-import { hotels } from '../data/hotels';
+import { hotels } from '@data';
 
 export default function Favorites() {
   const navigate = useNavigate();
@@ -30,15 +28,11 @@ export default function Favorites() {
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center py-12">
-            <div className="w-20 h-20 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-              <Heart className="w-10 h-10 text-gray-400" />
-            </div>
-            <h2 className="text-gray-900 mb-2">No favorites yet</h2>
-            <p className="text-gray-500 text-center mb-6">
-              Start adding hotels to your favorites
-            </p>
-          </div>
+          <EmptyState
+            icon={Heart}
+            title="No favorites yet"
+            description="Start adding hotels to your favorites"
+          />
         )}
       </div>
 

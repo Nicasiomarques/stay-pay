@@ -1,11 +1,7 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MobileScreen from '../components/MobileScreen';
-import Button from '../components/Button';
-import Input from '../components/Input';
-import BottomNav from '../components/BottomNav';
-import { ArrowLeft, User, Mail, Phone, Calendar, MapPin, ChevronRight } from 'lucide-react';
-import { ImageWithFallback } from '../components/figma/ImageWithFallback';
+import { MobileScreen, Button, Input, BottomNav, HeaderWithBack, BookingCard } from '@components';
+import { User, Mail, Phone } from 'lucide-react';
 
 export default function Profile() {
   const navigate = useNavigate();
@@ -48,25 +44,18 @@ export default function Profile() {
   return (
     <MobileScreen className="bg-neutral-50">
       {/* Header */}
-      <div className="bg-white px-6 py-4 shadow-sm">
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-4">
-            <button 
-              onClick={() => navigate('/home')}
-              className="p-2 -ml-2 hover:bg-gray-100 rounded-xl transition-colors"
-            >
-              <ArrowLeft className="w-6 h-6 text-gray-900" />
-            </button>
-            <h1 className="text-gray-900">Profile</h1>
-          </div>
-          <button 
-            onClick={() => isEditing ? handleSave() : setIsEditing(true)}
+      <HeaderWithBack
+        title="Profile"
+        onBack={() => navigate('/home')}
+        rightActions={
+          <button
+            onClick={() => (isEditing ? handleSave() : setIsEditing(true))}
             className="text-[#0E64D2]"
           >
             {isEditing ? 'Save' : 'Edit'}
           </button>
-        </div>
-      </div>
+        }
+      />
 
       <div className="p-6 space-y-6 pb-24">
         {/* Profile Info */}
@@ -122,39 +111,15 @@ export default function Profile() {
           <h2 className="text-gray-900 mb-4">Past Reservations</h2>
           <div className="space-y-3">
             {pastReservations.map((reservation) => (
-              <div
+              <BookingCard
                 key={reservation.id}
-                className="bg-white rounded-2xl p-4 shadow-sm border border-gray-100 cursor-pointer hover:shadow-md transition-shadow"
-              >
-                <div className="flex gap-4">
-                  <div className="w-20 h-20 rounded-xl overflow-hidden flex-shrink-0">
-                    <ImageWithFallback
-                      src={reservation.image}
-                      alt={reservation.hotel}
-                      className="w-full h-full object-cover"
-                    />
-                  </div>
-                  <div className="flex-1 min-w-0">
-                    <div className="flex items-start justify-between mb-2">
-                      <h3 className="text-gray-900">{reservation.hotel}</h3>
-                      <ChevronRight className="w-5 h-5 text-gray-400 flex-shrink-0" />
-                    </div>
-                    <div className="flex items-center gap-1 text-gray-500 text-sm mb-2">
-                      <MapPin className="w-3.5 h-3.5" />
-                      <span className="truncate">{reservation.location}</span>
-                    </div>
-                    <div className="flex items-center gap-1 text-gray-500 text-sm">
-                      <Calendar className="w-3.5 h-3.5" />
-                      <span>{reservation.dates}</span>
-                    </div>
-                  </div>
-                </div>
-                <div className="mt-3 pt-3 border-t border-gray-100">
-                  <span className="inline-block px-3 py-1 bg-green-50 text-green-700 rounded-lg text-sm">
-                    {reservation.status}
-                  </span>
-                </div>
-              </div>
+                hotel={reservation.hotel}
+                location={reservation.location}
+                dates={reservation.dates}
+                status={reservation.status}
+                bookingNumber={`BK-2024-${reservation.id}`}
+                image={reservation.image}
+              />
             ))}
           </div>
         </div>

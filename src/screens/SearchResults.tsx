@@ -1,10 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MobileScreen from '../components/MobileScreen';
-import HotelCard from '../components/HotelCard';
+import { MobileScreen, HotelCard } from '@components';
 import { ArrowLeft, SlidersHorizontal, MapPin } from 'lucide-react';
-import { hotels } from '../data/hotels';
-import { useBooking } from '../context/BookingContext';
+import { hotels } from '@data';
+import { useBooking } from '@context';
 
 export default function SearchResults() {
   const navigate = useNavigate();

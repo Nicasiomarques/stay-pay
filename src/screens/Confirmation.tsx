@@ -1,8 +1,7 @@
 import { useNavigate } from 'react-router-dom';
-import MobileScreen from '../components/MobileScreen';
-import Button from '../components/Button';
+import { MobileScreen, Button } from '@components';
 import { CheckCircle, Download, Share2, Calendar, MapPin, Users } from 'lucide-react';
-import { useBooking } from '../context/BookingContext';
+import { useBooking } from '@context';
 import { useEffect } from 'react';
 
 export default function Confirmation() {

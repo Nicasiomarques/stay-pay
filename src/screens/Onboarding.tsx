@@ -1,8 +1,6 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MobileScreen from '../components/MobileScreen';
-import Input from '../components/Input';
-import Button from '../components/Button';
+import { MobileScreen, Input, Button } from '@components';
 import { Hotel } from 'lucide-react';
 
 export default function Onboarding() {

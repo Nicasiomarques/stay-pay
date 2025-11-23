@@ -1,9 +1,8 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MobileScreen from '../components/MobileScreen';
-import Button from '../components/Button';
+import { MobileScreen, Button } from '@components';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react';
-import { useBooking } from '../context/BookingContext';
+import { useBooking } from '@context';
 
 export default function Calendar() {
   const navigate = useNavigate();

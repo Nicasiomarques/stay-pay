@@ -104,6 +104,7 @@
         '@context': path.resolve(__dirname, './src/context'),
         '@data': path.resolve(__dirname, './src/data'),
         '@styles': path.resolve(__dirname, './src/styles'),
+        '@hooks': path.resolve(__dirname, './src/hooks'),
       },
     },
     build: {
