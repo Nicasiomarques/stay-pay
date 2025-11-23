@@ -1,23 +1,6 @@
 import { createContext, useContext, useState, ReactNode } from 'react';
-
-interface Hotel {
-  id: number;
-  name: string;
-  location: string;
-  rating: number;
-  reviews: number;
-  price: number;
-  distance?: string;
-  image: string;
-  description: string;
-  amenities: string[];
-  images: string[];
-  rooms: Array<{
-    type: string;
-    price: number;
-    capacity: number;
-  }>;
-}
+import { Hotel } from '@types';
+import { PRICING } from '@constants';
 
 interface BookingState {
   hotel: Hotel | null;
@@ -97,9 +80,8 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     const nights = getNights();
     const roomPrice = booking.hotel.rooms[booking.selectedRoom]?.price || 0;
     const subtotal = nights * roomPrice;
-    const serviceFee = 15;
-    const tax = Math.round(subtotal * 0.08);
-    return subtotal + serviceFee + tax;
+    const tax = Math.round(subtotal * PRICING.TAX_RATE);
+    return subtotal + PRICING.SERVICE_FEE + tax;
   };
 
   return (

@@ -1,10 +1,10 @@
-import { Star, MapPin } from 'lucide-react';
-import { ImageWithFallback } from './figma/ImageWithFallback';
-import { useNavigate } from 'react-router-dom';
-import { useBooking } from '../context/BookingContext';
+import { Star, MapPin } from "lucide-react";
+import { ImageWithFallback } from "./figma/ImageWithFallback";
+import { useNavigate } from "react-router-dom";
+import { useBooking } from "../context/BookingContext";
 
 interface HotelCardProps {
-  id: number;
+  id: string;
   image: string;
   name: string;
   location: string;
@@ -15,7 +15,17 @@ interface HotelCardProps {
   hotelData?: any;
 }
 
-export default function HotelCard({ id, image, name, location, rating, reviews, price, distance, hotelData }: HotelCardProps) {
+export default function HotelCard({
+  id,
+  image,
+  name,
+  location,
+  rating,
+  reviews,
+  price,
+  distance,
+  hotelData,
+}: HotelCardProps) {
   const navigate = useNavigate();
   const { setHotel } = useBooking();
 
@@ -27,12 +37,12 @@ export default function HotelCard({ id, image, name, location, rating, reviews, 
   };
 
   return (
-    <div 
+    <div
       onClick={handleClick}
       className="bg-white rounded-2xl overflow-hidden shadow-sm border border-gray-100 cursor-pointer active:scale-98 transition-transform"
     >
       <div className="relative h-48 overflow-hidden">
-        <ImageWithFallback 
+        <ImageWithFallback
           src={image}
           alt={name}
           className="w-full h-full object-cover"

@@ -30,7 +30,10 @@
       "@ui": ["./src/components/ui"],
       "@context": ["./src/context"],
       "@data": ["./src/data"],
-      "@styles": ["./src/styles"]
+      "@styles": ["./src/styles"],
+      "@constants": ["./src/constants"],
+      "@utils": ["./src/utils"],
+      "@types": ["./src/types"]
     }
   },
   "include": ["src"]

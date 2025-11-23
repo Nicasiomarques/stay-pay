@@ -1,3 +1,6 @@
+import { WEEK_DAYS_SHORT } from '@constants';
+import { getDaysInMonth, isDateInRange, isSameDate } from '@utils';
+
 interface CalendarGridProps {
   currentMonth: Date;
   checkIn: Date | null;
@@ -5,36 +8,20 @@ interface CalendarGridProps {
   onDateClick: (day: number) => void;
 }
 
-const weekDays = ['Su', 'Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa'];
-
 export function CalendarGrid({ currentMonth, checkIn, checkOut, onDateClick }: CalendarGridProps) {
-  const getDaysInMonth = (date: Date) => {
-    const year = date.getFullYear();
-    const month = date.getMonth();
-    const firstDay = new Date(year, month, 1);
-    const lastDay = new Date(year, month + 1, 0);
-    const daysInMonth = lastDay.getDate();
-    const startingDayOfWeek = firstDay.getDay();
-
-    return { daysInMonth, startingDayOfWeek };
-  };
-
   const isInRange = (day: number) => {
-    if (!checkIn || !checkOut) return false;
     const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    return date > checkIn && date < checkOut;
+    return isDateInRange(date, checkIn, checkOut);
   };
 
   const isCheckIn = (day: number) => {
-    if (!checkIn) return false;
     const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    return date.toDateString() === checkIn.toDateString();
+    return isSameDate(date, checkIn);
   };
 
   const isCheckOut = (day: number) => {
-    if (!checkOut) return false;
     const date = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
-    return date.toDateString() === checkOut.toDateString();
+    return isSameDate(date, checkOut);
   };
 
   const { daysInMonth, startingDayOfWeek } = getDaysInMonth(currentMonth);
@@ -43,7 +30,7 @@ export function CalendarGrid({ currentMonth, checkIn, checkOut, onDateClick }: C
     <>
       {/* Week Days */}
       <div className="grid grid-cols-7 gap-2 mb-3">
-        {weekDays.map((day) => (
+        {WEEK_DAYS_SHORT.map((day) => (
           <div key={day} className="text-center text-gray-500 text-sm py-2">
             {day}
           </div>

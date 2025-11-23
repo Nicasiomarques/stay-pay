@@ -1,4 +1,5 @@
 import { ArrowLeft } from 'lucide-react';
+import { formatShortDate } from '@utils';
 
 interface CalendarHeaderProps {
   checkIn: Date | null;
@@ -23,15 +24,11 @@ export function CalendarHeader({ checkIn, checkOut, onBack }: CalendarHeaderProp
       <div className="flex gap-3">
         <div className="flex-1 p-3 bg-gray-50 rounded-xl">
           <p className="text-xs text-gray-500 mb-1">Check-in</p>
-          <p className="text-gray-900">
-            {checkIn ? checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Select date'}
-          </p>
+          <p className="text-gray-900">{formatShortDate(checkIn)}</p>
         </div>
         <div className="flex-1 p-3 bg-gray-50 rounded-xl">
           <p className="text-xs text-gray-500 mb-1">Check-out</p>
-          <p className="text-gray-900">
-            {checkOut ? checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) : 'Select date'}
-          </p>
+          <p className="text-gray-900">{formatShortDate(checkOut)}</p>
         </div>
       </div>
     </div>

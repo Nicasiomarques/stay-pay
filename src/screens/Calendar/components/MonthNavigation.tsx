@@ -1,13 +1,11 @@
 import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { MONTH_NAMES } from '@constants';
 
 interface MonthNavigationProps {
   currentMonth: Date;
   onPrevMonth: () => void;
   onNextMonth: () => void;
 }
-
-const monthNames = ['January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'];
 
 export function MonthNavigation({ currentMonth, onPrevMonth, onNextMonth }: MonthNavigationProps) {
   return (
@@ -19,7 +17,7 @@ export function MonthNavigation({ currentMonth, onPrevMonth, onNextMonth }: Mont
         <ChevronLeft className="w-6 h-6 text-gray-900" />
       </button>
       <h2 className="text-gray-900">
-        {monthNames[currentMonth.getMonth()]} {currentMonth.getFullYear()}
+        {MONTH_NAMES[currentMonth.getMonth()]} {currentMonth.getFullYear()}
       </h2>
       <button
         onClick={onNextMonth}

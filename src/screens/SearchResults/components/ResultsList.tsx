@@ -1,4 +1,4 @@
-import { HotelCard } from '@components';
+import { HotelCard } from "@components";
 
 interface Hotel {
   id: string;
