@@ -9,8 +9,9 @@ import { useBooking } from '@context';
 
 export default function Home() {
   const navigate = useNavigate();
-  const { booking, setSearchLocation } = useBooking();
+  const { booking, setSearchLocation, setQuickFilter, setGuests } = useBooking();
   const [location, setLocation] = useState(booking.searchLocation);
+  const [selectedFilter, setSelectedFilter] = useState<string | undefined>();
 
   const featuredHotels = useMemo(() => hotels.slice(0, 3), []);
   const popularHotels = useMemo(() => hotels.filter(h => h.rating >= 4.7), []);
@@ -43,6 +44,12 @@ export default function Home() {
     navigate('/search');
   }, [location, setSearchLocation, navigate]);
 
+  const handleFilterSelect = useCallback((filter: string) => {
+    setSelectedFilter(filter);
+    setQuickFilter(filter);
+    navigate('/search');
+  }, [setQuickFilter, navigate]);
+
   return (
     <MobileScreen className="bg-neutral-50">
       {/* Header */}
@@ -56,7 +63,7 @@ export default function Home() {
           checkIn={booking.checkIn}
           checkOut={booking.checkOut}
           guests={booking.guests}
-          onClick={handleSearch}
+          onGuestsChange={setGuests}
         />
 
         <Button
@@ -72,7 +79,11 @@ export default function Home() {
       {/* Quick Filters */}
       <div className="px-6 py-6 bg-white mt-2">
         <h2 className="text-gray-900 mb-4">Filtros Rápidos</h2>
-        <FilterChips options={filters} />
+        <FilterChips
+          options={filters}
+          selectedOption={selectedFilter}
+          onSelect={handleFilterSelect}
+        />
       </div>
 
       {/* Featured Hotels Carousel */}

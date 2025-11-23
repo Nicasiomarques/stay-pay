@@ -1,15 +1,19 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useLocation } from 'react-router-dom';
 import { MobileScreen, Button } from '@components';
 import { useBooking } from '@context';
 import { CalendarHeader, MonthNavigation, CalendarGrid } from './components';
 
 export default function Calendar() {
   const navigate = useNavigate();
+  const location = useLocation();
   const { booking, setDates } = useBooking();
   const [checkIn, setCheckIn] = useState<Date | null>(booking.checkIn);
   const [checkOut, setCheckOut] = useState<Date | null>(booking.checkOut);
   const [currentMonth, setCurrentMonth] = useState(new Date(2024, 11)); // December 2024
+
+  // Determine where we came from to know where to navigate back
+  const fromHome = location.state?.from === '/home' || document.referrer.includes('/home');
 
   const handleDateClick = (day: number) => {
     const selectedDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), day);
@@ -28,7 +32,13 @@ export default function Calendar() {
   const handleContinue = () => {
     if (checkIn && checkOut) {
       setDates(checkIn, checkOut);
-      navigate('/booking-review');
+
+      // If coming from home/search, go back; otherwise continue to booking review
+      if (fromHome || !booking.hotel) {
+        navigate(-1);
+      } else {
+        navigate('/booking-review');
+      }
     }
   };
 

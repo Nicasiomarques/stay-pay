@@ -13,6 +13,7 @@ interface BookingState {
   guests: number;
   searchLocation: string;
   paymentMethod: PaymentMethod;
+  quickFilter: string;
 }
 
 interface BookingContextType {
@@ -23,6 +24,7 @@ interface BookingContextType {
   setGuests: (guests: number) => void;
   setSearchLocation: (location: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
+  setQuickFilter: (filter: string) => void;
   resetBooking: () => void;
   calculateTotal: () => number;
   getNights: () => number;
@@ -38,6 +40,7 @@ const initialState: BookingState = {
   guests: 2,
   searchLocation: '',
   paymentMethod: 'card',
+  quickFilter: '',
 };
 
 export function BookingProvider({ children }: { children: ReactNode }) {
@@ -65,6 +68,10 @@ export function BookingProvider({ children }: { children: ReactNode }) {
 
   const setPaymentMethod = useCallback((method: PaymentMethod) => {
     setBooking(prev => ({ ...prev, paymentMethod: method }));
+  }, []);
+
+  const setQuickFilter = useCallback((filter: string) => {
+    setBooking(prev => ({ ...prev, quickFilter: filter }));
   }, []);
 
   const resetBooking = useCallback(() => {
@@ -96,6 +103,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       setGuests,
       setSearchLocation,
       setPaymentMethod,
+      setQuickFilter,
       resetBooking,
       calculateTotal,
       getNights,
@@ -108,6 +116,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       setGuests,
       setSearchLocation,
       setPaymentMethod,
+      setQuickFilter,
       resetBooking,
       calculateTotal,
       getNights,
