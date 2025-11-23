@@ -1,0 +1,11 @@
+export { default as Onboarding } from './Onboarding';
+export { default as Home } from './Home';
+export { default as SearchResults } from './SearchResults';
+export { default as HotelDetail } from './HotelDetail';
+export { default as Calendar } from './Calendar';
+export { default as BookingReview } from './BookingReview';
+export { default as Payment } from './Payment';
+export { default as Confirmation } from './Confirmation';
+export { default as Profile } from './Profile';
+export { default as Favorites } from './Favorites';
+export { default as Bookings } from './Bookings';

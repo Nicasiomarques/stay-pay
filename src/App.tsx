@@ -1,16 +1,18 @@
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import { BookingProvider } from './context/BookingContext';
-import Onboarding from './screens/Onboarding';
-import Home from './screens/Home';
-import SearchResults from './screens/SearchResults';
-import HotelDetail from './screens/HotelDetail';
-import Calendar from './screens/Calendar';
-import BookingReview from './screens/BookingReview';
-import Payment from './screens/Payment';
-import Confirmation from './screens/Confirmation';
-import Profile from './screens/Profile';
-import Favorites from './screens/Favorites';
-import Bookings from './screens/Bookings';
+import { BookingProvider } from '@context';
+import {
+  Onboarding,
+  Home,
+  SearchResults,
+  HotelDetail,
+  Calendar,
+  BookingReview,
+  Payment,
+  Confirmation,
+  Profile,
+  Favorites,
+  Bookings,
+} from '@screens';
 
 export default function App() {
   return (

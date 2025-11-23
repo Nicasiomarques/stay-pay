@@ -1,12 +1,9 @@
 import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import MobileScreen from '../components/MobileScreen';
-import Button from '../components/Button';
-import HotelCard from '../components/HotelCard';
-import BottomNav from '../components/BottomNav';
+import { MobileScreen, Button, HotelCard, BottomNav } from '@components';
 import { Search, MapPin, Calendar, Users, Sparkles, Building2, Palmtree, DollarSign } from 'lucide-react';
-import { hotels } from '../data/hotels';
-import { useBooking } from '../context/BookingContext';
+import { hotels } from '@data';
+import { useBooking } from '@context';
 
 export default function Home() {
   const navigate = useNavigate();

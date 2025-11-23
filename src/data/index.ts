@@ -1,0 +1,1 @@
+export { hotels } from './hotels';

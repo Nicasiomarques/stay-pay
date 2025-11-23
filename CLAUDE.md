@@ -98,10 +98,29 @@ Custom components (Button, Input, HotelCard) exist alongside these UI primitives
 
 ### Path Aliases
 
-The Vite config sets up `@` as an alias to `./src`, enabling imports like:
+The project uses multiple path aliases for clean imports:
+
+| Alias | Path | Usage |
+|-------|------|-------|
+| `@/*` | `./src/*` | Any file in src |
+| `@screens` | `./src/screens` | Screen components |
+| `@components` | `./src/components` | Custom components |
+| `@ui` | `./src/components/ui` | UI components (shadcn/ui) |
+| `@context` | `./src/context` | Context providers |
+| `@data` | `./src/data` | Static data |
+| `@styles` | `./src/styles` | Global styles |
+
+Example usage:
 ```tsx
-import { Button } from '@/components/ui/button';
+import { BookingProvider } from '@context';
+import { Home, SearchResults } from '@screens';
+import { HotelCard, BottomNav } from '@components';
+import { Button } from '@ui/button';
 ```
+
+**Barrel Exports**: Each major directory (`screens`, `components`, `context`) has an `index.ts` that re-exports all modules, allowing grouped imports.
+
+See [IMPORTS.md](IMPORTS.md) for complete reference.
 
 Note: The config also includes version-specific aliases for dependencies (e.g., `'vaul@1.1.2': 'vaul'`) to handle package resolution.
 
