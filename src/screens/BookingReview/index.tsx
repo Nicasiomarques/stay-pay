@@ -5,6 +5,7 @@ import PriceBreakdown from "./components/PriceBreakdown";
 import { MapPin, Calendar, Users, Info } from "lucide-react";
 import { ImageWithFallback } from "@/components/figma/ImageWithFallback";
 import { useBooking } from "@context";
+import { formatFullDate } from "@/utils";
 
 export default function BookingReview() {
   const navigate = useNavigate();
@@ -59,25 +60,13 @@ export default function BookingReview() {
             <BookingDetailItem
               icon={Calendar}
               label="Check-in"
-              value={
-                booking.checkIn?.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                }) || ""
-              }
+              value={formatFullDate(booking.checkIn)}
             />
 
             <BookingDetailItem
               icon={Calendar}
               label="Check-out"
-              value={
-                booking.checkOut?.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                  year: "numeric",
-                }) || ""
-              }
+              value={formatFullDate(booking.checkOut)}
             />
 
             <BookingDetailItem
@@ -126,13 +115,9 @@ export default function BookingReview() {
               <p className="text-sm text-gray-600">
                 Free cancellation until{" "}
                 {booking.checkIn &&
-                  new Date(
-                    booking.checkIn.getTime() - 7 * 24 * 60 * 60 * 1000
-                  ).toLocaleDateString("en-US", {
-                    month: "short",
-                    day: "numeric",
-                    year: "numeric",
-                  })}
+                  formatFullDate(
+                    new Date(booking.checkIn.getTime() - 7 * 24 * 60 * 60 * 1000)
+                  )}
                 . Cancel before check-in for a partial refund.
               </p>
             </div>

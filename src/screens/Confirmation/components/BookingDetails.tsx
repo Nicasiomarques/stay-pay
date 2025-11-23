@@ -1,4 +1,5 @@
 import { Calendar, MapPin, Users } from 'lucide-react';
+import { formatDateRange } from '@/utils';
 
 interface Hotel {
   name: string;
@@ -44,10 +45,7 @@ export function BookingDetails({
           <Calendar className="w-5 h-5 text-gray-400 flex-shrink-0 mt-0.5" />
           <div>
             <p className="text-sm text-gray-500">Check-in / Check-out</p>
-            <p className="text-gray-900">
-              {checkIn?.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} -{' '}
-              {checkOut?.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}
-            </p>
+            <p className="text-gray-900">{formatDateRange(checkIn, checkOut)}</p>
           </div>
         </div>
 

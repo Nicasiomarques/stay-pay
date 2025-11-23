@@ -1,4 +1,5 @@
 import { ArrowLeft, SlidersHorizontal, MapPin } from 'lucide-react';
+import { formatDateRange } from '@/utils';
 
 interface SearchHeaderProps {
   location: string;
@@ -32,9 +33,7 @@ export function SearchHeader({
             <span className="text-gray-900">{location}</span>
           </div>
           <p className="text-sm text-gray-500">
-            {checkIn && checkOut
-              ? `${checkIn.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })} - ${checkOut.toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}`
-              : 'Select dates'} • {guests} {guests === 1 ? 'guest' : 'guests'}
+            {formatDateRange(checkIn, checkOut)} • {guests} {guests === 1 ? 'guest' : 'guests'}
           </p>
         </div>
         <button
