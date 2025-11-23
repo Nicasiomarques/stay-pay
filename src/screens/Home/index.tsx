@@ -28,10 +28,12 @@ export default function Home() {
 
   const destinations = useMemo(
     () => [
-      { name: 'Centro, Luanda', hotels: 1, icon: MapPin },
-      { name: 'Talatona, Luanda', hotels: 1, icon: MapPin },
+      { name: 'Marginal de Luanda', hotels: 2, icon: MapPin },
       { name: 'Ilha de Luanda', hotels: 1, icon: MapPin },
-      { name: 'Mussulo, Luanda', hotels: 1, icon: MapPin },
+      { name: 'Benguela', hotels: 3, icon: MapPin },
+      { name: 'Talatona, Luanda', hotels: 1, icon: MapPin },
+      { name: 'Namibe', hotels: 1, icon: MapPin },
+      { name: 'Huambo', hotels: 1, icon: MapPin },
     ],
     []
   );
