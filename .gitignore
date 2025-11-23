@@ -1,2 +1,3 @@
 build
-node_modules
+node_modulesdev-dist/
+build/
