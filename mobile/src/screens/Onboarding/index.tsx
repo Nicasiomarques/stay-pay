@@ -10,7 +10,7 @@ export default function OnboardingScreen() {
 
   const handleContinue = () => {
     if (phone) {
-      router.push('/home');
+      router.replace('/(tabs)');
     }
   };
 
