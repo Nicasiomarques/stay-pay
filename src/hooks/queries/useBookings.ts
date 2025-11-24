@@ -12,6 +12,7 @@ import {
 } from "@tanstack/react-query";
 import {
   BookingDetail,
+  BookingListItem,
   CreateBookingParams,
   mapCreateBookingParamsToDTO,
 } from "@/mappers";
@@ -25,7 +26,7 @@ import { queryKeys } from "@/config/queryClient";
 export const useBookings = (
   params?: UserBookingsParamsDTO,
   options?: Omit<
-    UseQueryOptions<{ bookings: BookingDetail[]; meta?: any }>,
+    UseQueryOptions<{ bookings: BookingListItem[]; meta?: any }>,
     "queryKey" | "queryFn"
   >
 ) => {
@@ -109,7 +110,7 @@ export const useCancelBooking = (
  */
 export const useUpcomingBookings = (
   options?: Omit<
-    UseQueryOptions<{ bookings: BookingDetail[]; meta?: any }>,
+    UseQueryOptions<{ bookings: BookingListItem[]; meta?: any }>,
     "queryKey" | "queryFn"
   >
 ) => {
@@ -125,7 +126,7 @@ export const useUpcomingBookings = (
  */
 export const useCompletedBookings = (
   options?: Omit<
-    UseQueryOptions<{ bookings: BookingDetail[]; meta?: any }>,
+    UseQueryOptions<{ bookings: BookingListItem[]; meta?: any }>,
     "queryKey" | "queryFn"
   >
 ) => {
@@ -141,7 +142,7 @@ export const useCompletedBookings = (
  */
 export const useCancelledBookings = (
   options?: Omit<
-    UseQueryOptions<{ bookings: BookingDetail[]; meta?: any }>,
+    UseQueryOptions<{ bookings: BookingListItem[]; meta?: any }>,
     "queryKey" | "queryFn"
   >
 ) => {

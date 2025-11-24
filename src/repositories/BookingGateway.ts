@@ -2,13 +2,14 @@ import { IHttpClient } from '@/lib/httpClient';
 import * as DTOs from '@/types/dto';
 import {
   mapBookingDTOToBookingDetail,
-  mapBookingDTOsToBookingDetails,
+  mapBookingListDTOsToBookingListItems,
   BookingDetail,
+  BookingListItem,
 } from '@/mappers';
 
 export const createBookingGateway = (httpClient: IHttpClient) => {
   const getUserBookings = async (params?: DTOs.UserBookingsParamsDTO): Promise<{
-    bookings: BookingDetail[];
+    bookings: BookingListItem[];
     meta?: {
       total: number;
       upcoming: number;
@@ -21,7 +22,7 @@ export const createBookingGateway = (httpClient: IHttpClient) => {
     });
 
     return {
-      bookings: mapBookingDTOsToBookingDetails(response.data.bookings),
+      bookings: mapBookingListDTOsToBookingListItems(response.data.bookings),
       meta: response.data.meta,
     };
   };

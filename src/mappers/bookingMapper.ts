@@ -3,7 +3,7 @@
  * Transforms API DTOs to domain models used in components
  */
 
-import { BookingDTO, CreateBookingRequestDTO } from '@/types/dto';
+import { BookingDTO, BookingListDTO, CreateBookingRequestDTO } from '@/types/dto';
 
 /**
  * Extended Booking model with all API fields
@@ -43,15 +43,15 @@ export interface BookingDetail {
  */
 export interface BookingListItem {
   id: string;
-  hotelId: number;
-  hotelName: string;
+  hotel: string;
   location: string;
+  image: string;
   checkIn: string;
   checkOut: string;
+  guests: number;
   status: 'Confirmed' | 'Cancelled' | 'Completed';
-  confirmationCode: string;
-  image: string;
-  totalPrice: number;
+  total: number;
+  createdAt: string;
 }
 
 /**
@@ -82,6 +82,31 @@ export const mapBookingDTOToBookingDetail = (bookingDTO: BookingDTO): BookingDet
  */
 export const mapBookingDTOsToBookingDetails = (bookingDTOs: BookingDTO[]): BookingDetail[] => {
   return bookingDTOs.map(mapBookingDTOToBookingDetail);
+};
+
+/**
+ * Maps BookingListDTO from API to BookingListItem model
+ */
+export const mapBookingListDTOToBookingListItem = (dto: BookingListDTO): BookingListItem => {
+  return {
+    id: dto.id,
+    hotel: dto.hotel,
+    location: dto.location,
+    image: dto.image,
+    checkIn: dto.checkIn,
+    checkOut: dto.checkOut,
+    guests: dto.guests,
+    status: dto.status,
+    total: dto.total,
+    createdAt: dto.createdAt,
+  };
+};
+
+/**
+ * Maps an array of BookingListDTOs to BookingListItem models
+ */
+export const mapBookingListDTOsToBookingListItems = (dtos: BookingListDTO[]): BookingListItem[] => {
+  return dtos.map(mapBookingListDTOToBookingListItem);
 };
 
 /**

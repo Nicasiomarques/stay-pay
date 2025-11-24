@@ -91,12 +91,12 @@ export default function HotelDetail() {
         <ImageCarousel images={hotel.images} alt={hotel.name} />
 
         {/* Header Buttons */}
-        <div className="absolute top-6 left-0 right-0 px-6 flex justify-between">
+        <div className="absolute top-6 left-0 right-0 px-6 flex justify-between z-20">
           <button
-            onClick={() => navigate('/search')}
+            onClick={() => navigate(-1)}
             type="button"
-            aria-label="Voltar aos resultados de pesquisa"
-            className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm"
+            aria-label="Voltar"
+            className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
           >
             <ArrowLeft className="w-5 h-5 text-gray-900" aria-hidden="true" />
           </button>
@@ -104,14 +104,14 @@ export default function HotelDetail() {
             <button
               type="button"
               aria-label="Partilhar este hotel"
-              className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm"
+              className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
             >
               <Share2 className="w-5 h-5 text-gray-900" aria-hidden="true" />
             </button>
             <button
               type="button"
               aria-label="Adicionar aos favoritos"
-              className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-sm"
+              className="w-10 h-10 bg-white/90 backdrop-blur rounded-full flex items-center justify-center shadow-lg hover:bg-white transition-colors"
             >
               <Heart className="w-5 h-5 text-gray-900" aria-hidden="true" />
             </button>

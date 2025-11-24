@@ -33,13 +33,29 @@ export interface BookingDTO {
   createdAt: string;
 }
 
+/**
+ * Enriched booking DTO for list views (includes hotel data)
+ */
+export interface BookingListDTO {
+  id: string;
+  hotel: string;
+  location: string;
+  image: string;
+  checkIn: string;
+  checkOut: string;
+  guests: number;
+  status: 'Confirmed' | 'Cancelled' | 'Completed';
+  total: number;
+  createdAt: string;
+}
+
 // API Response types
 export interface BookingDetailResponseDTO {
   booking: BookingDTO;
 }
 
 export interface UserBookingsResponseDTO {
-  bookings: BookingDTO[];
+  bookings: BookingListDTO[];
   meta?: {
     total: number;
     upcoming: number;

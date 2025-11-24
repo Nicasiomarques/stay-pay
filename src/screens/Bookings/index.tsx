@@ -1,10 +1,12 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { MobileScreen, BottomNav, BookingCard, EmptyState } from '@components';
 import TabSelector from './components/TabSelector';
-import { Calendar } from 'lucide-react';
+import { ArrowLeft, Calendar } from 'lucide-react';
 import { useUpcomingBookings, useCompletedBookings } from '@/hooks/queries';
 
 export default function Bookings() {
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
 
   // Fetch bookings from API
@@ -22,6 +24,13 @@ export default function Bookings() {
       {/* Header */}
       <div className="bg-white px-6 pt-12 pb-6 shadow-sm">
         <div className="flex items-center gap-3 mb-4">
+          <button
+            onClick={() => navigate('/home')}
+            className="p-2 -ml-2 hover:bg-gray-100 rounded-xl transition-colors"
+            aria-label="Voltar"
+          >
+            <ArrowLeft className="w-6 h-6 text-gray-900" />
+          </button>
           <Calendar className="w-8 h-8 text-[#0E64D2]" />
           <h1 className="text-gray-900">Minhas Reservas</h1>
         </div>
@@ -48,12 +57,12 @@ export default function Bookings() {
             {bookings.map((booking) => (
               <BookingCard
                 key={booking.id}
-                hotel={booking.hotelName}
-                location={booking.hotelLocation || ''}
+                hotel={booking.hotel}
+                location={booking.location}
                 dates={`${booking.checkIn} - ${booking.checkOut}`}
                 status={booking.status}
-                bookingNumber={booking.bookingNumber}
-                image={booking.hotelImage || ''}
+                bookingNumber={booking.id}
+                image={booking.image}
               />
             ))}
           </div>
