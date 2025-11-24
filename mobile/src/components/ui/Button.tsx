@@ -1,5 +1,4 @@
-import { Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle, Pressable } from 'react-native';
-import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
+import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import { colors } from '@theme';
 
 interface ButtonProps {
@@ -26,52 +25,32 @@ export function Button({
   textStyle,
 }: ButtonProps) {
   const isDisabled = disabled || loading;
-  const scale = useSharedValue(1);
-
-  const animatedStyle = useAnimatedStyle(() => ({
-    transform: [{ scale: scale.value }],
-  }));
-
-  const handlePressIn = () => {
-    if (!isDisabled) {
-      scale.value = withSpring(0.95, { damping: 15, stiffness: 300 });
-    }
-  };
-
-  const handlePressOut = () => {
-    scale.value = withSpring(1, { damping: 15, stiffness: 300 });
-  };
 
   return (
-    <Pressable
+    <TouchableOpacity
+      style={[
+        styles.base,
+        styles[variant],
+        styles[`size_${size}`],
+        fullWidth && styles.fullWidth,
+        isDisabled && styles.disabled,
+        style,
+      ]}
       onPress={onPress}
-      onPressIn={handlePressIn}
-      onPressOut={handlePressOut}
       disabled={isDisabled}
+      activeOpacity={0.7}
     >
-      <Animated.View
-        style={[
-          styles.base,
-          styles[variant],
-          styles[`size_${size}`],
-          fullWidth && styles.fullWidth,
-          isDisabled && styles.disabled,
-          animatedStyle,
-          style,
-        ]}
-      >
-        {loading ? (
-          <ActivityIndicator
-            color={variant === 'primary' ? colors.white : colors.primary}
-            size="small"
-          />
-        ) : (
-          <Text style={[styles.text, styles[`text_${variant}`], styles[`text_${size}`], textStyle]}>
-            {children}
-          </Text>
-        )}
-      </Animated.View>
-    </Pressable>
+      {loading ? (
+        <ActivityIndicator
+          color={variant === 'primary' ? colors.white : colors.primary}
+          size="small"
+        />
+      ) : (
+        <Text style={[styles.text, styles[`text_${variant}`], styles[`text_${size}`], textStyle]}>
+          {children}
+        </Text>
+      )}
+    </TouchableOpacity>
   );
 }
 
