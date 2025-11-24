@@ -2,12 +2,20 @@ import { useState } from 'react';
 import { MobileScreen, BottomNav, BookingCard, EmptyState } from '@components';
 import TabSelector from './components/TabSelector';
 import { Calendar } from 'lucide-react';
-import { mockUpcomingBookings, mockPastBookings } from '@data/mockBookings';
+import { useUpcomingBookings, useCompletedBookings } from '@/hooks/queries';
 
 export default function Bookings() {
   const [activeTab, setActiveTab] = useState<'upcoming' | 'past'>('upcoming');
 
-  const bookings = activeTab === 'upcoming' ? mockUpcomingBookings : mockPastBookings;
+  // Fetch bookings from API
+  const { data: upcomingData, isLoading: isUpcomingLoading } = useUpcomingBookings();
+  const { data: completedData, isLoading: isCompletedLoading } = useCompletedBookings();
+
+  const upcomingBookings = upcomingData?.bookings ?? [];
+  const completedBookings = completedData?.bookings ?? [];
+
+  const bookings = activeTab === 'upcoming' ? upcomingBookings : completedBookings;
+  const isLoading = activeTab === 'upcoming' ? isUpcomingLoading : isCompletedLoading;
 
   return (
     <MobileScreen className="bg-neutral-50">
@@ -31,25 +39,33 @@ export default function Bookings() {
 
       {/* Bookings List */}
       <div className="px-6 py-6 pb-24">
-        {bookings.length > 0 ? (
+        {isLoading ? (
+          <div className="flex justify-center items-center py-20">
+            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0E64D2]"></div>
+          </div>
+        ) : bookings.length > 0 ? (
           <div className="space-y-4">
             {bookings.map((booking) => (
               <BookingCard
                 key={booking.id}
-                hotel={booking.hotel}
-                location={booking.location}
-                dates={booking.dates}
+                hotel={booking.hotelName}
+                location={booking.hotelLocation || ''}
+                dates={`${booking.checkIn} - ${booking.checkOut}`}
                 status={booking.status}
                 bookingNumber={booking.bookingNumber}
-                image={booking.image}
+                image={booking.hotelImage || ''}
               />
             ))}
           </div>
         ) : (
           <EmptyState
             icon={Calendar}
-            title="Ainda sem reservas"
-            description="Comece a planear a sua próxima viagem"
+            title={activeTab === 'upcoming' ? 'Sem reservas próximas' : 'Sem reservas anteriores'}
+            description={
+              activeTab === 'upcoming'
+                ? 'Quando fizer uma reserva, ela aparecerá aqui.'
+                : 'As suas reservas passadas aparecerão aqui.'
+            }
           />
         )}
       </div>

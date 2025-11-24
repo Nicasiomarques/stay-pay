@@ -6,8 +6,8 @@ import AmenitiesGrid from './components/AmenitiesGrid';
 import ReviewCard from './components/ReviewCard';
 import RoomSelector from './components/RoomSelector';
 import BottomPriceBar from './components/BottomPriceBar';
-import { ArrowLeft, Star, MapPin, Share2, Heart, AlertCircle } from 'lucide-react';
-import { hotels, reviews } from '@data';
+import { ArrowLeft, Star, MapPin, Share2, Heart, AlertCircle, Loader2 } from 'lucide-react';
+import { useHotel } from '@/hooks/queries';
 import { useBooking } from '@context';
 
 export default function HotelDetail() {
@@ -16,7 +16,26 @@ export default function HotelDetail() {
   const { booking, setHotel, setSelectedRoom } = useBooking();
   const [selectedRoomIndex, setSelectedRoomIndex] = useState(booking.selectedRoom);
 
-  const hotel = hotels.find(h => h.id === Number(id));
+  // Fetch hotel from API
+  const { data: hotel, isLoading, isError } = useHotel(Number(id) || 0);
+
+  // Mock reviews (TODO: move to API)
+  const reviews = [
+    {
+      id: 1,
+      author: 'Maria Silva',
+      rating: 5,
+      date: '2 dias atrás',
+      comment: 'Experiência incrível! O hotel superou todas as expectativas.',
+    },
+    {
+      id: 2,
+      author: 'João Santos',
+      rating: 4,
+      date: '1 semana atrás',
+      comment: 'Muito bom, apenas o WiFi poderia ser mais rápido.',
+    }
+  ];
 
   const handleBookNow = useCallback(() => {
     if (!hotel) return;
@@ -25,7 +44,19 @@ export default function HotelDetail() {
     navigate('/calendar');
   }, [hotel, selectedRoomIndex, setHotel, setSelectedRoom, navigate]);
 
-  if (!hotel) {
+  // Loading state
+  if (isLoading) {
+    return (
+      <MobileScreen className="bg-neutral-50">
+        <div className="flex justify-center items-center h-screen">
+          <Loader2 className="w-12 h-12 text-[#0E64D2] animate-spin" />
+        </div>
+      </MobileScreen>
+    );
+  }
+
+  // Error or not found state
+  if (isError || !hotel) {
     return (
       <MobileScreen className="bg-neutral-50">
         <div className="px-6 pt-12">

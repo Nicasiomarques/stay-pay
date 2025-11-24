@@ -1,8 +1,8 @@
 import { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
 import { MobileScreen, PageTransition } from "@components";
-import { hotels } from "@data";
 import { useBooking } from "@context";
+import { useHotels } from "@/hooks/queries";
 import {
   SearchHeader,
   SortOptions,
@@ -16,6 +16,10 @@ export default function SearchResults() {
   const { booking, setQuickFilter } = useBooking();
   const [sortBy, setSortBy] = useState("recomendado");
   const [showFilters, setShowFilters] = useState(false);
+
+  // Fetch hotels from API
+  const { data: hotelsData, isLoading } = useHotels();
+  const hotels = hotelsData?.hotels ?? [];
 
   // Initialize filters with quick filter from context if available
   const [filters, setFilters] = useState<FilterState>(() => {
@@ -178,7 +182,13 @@ export default function SearchResults() {
             <SortOptions sortBy={sortBy} onSortChange={setSortBy} />
           </div>
 
-          <ResultsList hotels={filteredAndSortedHotels} />
+          {isLoading ? (
+            <div className="flex justify-center items-center py-20">
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-[#0E64D2]"></div>
+            </div>
+          ) : (
+            <ResultsList hotels={filteredAndSortedHotels} />
+          )}
         </MobileScreen>
       </PageTransition>
 

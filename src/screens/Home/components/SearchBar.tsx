@@ -2,7 +2,7 @@ import { MapPin, Calendar, Users } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { GuestSelector } from '@components';
 import { useState, useEffect, useRef } from 'react';
-import { hotels } from '@data';
+import { useHotels } from '@/hooks/queries';
 
 interface SearchBarProps {
   location: string;
@@ -28,6 +28,10 @@ export default function SearchBar({
   const locationInputRef = useRef<HTMLInputElement>(null);
   const suggestionsRef = useRef<HTMLDivElement>(null);
 
+  // Fetch hotels from API for location suggestions
+  const { data: hotelsData } = useHotels();
+  const hotels = hotelsData?.hotels ?? [];
+
   // Extract unique locations from hotels
   const allLocations = Array.from(new Set(hotels.map(h => h.location)));
 
@@ -42,7 +46,7 @@ export default function SearchBar({
       setFilteredLocations(allLocations);
       setShowLocationSuggestions(false);
     }
-  }, [location]);
+  }, [location, allLocations.length]);
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -62,6 +66,15 @@ export default function SearchBar({
   const handleLocationSelect = (selectedLocation: string) => {
     onLocationChange(selectedLocation);
     setShowLocationSuggestions(false);
+  };
+
+  const formatDateRange = () => {
+    if (checkIn && checkOut) {
+      const checkInStr = checkIn.toLocaleDateString('pt-AO', { month: 'short', day: 'numeric' });
+      const checkOutStr = checkOut.toLocaleDateString('pt-AO', { month: 'short', day: 'numeric' });
+      return `${checkInStr} - ${checkOutStr}`;
+    }
+    return 'Entrada • Saída';
   };
 
   return (
@@ -106,11 +119,7 @@ export default function SearchBar({
         className="w-full flex items-center gap-3 mb-3 pb-3 border-b border-gray-100 text-left hover:bg-gray-50 -mx-4 px-4 py-2 rounded-lg transition-colors"
       >
         <Calendar className="w-5 h-5 text-[#0E64D2]" />
-        <span className="text-gray-400">
-          {checkIn && checkOut
-            ? `${checkIn.toLocaleDateString('pt-AO', { month: 'short', day: 'numeric' })} - ${checkOut.toLocaleDateString('pt-AO', { month: 'short', day: 'numeric' })}`
-            : 'Entrada • Saída'}
-        </span>
+        <span className="text-gray-400">{formatDateRange()}</span>
       </button>
       <div className="relative">
         <button

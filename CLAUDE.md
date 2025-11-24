@@ -38,7 +38,12 @@ src/
 ├── context/            # React Context providers
 │   └── BookingContext.tsx # Global booking state management
 ├── screens/            # Page components (route handlers)
-├── data/               # Static data (hotels.ts)
+├── repositories/       # API gateways (functional pattern)
+├── hooks/              # React Query hooks
+├── mappers/            # DTO to domain mappers
+├── types/              # TypeScript types and DTOs
+├── lib/                # HTTP client and utilities
+├── mocks/              # MirageJS mock server
 ├── styles/             # Global styles
 └── guidelines/         # Design guidelines (template only)
 ```
@@ -107,7 +112,6 @@ The project uses multiple path aliases for clean imports:
 | `@components` | `./src/components` | Custom components |
 | `@ui` | `./src/components/ui` | UI components (shadcn/ui) |
 | `@context` | `./src/context` | Context providers |
-| `@data` | `./src/data` | Static data |
 | `@styles` | `./src/styles` | Global styles |
 
 Example usage:
@@ -126,13 +130,26 @@ Note: The config also includes version-specific aliases for dependencies (e.g., 
 
 ## Data Management
 
-Hotel data is stored in `src/data/hotels.ts` as a static array. Each hotel object includes:
-- Basic info (id, name, location, rating, reviews, price)
-- Images (main image + gallery)
-- Amenities array
-- Rooms array with types, prices, and capacity
+The application uses a clean architecture with:
 
-When adding features that require hotel data, reference this structure.
+- **Gateways** (`src/repositories/`) - Functional API clients that communicate with the backend
+- **React Query Hooks** (`src/hooks/queries/`) - Custom hooks for data fetching with caching
+- **Mappers** (`src/mappers/`) - Transform DTOs to domain models
+- **MirageJS** (`src/mocks/`) - Mock API server for development
+
+**Pattern:**
+```tsx
+// 1. Gateway handles API calls
+const hotelGateway = createHotelGateway(httpClient);
+
+// 2. React Query hook uses gateway
+const { data, isLoading } = useHotels();
+
+// 3. Mappers transform data
+const hotels = mapHotelDTOsToHotels(response.data.hotels);
+```
+
+All screens fetch data via React Query hooks instead of static data.
 
 ## Styling Approach
 
