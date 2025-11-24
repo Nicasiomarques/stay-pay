@@ -4,10 +4,10 @@ import { motion } from 'framer-motion';
 import { MobileScreen, Button, HotelCard, BottomNav, PageTransition } from '@components';
 import SearchBar from './components/SearchBar';
 import FilterChips from './components/FilterChips';
-import { Search, Sparkles, Building2, Palmtree, DollarSign, TrendingUp, MapPin, Star } from 'lucide-react';
-import { hotels } from '@data';
+import { Search, Sparkles, Building2, Palmtree, DollarSign, TrendingUp, MapPin, Star, Loader2 } from 'lucide-react';
 import { useBooking } from '@context';
 import { listContainerVariants, slideUpVariants } from '@/config/animations';
+import { useFeaturedHotels, usePopularHotels, useHotels, useDestinations } from '@/hooks/queries';
 
 export default function Home() {
   const navigate = useNavigate();
@@ -15,9 +15,15 @@ export default function Home() {
   const [location, setLocation] = useState(booking.searchLocation);
   const [selectedFilter, setSelectedFilter] = useState<string | undefined>();
 
-  const featuredHotels = useMemo(() => hotels.slice(0, 3), []);
-  const popularHotels = useMemo(() => hotels.filter(h => h.rating >= 4.7), []);
-  const allHotels = useMemo(() => hotels, []);
+  // Fetch data using React Query
+  const { data: featuredHotelsData, isLoading: isFeaturedLoading } = useFeaturedHotels();
+  const { data: popularHotelsData, isLoading: isPopularLoading } = usePopularHotels();
+  const { data: allHotelsData, isLoading: isAllHotelsLoading } = useHotels();
+  const { data: destinationsData } = useDestinations();
+
+  const featuredHotels = featuredHotelsData ?? [];
+  const popularHotels = popularHotelsData ?? [];
+  const allHotels = allHotelsData?.hotels ?? [];
 
   const filters = useMemo(
     () => [
@@ -29,17 +35,14 @@ export default function Home() {
     []
   );
 
-  const destinations = useMemo(
-    () => [
-      { name: 'Marginal de Luanda', hotels: 2, icon: MapPin },
-      { name: 'Ilha de Luanda', hotels: 1, icon: MapPin },
-      { name: 'Benguela', hotels: 3, icon: MapPin },
-      { name: 'Talatona, Luanda', hotels: 1, icon: MapPin },
-      { name: 'Namibe', hotels: 1, icon: MapPin },
-      { name: 'Huambo', hotels: 1, icon: MapPin },
-    ],
-    []
-  );
+  const destinations = useMemo(() => {
+    if (!destinationsData) return [];
+    return destinationsData.map((dest) => ({
+      name: dest.name,
+      hotels: dest.hotelCount,
+      icon: MapPin,
+    }));
+  }, [destinationsData]);
 
   const handleSearch = useCallback(() => {
     setSearchLocation(location);
@@ -100,13 +103,19 @@ export default function Home() {
             Ver todos
           </button>
         </div>
-        <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mr-6">
-          {featuredHotels.map((hotel) => (
-            <div key={hotel.id} className="flex-shrink-0 w-72">
-              <HotelCard {...hotel} hotelData={hotel} />
-            </div>
-          ))}
-        </div>
+        {isFeaturedLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="w-6 h-6 text-[#0E64D2] animate-spin" />
+          </div>
+        ) : (
+          <div className="flex gap-4 overflow-x-auto pb-2 scrollbar-hide -mr-6">
+            {featuredHotels.map((hotel) => (
+              <div key={hotel.id} className="flex-shrink-0 w-72">
+                <HotelCard {...hotel} hotelData={hotel} />
+              </div>
+            ))}
+          </div>
+        )}
       </div>
 
       {/* Popular Destinations */}
@@ -143,35 +152,47 @@ export default function Home() {
           <Star className="w-5 h-5 text-amber-400 fill-amber-400" />
           <h2 className="text-gray-900">Mais Populares</h2>
         </div>
-        <motion.div
-          className="space-y-3"
-          variants={listContainerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {popularHotels.map((hotel, index) => (
-            <motion.div key={hotel.id} variants={slideUpVariants}>
-              <HotelCard {...hotel} hotelData={hotel} />
-            </motion.div>
-          ))}
-        </motion.div>
+        {isPopularLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="w-6 h-6 text-[#0E64D2] animate-spin" />
+          </div>
+        ) : (
+          <motion.div
+            className="space-y-3"
+            variants={listContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {popularHotels.map((hotel, _) => (
+              <motion.div key={hotel.id} variants={slideUpVariants}>
+                <HotelCard {...hotel} hotelData={hotel} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
 
       {/* All Hotels */}
       <div className="px-6 py-6 pb-24 bg-white mt-2">
         <h2 className="text-gray-900 mb-4">Todos os Hotéis</h2>
-        <motion.div
-          className="space-y-3"
-          variants={listContainerVariants}
-          initial="hidden"
-          animate="visible"
-        >
-          {allHotels.map((hotel, index) => (
-            <motion.div key={hotel.id} variants={slideUpVariants}>
-              <HotelCard {...hotel} hotelData={hotel} />
-            </motion.div>
-          ))}
-        </motion.div>
+        {isAllHotelsLoading ? (
+          <div className="flex items-center justify-center py-8">
+            <Loader2 className="w-6 h-6 text-[#0E64D2] animate-spin" />
+          </div>
+        ) : (
+          <motion.div
+            className="space-y-3"
+            variants={listContainerVariants}
+            initial="hidden"
+            animate="visible"
+          >
+            {allHotels.map((hotel, _i) => (
+              <motion.div key={hotel.id} variants={slideUpVariants}>
+                <HotelCard {...hotel} hotelData={hotel} />
+              </motion.div>
+            ))}
+          </motion.div>
+        )}
       </div>
 
         <BottomNav />

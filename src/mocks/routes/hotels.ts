@@ -1,25 +1,126 @@
-import type { Server, Request, Response } from 'miragejs';
+import type { Server, Request } from 'miragejs';
+import { Response } from 'miragejs';
 import type { AppRegistry } from '../server';
 
 export function hotelsRoutes(server: Server<AppRegistry>) {
+  // IMPORTANT: Register specific routes BEFORE generic ones with params
+  // MirageJS matches routes in order, so /api/hotels/featured must come before /api/hotels/:id
+
+  console.log('🔧 Registering hotels routes...');
+
+  // GET /api/hotels/featured - Get featured hotels
+  server.get('/hotels/featured', (schema, request) => {
+    console.log('✅ Featured hotels route hit');
+    const limitParam = request.queryParams.limit;
+    const limit = parseInt(Array.isArray(limitParam) ? limitParam[0] : limitParam || '3');
+    const hotels = schema.all('hotel').models;
+
+    // Get top-rated hotels
+    const featured = hotels
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, limit);
+
+    return { hotels: featured };
+  });
+
+  // GET /api/hotels/popular - Get popular hotels
+  server.get('/hotels/popular', (schema, request) => {
+    const limitParam = request.queryParams.limit;
+    const limit = parseInt(Array.isArray(limitParam) ? limitParam[0] : limitParam || '10');
+    const hotels = schema.all('hotel').models;
+
+    // Get hotels with rating >= 4.7
+    const popular = hotels
+      .filter(hotel => hotel.rating >= 4.7)
+      .sort((a, b) => b.rating - a.rating)
+      .slice(0, limit);
+
+    return { hotels: popular };
+  });
+
+  // GET /api/hotels/:hotelId/rooms/availability - Check room availability
+  server.get('/hotels/:hotelId/rooms/availability', (schema, request) => {
+    const hotelId = request.params.hotelId;
+    const checkInParam = request.queryParams.checkIn;
+    const checkOutParam = request.queryParams.checkOut;
+    const guestsParam = request.queryParams.guests;
+
+    const checkIn = Array.isArray(checkInParam) ? checkInParam[0] : checkInParam;
+    const checkOut = Array.isArray(checkOutParam) ? checkOutParam[0] : checkOutParam;
+    const guests = Array.isArray(guestsParam) ? guestsParam[0] : guestsParam;
+
+    if (!checkIn || !checkOut || !guests) {
+      return new Response(
+        400,
+        {},
+        { error: { code: 'VALIDATION_ERROR', message: 'Parâmetros obrigatórios: checkIn, checkOut, guests' } }
+      );
+    }
+
+    const hotel = schema.find('hotel', hotelId);
+    if (!hotel) {
+      return new Response(
+        404,
+        {},
+        { error: { code: 'NOT_FOUND', message: 'Hotel não encontrado' } }
+      );
+    }
+
+    const guestCount = parseInt(guests);
+    const availableRooms = hotel.rooms.map((room: any) => ({
+      ...room,
+      available: room.capacity >= guestCount,
+      remainingRooms: Math.floor(Math.random() * 10) + 1, // Mock availability
+    }));
+
+    return {
+      available: availableRooms.some((room: any) => room.available),
+      rooms: availableRooms,
+    };
+  });
+
+  // GET /api/hotels/:id - Get hotel details
+  server.get('/hotels/:id', (schema, request) => {
+    const id = request.params.id;
+    const hotel = schema.find('hotel', id);
+
+    if (!hotel) {
+      return new Response(
+        404,
+        {},
+        { error: { code: 'NOT_FOUND', message: 'Hotel não encontrado' } }
+      );
+    }
+
+    return hotel;
+  });
+
   // GET /api/hotels - Search and filter hotels
-  server.get('/api/hotels', (schema, request) => {
+  server.get('/hotels', (schema, request) => {
     let hotels = schema.all('hotel').models;
 
-    const {
-      location,
-      checkIn,
-      checkOut,
-      guests,
-      minPrice,
-      maxPrice,
-      minRating,
-      amenities,
-      categories,
-      sortBy,
-      page = '1',
-      limit = '10'
-    } = request.queryParams;
+    // Extract and normalize query params (handle string arrays)
+    const getParam = (key: string): string | undefined => {
+      const value = request.queryParams[key];
+      if (!value) return undefined;
+      return Array.isArray(value) ? value[0] : value;
+    };
+
+    const location = getParam('location');
+    const minPrice = getParam('minPrice');
+    const maxPrice = getParam('maxPrice');
+    const minRating = getParam('minRating');
+    const guests = getParam('guests');
+    const sortBy = getParam('sortBy');
+    const page = getParam('page') || '1';
+    const limit = getParam('limit') || '10';
+
+    // Amenities and categories can be arrays
+    const amenitiesParam = request.queryParams.amenities;
+    const amenities = amenitiesParam ? (Array.isArray(amenitiesParam) ? amenitiesParam : [amenitiesParam]) : null;
+
+    const categoriesParam = request.queryParams.categories;
+    const categories = categoriesParam ? (Array.isArray(categoriesParam) ? categoriesParam : [categoriesParam]) : null;
 
     // Filter by location
     if (location) {
@@ -44,16 +145,14 @@ export function hotelsRoutes(server: Server<AppRegistry>) {
 
     // Filter by amenities
     if (amenities) {
-      const amenitiesList = Array.isArray(amenities) ? amenities : [amenities];
       hotels = hotels.filter(hotel =>
-        amenitiesList.every(amenity => hotel.amenities.includes(amenity))
+        amenities.every(amenity => hotel.amenities.includes(amenity))
       );
     }
 
     // Filter by categories
     if (categories) {
-      const categoriesList = Array.isArray(categories) ? categories : [categories];
-      hotels = hotels.filter(hotel => categoriesList.includes(hotel.category));
+      hotels = hotels.filter(hotel => categories.includes(hotel.category));
     }
 
     // Filter by guest capacity (check if any room can accommodate)
@@ -96,86 +195,8 @@ export function hotelsRoutes(server: Server<AppRegistry>) {
     };
   });
 
-  // GET /api/hotels/:id - Get hotel details
-  server.get('/api/hotels/:id', (schema, request) => {
-    const id = request.params.id;
-    const hotel = schema.find('hotel', id);
-
-    if (!hotel) {
-      return new Response(
-        404,
-        {},
-        { error: { code: 'NOT_FOUND', message: 'Hotel não encontrado' } }
-      );
-    }
-
-    return hotel;
-  });
-
-  // GET /api/hotels/:hotelId/rooms/availability - Check room availability
-  server.get('/api/hotels/:hotelId/rooms/availability', (schema, request) => {
-    const hotelId = request.params.hotelId;
-    const { checkIn, checkOut, guests } = request.queryParams;
-
-    if (!checkIn || !checkOut || !guests) {
-      return new Response(
-        400,
-        {},
-        { error: { code: 'VALIDATION_ERROR', message: 'Parâmetros obrigatórios: checkIn, checkOut, guests' } }
-      );
-    }
-
-    const hotel = schema.find('hotel', hotelId);
-    if (!hotel) {
-      return new Response(
-        404,
-        {},
-        { error: { code: 'NOT_FOUND', message: 'Hotel não encontrado' } }
-      );
-    }
-
-    const guestCount = parseInt(guests);
-    const availableRooms = hotel.rooms.map((room: any) => ({
-      ...room,
-      available: room.capacity >= guestCount,
-      remainingRooms: Math.floor(Math.random() * 10) + 1, // Mock availability
-    }));
-
-    return {
-      available: availableRooms.some((room: any) => room.available),
-      rooms: availableRooms,
-    };
-  });
-
-  // GET /api/hotels/featured - Get featured hotels
-  server.get('/api/hotels/featured', (schema, request) => {
-    const limit = parseInt(request.queryParams.limit || '3');
-    const hotels = schema.all('hotel').models;
-
-    // Get top-rated hotels
-    const featured = hotels
-      .sort((a, b) => b.rating - a.rating)
-      .slice(0, limit);
-
-    return { hotels: featured };
-  });
-
-  // GET /api/hotels/popular - Get popular hotels
-  server.get('/api/hotels/popular', (schema, request) => {
-    const limit = parseInt(request.queryParams.limit || '10');
-    const hotels = schema.all('hotel').models;
-
-    // Get hotels with rating >= 4.7
-    const popular = hotels
-      .filter(hotel => hotel.rating >= 4.7)
-      .sort((a, b) => b.rating - a.rating)
-      .slice(0, limit);
-
-    return { hotels: popular };
-  });
-
   // GET /api/destinations - Get popular destinations
-  server.get('/api/destinations', (schema) => {
+  server.get('/destinations', (schema) => {
     const hotels = schema.all('hotel').models;
 
     // Group hotels by location and count
