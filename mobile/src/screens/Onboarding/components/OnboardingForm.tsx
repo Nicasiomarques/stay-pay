@@ -1,4 +1,5 @@
-import { View, Text, TextInput, TouchableOpacity, StyleSheet } from 'react-native';
+import { View, Text, StyleSheet } from 'react-native';
+import { Button, Input } from '@/components/ui';
 import { colors } from '@theme';
 
 interface OnboardingFormProps {
@@ -8,30 +9,24 @@ interface OnboardingFormProps {
 }
 
 export function OnboardingForm({ phone, onPhoneChange, onContinue }: OnboardingFormProps) {
-  const isDisabled = !phone;
-
   return (
     <View style={styles.container}>
-      <View style={styles.inputContainer}>
-        <Text style={styles.label}>Número de Telefone</Text>
-        <TextInput
-          style={styles.input}
-          placeholder="+244 900 000 000"
-          placeholderTextColor={colors.gray400}
-          value={phone}
-          onChangeText={onPhoneChange}
-          keyboardType="phone-pad"
-        />
-      </View>
+      <Input
+        label="Número de Telefone"
+        placeholder="+244 900 000 000"
+        value={phone}
+        onChangeText={onPhoneChange}
+        keyboardType="phone-pad"
+      />
 
-      <TouchableOpacity
-        style={[styles.button, isDisabled && styles.buttonDisabled]}
+      <Button
+        size="lg"
+        fullWidth
         onPress={onContinue}
-        disabled={isDisabled}
-        activeOpacity={0.8}
+        disabled={!phone}
       >
-        <Text style={styles.buttonText}>Continuar</Text>
-      </TouchableOpacity>
+        Continuar
+      </Button>
 
       <Text style={styles.disclaimer}>
         Ao continuar, concorda com os nossos Termos de Serviço e Política de Privacidade
@@ -43,42 +38,6 @@ export function OnboardingForm({ phone, onPhoneChange, onContinue }: OnboardingF
 const styles = StyleSheet.create({
   container: {
     width: '100%',
-  },
-  inputContainer: {
-    marginBottom: 16,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: colors.gray700,
-    marginBottom: 8,
-  },
-  input: {
-    height: 56,
-    borderWidth: 1,
-    borderColor: colors.border,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    fontSize: 16,
-    color: colors.text.primary,
-    backgroundColor: colors.white,
-  },
-  button: {
-    height: 56,
-    backgroundColor: colors.primary,
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 8,
-  },
-  buttonDisabled: {
-    backgroundColor: colors.gray300,
-    opacity: 0.6,
-  },
-  buttonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.white,
   },
   disclaimer: {
     fontSize: 12,
