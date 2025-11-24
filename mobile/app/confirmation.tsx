@@ -1,7 +1,8 @@
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from 'react-native';
 import { useRouter } from 'expo-router';
-import { CheckCircle, Calendar, MapPin, Users, CreditCard, Download } from 'lucide-react-native';
+import { Calendar, MapPin, Users, CreditCard, Download } from 'lucide-react-native';
 import { Button, Card } from '@/components/ui';
+import { AnimatedCheckmark } from '@components';
 import { useBooking } from '@context';
 import { formatCurrency, formatGuestCount } from '@/utils';
 import { colors } from '@theme';
@@ -47,7 +48,7 @@ export default function ConfirmationScreen() {
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
         {/* Success Icon */}
         <View style={styles.successIcon}>
-          <CheckCircle size={80} color={colors.success} />
+          <AnimatedCheckmark />
         </View>
 
         {/* Title */}

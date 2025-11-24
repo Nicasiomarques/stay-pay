@@ -2,6 +2,7 @@ import { memo } from 'react';
 import { View, Text, Image, StyleSheet, Pressable } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Star, MapPin } from 'lucide-react-native';
+import Animated, { useAnimatedStyle, useSharedValue, withSpring } from 'react-native-reanimated';
 import { Card } from '@/components/ui';
 import { useBooking } from '@context';
 import { Hotel } from '@types';
@@ -33,6 +34,19 @@ function HotelCard({
 }: HotelCardProps) {
   const router = useRouter();
   const { setHotel } = useBooking();
+  const scale = useSharedValue(1);
+
+  const animatedStyle = useAnimatedStyle(() => ({
+    transform: [{ scale: scale.value }],
+  }));
+
+  const handlePressIn = () => {
+    scale.value = withSpring(0.98, { damping: 15, stiffness: 300 });
+  };
+
+  const handlePressOut = () => {
+    scale.value = withSpring(1, { damping: 15, stiffness: 300 });
+  };
 
   const handlePress = () => {
     if (hotelData) {
@@ -42,7 +56,13 @@ function HotelCard({
   };
 
   return (
-    <Card onPress={handlePress} style={styles.card}>
+    <Pressable
+      onPress={handlePress}
+      onPressIn={handlePressIn}
+      onPressOut={handlePressOut}
+    >
+      <Animated.View style={[animatedStyle]}>
+        <Card style={styles.card}>
       <View style={styles.imageContainer}>
         <Image
           source={{ uri: image }}
@@ -85,7 +105,9 @@ function HotelCard({
           </View>
         </View>
       </View>
-    </Card>
+        </Card>
+      </Animated.View>
+    </Pressable>
   );
 }
 
