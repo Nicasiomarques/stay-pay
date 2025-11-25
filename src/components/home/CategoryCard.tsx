@@ -10,7 +10,7 @@ interface CategoryCardProps {
 export function CategoryCard({ name, image, onPress }: CategoryCardProps) {
   return (
     <TouchableOpacity
-      className="items-center mr-4"
+      className="items-center mr-4 bg-gray-900"
       onPress={onPress}
       activeOpacity={0.8}
     >

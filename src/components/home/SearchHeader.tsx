@@ -12,7 +12,7 @@ export function SearchHeader({ onSearchPress, onFilterPress }: SearchHeaderProps
     <View className="bg-gray-900 px-5 pt-4 pb-6 rounded-b-3xl">
       {/* Search Bar */}
       <TouchableOpacity
-        className="flex-row items-center bg-white rounded-lg py-3.5 px-4 shadow-lg"
+        className="flex-row items-center bg-white rounded-full py-3.5 px-4 shadow-lg"
         onPress={onSearchPress}
         activeOpacity={0.9}
         style={{
