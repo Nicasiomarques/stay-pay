@@ -1,4 +1,4 @@
-import type { Server, Response } from 'miragejs';
+import { Server, Response } from 'miragejs';
 import type { AppRegistry } from '../server';
 
 // Simple helper to generate tokens
@@ -8,7 +8,7 @@ function generateToken() {
 
 export function authRoutes(server: Server<AppRegistry>) {
   // POST /api/auth/register - Register new user
-  server.post('/api/auth/register', (schema, request) => {
+  server.post('/auth/register', (schema, request) => {
     const attrs = JSON.parse(request.requestBody);
     const { name, email, phone, password } = attrs;
 
@@ -73,7 +73,7 @@ export function authRoutes(server: Server<AppRegistry>) {
   });
 
   // POST /api/auth/login - User login
-  server.post('/api/auth/login', (schema, request) => {
+  server.post('/auth/login', (schema, request) => {
     const attrs = JSON.parse(request.requestBody);
     const { email, password } = attrs;
 
@@ -130,7 +130,7 @@ export function authRoutes(server: Server<AppRegistry>) {
   });
 
   // POST /api/auth/logout - User logout
-  server.post('/api/auth/logout', (schema, request) => {
+  server.post('/auth/logout', (schema, request) => {
     const token = request.requestHeaders.authorization?.replace('Bearer ', '');
 
     if (!token) {
@@ -151,7 +151,7 @@ export function authRoutes(server: Server<AppRegistry>) {
   });
 
   // POST /api/auth/refresh - Refresh access token
-  server.post('/api/auth/refresh', (schema, request) => {
+  server.post('/auth/refresh', (schema, request) => {
     const attrs = JSON.parse(request.requestBody);
     const { refreshToken: oldRefreshToken } = attrs;
 
@@ -190,7 +190,7 @@ export function authRoutes(server: Server<AppRegistry>) {
   });
 
   // POST /api/auth/forgot-password - Request password reset
-  server.post('/api/auth/forgot-password', (schema, request) => {
+  server.post('/auth/forgot-password', (schema, request) => {
     const attrs = JSON.parse(request.requestBody);
     const { email } = attrs;
 
@@ -212,7 +212,7 @@ export function authRoutes(server: Server<AppRegistry>) {
   });
 
   // POST /api/auth/reset-password - Reset password with token
-  server.post('/api/auth/reset-password', (schema, request) => {
+  server.post('/auth/reset-password', (schema, request) => {
     const attrs = JSON.parse(request.requestBody);
     const { token, newPassword } = attrs;
 

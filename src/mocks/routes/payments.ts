@@ -1,4 +1,4 @@
-import type { Server, Response } from 'miragejs';
+import { Server, Response } from 'miragejs';
 import type { AppRegistry } from '../server';
 
 function getUserFromToken(schema: any, request: any) {
@@ -11,7 +11,7 @@ function getUserFromToken(schema: any, request: any) {
 
 export function paymentsRoutes(server: Server<AppRegistry>) {
   // POST /api/payments/process - Process card payment
-  server.post('/api/payments/process', (schema, request) => {
+  server.post('/payments/process', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });
@@ -58,7 +58,7 @@ export function paymentsRoutes(server: Server<AppRegistry>) {
   });
 
   // POST /api/payments/mobile-money - Process mobile money payment
-  server.post('/api/payments/mobile-money', (schema, request) => {
+  server.post('/payments/mobile-money', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });
@@ -120,7 +120,7 @@ export function paymentsRoutes(server: Server<AppRegistry>) {
   });
 
   // POST /api/payments/refund - Process refund
-  server.post('/api/payments/refund', (schema, request) => {
+  server.post('/payments/refund', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });

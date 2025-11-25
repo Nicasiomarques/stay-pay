@@ -1,4 +1,4 @@
-import type { Server, Response } from 'miragejs';
+import { Server, Response } from 'miragejs';
 import type { AppRegistry } from '../server';
 
 // Helper to verify authentication
@@ -18,7 +18,7 @@ function getUserFromToken(schema: any, request: any) {
 
 export function bookingsRoutes(server: Server<AppRegistry>) {
   // POST /api/bookings - Create new booking
-  server.post('/api/bookings', (schema, request) => {
+  server.post('/bookings', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(
@@ -86,7 +86,7 @@ export function bookingsRoutes(server: Server<AppRegistry>) {
   });
 
   // GET /api/bookings/:bookingId - Get booking details
-  server.get('/api/bookings/:bookingId', (schema, request) => {
+  server.get('/bookings/:bookingId', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(
@@ -116,31 +116,37 @@ export function bookingsRoutes(server: Server<AppRegistry>) {
       );
     }
 
-    const hotel = schema.find('hotel', booking.hotelId);
+    const hotel = schema.find('hotel', String(booking.hotelId));
     const room = hotel?.rooms.find((r: any) => r.id === booking.roomId);
 
     return {
-      id: booking.id,
-      hotel: {
-        id: hotel?.id,
-        name: hotel?.name,
+      booking: {
+        id: booking.id,
+        userId: booking.userId,
+        hotelId: booking.hotelId,
+        roomId: booking.roomId,
+        hotel: hotel?.name,
         location: hotel?.location,
-        image: hotel?.image,
-      },
-      room: {
-        type: room?.type,
-      },
-      checkIn: booking.checkIn,
-      checkOut: booking.checkOut,
-      guests: booking.guests,
-      status: booking.status,
-      total: booking.pricing.total,
-      qrCode: booking.qrCode,
+        room: {
+          type: room?.type,
+        },
+        checkIn: booking.checkIn,
+        checkOut: booking.checkOut,
+        guests: booking.guests,
+        guestDetails: booking.guestDetails,
+        paymentMethod: booking.paymentMethod,
+        paymentDetails: booking.paymentDetails,
+        pricing: booking.pricing,
+        status: booking.status,
+        confirmationCode: booking.confirmationCode,
+        qrCode: booking.qrCode,
+        createdAt: booking.createdAt,
+      }
     };
   });
 
   // PATCH /api/bookings/:bookingId/cancel - Cancel a booking
-  server.patch('/api/bookings/:bookingId/cancel', (schema, request) => {
+  server.patch('/bookings/:bookingId/cancel', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(
@@ -194,22 +200,38 @@ export function bookingsRoutes(server: Server<AppRegistry>) {
     });
 
     return {
-      bookingId: booking.id,
-      status: 'Cancelled',
-      refundAmount: booking.pricing.subtotal,
-      refundStatus: 'Processing',
+      booking: {
+        id: booking.id,
+        userId: booking.userId,
+        hotelId: booking.hotelId,
+        roomId: booking.roomId,
+        checkIn: booking.checkIn,
+        checkOut: booking.checkOut,
+        guests: booking.guests,
+        guestDetails: booking.guestDetails,
+        paymentMethod: booking.paymentMethod,
+        paymentDetails: booking.paymentDetails,
+        pricing: booking.pricing,
+        status: 'Cancelled',
+        confirmationCode: booking.confirmationCode,
+        qrCode: booking.qrCode,
+        createdAt: booking.createdAt,
+      },
+      message: 'Reserva cancelada com sucesso'
     };
   });
 
   // GET /api/users/bookings - Get all user bookings
-  server.get('/api/users/bookings', (schema, request) => {
+  server.get('/users/bookings', (schema, request) => {
     const user = getUserFromToken(schema, request);
+
+    // For development: return empty bookings if not authenticated
     if (!user) {
-      return new Response(
-        401,
-        {},
-        { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } }
-      );
+      return {
+        bookings: [],
+        total: 0,
+        page: 1,
+      };
     }
 
     const { status, page = '1', limit = '10' } = request.queryParams;
@@ -231,15 +253,15 @@ export function bookingsRoutes(server: Server<AppRegistry>) {
     bookings.sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
 
     // Pagination
-    const pageNum = parseInt(page);
-    const limitNum = parseInt(limit);
+    const pageNum = parseInt(page || '1');
+    const limitNum = parseInt(limit || '10');
     const startIndex = (pageNum - 1) * limitNum;
     const endIndex = startIndex + limitNum;
     const paginatedBookings = bookings.slice(startIndex, endIndex);
 
     // Enrich with hotel data
     const bookingsWithHotels = paginatedBookings.map(booking => {
-      const hotel = schema.find('hotel', booking.hotelId);
+      const hotel = schema.find('hotel', String(booking.hotelId));
       return {
         id: booking.id,
         hotel: hotel?.name,
@@ -262,13 +284,13 @@ export function bookingsRoutes(server: Server<AppRegistry>) {
   });
 
   // GET /api/users/bookings/upcoming - Get upcoming bookings
-  server.get('/api/users/bookings/upcoming', (schema, request) => {
+  server.get('/users/bookings/upcoming', (schema, request) => {
     request.queryParams.status = 'upcoming';
     return server.schema.first('booking'); // This will be handled by the main /api/users/bookings handler
   });
 
   // GET /api/users/bookings/past - Get past bookings
-  server.get('/api/users/bookings/past', (schema, request) => {
+  server.get('/users/bookings/past', (schema, request) => {
     request.queryParams.status = 'completed';
     return server.schema.first('booking'); // This will be handled by the main /api/users/bookings handler
   });

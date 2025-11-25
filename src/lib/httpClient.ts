@@ -1,10 +1,12 @@
 /**
- * HTTP Client abstraction layer
+ * HTTP Client abstraction layer for React Native
  * Provides a clean interface for making HTTP requests with:
  * - Type safety
  * - Request/Response interceptors
  * - Error handling
  * - Authentication token injection
+ *
+ * Note: This uses the native fetch API which works in React Native
  */
 
 // Type for query parameters
@@ -58,6 +60,7 @@ export interface IHttpClient {
 
 /**
  * Fetch-based HTTP Client implementation
+ * Uses React Native's global fetch API
  */
 export class FetchHttpClient implements IHttpClient {
   private baseURL: string = '';

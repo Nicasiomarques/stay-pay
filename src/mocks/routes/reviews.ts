@@ -1,4 +1,4 @@
-import type { Server, Response } from 'miragejs';
+import { Server, Response } from 'miragejs';
 import type { AppRegistry } from '../server';
 
 function getUserFromToken(schema: any, request: any) {
@@ -11,7 +11,7 @@ function getUserFromToken(schema: any, request: any) {
 
 export function reviewsRoutes(server: Server<AppRegistry>) {
   // GET /api/hotels/:hotelId/reviews - Get reviews for a hotel
-  server.get('/api/hotels/:hotelId/reviews', (schema, request) => {
+  server.get('/hotels/:hotelId/reviews', (schema, request) => {
     const hotelId = parseInt(request.params.hotelId);
     const { page = '1', limit = '10', sortBy = 'recent' } = request.queryParams;
 
@@ -53,7 +53,7 @@ export function reviewsRoutes(server: Server<AppRegistry>) {
   });
 
   // POST /api/hotels/:hotelId/reviews - Submit a review
-  server.post('/api/hotels/:hotelId/reviews', (schema, request) => {
+  server.post('/hotels/:hotelId/reviews', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });
@@ -109,7 +109,7 @@ export function reviewsRoutes(server: Server<AppRegistry>) {
   });
 
   // PATCH /api/reviews/:reviewId/helpful - Mark review as helpful
-  server.patch('/api/reviews/:reviewId/helpful', (schema, request) => {
+  server.patch('/reviews/:reviewId/helpful', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });

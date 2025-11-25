@@ -1,40 +1,18 @@
 {
+  "extends": "expo/tsconfig.base",
   "compilerOptions": {
-    "target": "ES2020",
-    "useDefineForClassFields": true,
-    "lib": ["ES2020", "DOM", "DOM.Iterable"],
-    "module": "ESNext",
-    "skipLibCheck": true,
-
-    /* Bundler mode */
-    "moduleResolution": "bundler",
-    "allowImportingTsExtensions": true,
-    "isolatedModules": true,
-    "moduleDetection": "force",
-    "noEmit": true,
-    "jsx": "react-jsx",
-
-    /* Linting */
     "strict": true,
-    "noUnusedLocals": true,
-    "noUnusedParameters": true,
-    "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true,
-
-    /* Path aliases */
     "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"],
       "@screens": ["./src/screens"],
       "@components": ["./src/components"],
-      "@ui": ["./src/components/ui"],
       "@context": ["./src/context"],
-      "@styles": ["./src/styles"],
-      "@constants": ["./src/constants"],
-      "@utils": ["./src/utils"],
+      "@hooks": ["./src/hooks"],
       "@types": ["./src/types"],
-      "@hooks": ["./src/hooks"]
+      "@lib": ["./src/lib"],
+      "@utils": ["./src/utils"],
+      "@theme": ["./src/theme"]
     }
-  },
-  "include": ["src"]
+  }
 }

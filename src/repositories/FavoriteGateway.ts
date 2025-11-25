@@ -8,6 +8,10 @@ import {
 export const createFavoriteGateway = (httpClient: IHttpClient) => {
   const getUserFavorites = async (): Promise<FavoriteWithHotel[]> => {
     const response = await httpClient.get<DTOs.UserFavoritesResponseDTO>('/users/favorites');
+    // Handle empty or undefined favorites
+    if (!response.data.favorites || response.data.favorites.length === 0) {
+      return [];
+    }
     return mapFavoritesResponseToFavoritesWithHotels(response.data.favorites);
   };
 

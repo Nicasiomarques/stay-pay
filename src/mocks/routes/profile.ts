@@ -1,4 +1,4 @@
-import type { Server, Response } from 'miragejs';
+import { Server, Response } from 'miragejs';
 import type { AppRegistry } from '../server';
 
 function getUserFromToken(schema: any, request: any) {
@@ -11,7 +11,7 @@ function getUserFromToken(schema: any, request: any) {
 
 export function profileRoutes(server: Server<AppRegistry>) {
   // GET /api/users/profile - Get current user's profile
-  server.get('/api/users/profile', (schema, request) => {
+  server.get('/users/profile', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });
@@ -29,7 +29,7 @@ export function profileRoutes(server: Server<AppRegistry>) {
   });
 
   // PATCH /api/users/profile - Update user profile
-  server.patch('/api/users/profile', (schema, request) => {
+  server.patch('/users/profile', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });
@@ -58,7 +58,7 @@ export function profileRoutes(server: Server<AppRegistry>) {
   });
 
   // POST /api/users/profile/avatar - Upload profile avatar
-  server.post('/api/users/profile/avatar', (schema, request) => {
+  server.post('/users/profile/avatar', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });
@@ -74,7 +74,7 @@ export function profileRoutes(server: Server<AppRegistry>) {
   });
 
   // DELETE /api/users/profile - Delete user account
-  server.del('/api/users/profile', (schema, request) => {
+  server.del('/users/profile', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });

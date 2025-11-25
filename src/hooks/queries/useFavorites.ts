@@ -7,6 +7,7 @@ import { useQuery, useMutation, useQueryClient, UseQueryOptions, UseMutationOpti
 import { getFavoriteGateway } from '@/config/dependencies';
 import { queryKeys } from '@/config/queryClient';
 import { FavoriteWithHotel } from '@/mappers';
+import { showToast } from '@/utils';
 
 /**
  * Hook to fetch user's favorite hotels
@@ -34,6 +35,10 @@ export const useAddFavorite = (
     onSuccess: () => {
       // Invalidate favorites to refetch updated list
       queryClient.invalidateQueries({ queryKey: queryKeys.favorites.all });
+      showToast.success('Hotel adicionado aos favoritos ❤️');
+    },
+    onError: () => {
+      showToast.error('Não foi possível adicionar aos favoritos');
     },
     ...options,
   });
@@ -52,6 +57,10 @@ export const useRemoveFavorite = (
     onSuccess: () => {
       // Invalidate favorites to refetch updated list
       queryClient.invalidateQueries({ queryKey: queryKeys.favorites.all });
+      showToast.info('Hotel removido dos favoritos');
+    },
+    onError: () => {
+      showToast.error('Não foi possível remover dos favoritos');
     },
     ...options,
   });
@@ -108,6 +117,7 @@ export const useToggleFavorite = (
       if (context?.previousFavorites) {
         queryClient.setQueryData(queryKeys.favorites.user(), context.previousFavorites);
       }
+      showToast.error('Não foi possível atualizar favoritos');
     },
     onSuccess: () => {
       // Refetch to get complete data

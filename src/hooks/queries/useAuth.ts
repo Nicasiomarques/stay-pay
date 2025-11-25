@@ -17,6 +17,7 @@ import {
   mapLoginCredentialsToDTO,
   mapRegistrationDataToDTO,
 } from "@/mappers";
+import { showToast } from "@/utils";
 
 /**
  * Hook to login
@@ -41,6 +42,11 @@ export const useLogin = (
       // Store token in localStorage for persistence
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
+
+      showToast.success('Bem-vindo de volta!');
+    },
+    onError: () => {
+      showToast.error('Email ou senha incorretos');
     },
     ...options,
   });
@@ -69,6 +75,11 @@ export const useRegister = (
       // Store token in localStorage for persistence
       localStorage.setItem("authToken", data.token);
       localStorage.setItem("refreshToken", data.refreshToken);
+
+      showToast.success('Conta criada com sucesso!');
+    },
+    onError: () => {
+      showToast.error('Erro ao criar conta. Tente novamente');
     },
     ...options,
   });
@@ -94,6 +105,8 @@ export const useLogout = (
       // Remove token from localStorage
       localStorage.removeItem("authToken");
       localStorage.removeItem("refreshToken");
+
+      showToast.info('Sessão encerrada');
     },
     ...options,
   });
@@ -136,6 +149,12 @@ export const useForgotPassword = (
 ) => {
   return useMutation({
     mutationFn: (email: string) => getAuthGateway().forgotPassword(email),
+    onSuccess: () => {
+      showToast.success('Email de recuperação enviado');
+    },
+    onError: () => {
+      showToast.error('Erro ao enviar email. Tente novamente');
+    },
     ...options,
   });
 };
@@ -153,6 +172,12 @@ export const useResetPassword = (
   return useMutation({
     mutationFn: ({ resetToken, newPassword }) =>
       getAuthGateway().resetPassword(resetToken, newPassword),
+    onSuccess: () => {
+      showToast.success('Senha alterada com sucesso');
+    },
+    onError: () => {
+      showToast.error('Erro ao alterar senha. Tente novamente');
+    },
     ...options,
   });
 };

@@ -1,2 +1,2 @@
-export { WelcomeHeader } from './WelcomeHeader';
-export { OnboardingForm } from './OnboardingForm';
+export * from './WelcomeHeader';
+export * from './OnboardingForm';

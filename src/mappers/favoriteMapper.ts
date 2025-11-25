@@ -45,7 +45,10 @@ export const mapFavoritesResponseToFavoritesWithHotels = (
     hotelId: number;
     addedAt: string;
     hotel: HotelDTO;
-  }>
+  }> | undefined
 ): FavoriteWithHotel[] => {
+  if (!favorites || !Array.isArray(favorites)) {
+    return [];
+  }
   return favorites.map(mapFavoriteResponseToFavoriteWithHotel);
 };

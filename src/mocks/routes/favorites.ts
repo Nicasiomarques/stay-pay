@@ -1,4 +1,4 @@
-import type { Server, Response } from 'miragejs';
+import { Server, Response } from 'miragejs';
 import type { AppRegistry } from '../server';
 
 function getUserFromToken(schema: any, request: any) {
@@ -11,19 +11,28 @@ function getUserFromToken(schema: any, request: any) {
 
 export function favoritesRoutes(server: Server<AppRegistry>) {
   // GET /api/users/favorites - Get user's favorite hotels
-  server.get('/api/users/favorites', (schema, request) => {
+  server.get('/users/favorites', (schema, request) => {
     const user = getUserFromToken(schema, request);
+
+    // For development: return empty favorites if not authenticated
     if (!user) {
-      return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });
+      return { favorites: [] };
     }
 
     const favorites = schema.where('favorite', { userId: user.id }).models;
 
+    // Handle case where no favorites exist
+    if (!favorites || favorites.length === 0) {
+      return { favorites: [] };
+    }
+
     // Enrich with hotel data
     const favoritesWithHotels = favorites.map(favorite => {
-      const hotel = schema.find('hotel', favorite.hotelId);
+      const hotel = schema.find('hotel', String(favorite.hotelId));
       return {
         id: favorite.id,
+        userId: favorite.userId,
+        hotelId: favorite.hotelId,
         addedAt: favorite.addedAt,
         hotel: {
           id: hotel?.id,
@@ -32,7 +41,12 @@ export function favoritesRoutes(server: Server<AppRegistry>) {
           rating: hotel?.rating,
           reviews: hotel?.reviews,
           price: hotel?.price,
+          distance: hotel?.distance,
           image: hotel?.image,
+          description: hotel?.description,
+          amenities: hotel?.amenities || [],
+          images: hotel?.images || [],
+          rooms: hotel?.rooms || [],
         },
       };
     });
@@ -41,7 +55,7 @@ export function favoritesRoutes(server: Server<AppRegistry>) {
   });
 
   // POST /api/users/favorites/:hotelId - Add hotel to favorites
-  server.post('/api/users/favorites/:hotelId', (schema, request) => {
+  server.post('/users/favorites/:hotelId', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });
@@ -73,7 +87,7 @@ export function favoritesRoutes(server: Server<AppRegistry>) {
   });
 
   // DELETE /api/users/favorites/:hotelId - Remove hotel from favorites
-  server.del('/api/users/favorites/:hotelId', (schema, request) => {
+  server.del('/users/favorites/:hotelId', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });

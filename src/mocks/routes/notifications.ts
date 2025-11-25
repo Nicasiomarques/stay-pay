@@ -1,4 +1,4 @@
-import type { Server, Response } from 'miragejs';
+import { Server, Response } from 'miragejs';
 import type { AppRegistry } from '../server';
 
 function getUserFromToken(schema: any, request: any) {
@@ -11,7 +11,7 @@ function getUserFromToken(schema: any, request: any) {
 
 export function notificationsRoutes(server: Server<AppRegistry>) {
   // GET /api/users/notifications - Get user notifications
-  server.get('/api/users/notifications', (schema, request) => {
+  server.get('/users/notifications', (schema, request) => {
     const user = getUserFromToken(schema, request);
     if (!user) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });

@@ -1,29 +1,56 @@
 /**
- * React Query Client Configuration
+ * React Query Client Configuration for React Native
  * Centralizes all query client settings and default options
  */
 
 import { QueryClient, DefaultOptions } from '@tanstack/react-query';
+import { showToast } from '@/utils';
 
 /**
  * Default options for all queries and mutations
+ * Adapted for React Native environment
  */
 const queryConfig: DefaultOptions = {
   queries: {
-    // Refetch on window focus
-    refetchOnWindowFocus: false,
+    // Refetch when app comes to foreground (React Native specific)
+    refetchOnWindowFocus: false, // Window focus doesn't apply in React Native
+    refetchOnMount: 'always',
+    refetchOnReconnect: true, // Refetch when internet connection is restored
     // Retry failed requests
     retry: 1,
     // Stale time - how long data stays fresh (5 minutes)
     staleTime: 5 * 60 * 1000,
     // Cache time - how long unused data stays in cache (10 minutes)
     gcTime: 10 * 60 * 1000,
-    // Refetch on mount only if stale
-    refetchOnMount: 'always',
+    // Global error handler for queries
+    onError: (error: any) => {
+      // Handle HTTP errors
+      if (error?.response?.status === 401) {
+        showToast.error('Sessão expirada. Faça login novamente');
+      } else if (error?.response?.status === 403) {
+        showToast.error('Acesso negado');
+      } else if (error?.response?.status === 404) {
+        showToast.error('Recurso não encontrado');
+      } else if (error?.response?.status >= 500) {
+        showToast.error('Erro no servidor. Tente mais tarde');
+      } else if (error?.message === 'Network Error' || !navigator.onLine) {
+        showToast.error('Sem conexão. Verifique sua internet');
+      }
+      // Note: Don't show generic error toast here to avoid duplicate messages
+      // Individual hooks can override this with their own onError
+    },
   },
   mutations: {
     // Retry failed mutations
     retry: 0,
+    // Global error handler for mutations
+    onError: (error: any) => {
+      // Only show error if not handled by individual mutation
+      // Most mutations have their own specific error messages
+      if (error?.message === 'Network Error' || !navigator.onLine) {
+        showToast.error('Sem conexão. Verifique sua internet');
+      }
+    },
   },
 };
 

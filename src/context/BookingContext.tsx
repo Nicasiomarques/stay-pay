@@ -1,6 +1,6 @@
 import { createContext, useContext, useState, ReactNode, useMemo, useCallback } from 'react';
 import { Hotel } from '@types';
-import { PRICING } from '@constants';
+import { PRICING } from '@/utils/pricing';
 
 export type PaymentMethod = 'card' | 'mobile' | 'property';
 export type BookingStatus = 'Confirmed' | 'Completed' | 'Cancelled';

@@ -1,5 +1,5 @@
 /**
- * Dependency Injection Container
+ * Dependency Injection Container for React Native
  * Creates and manages singleton instances of gateways and services
  */
 
@@ -45,7 +45,14 @@ class DependencyContainer {
   get httpClient(): IHttpClient {
     if (!this._httpClient) {
       // Base URL is /api to work with MirageJS namespace
+      // In React Native, MirageJS runs on the same domain
       this._httpClient = createHttpClient('/api');
+
+      // Set demo token for development (MirageJS)
+      // In production, this would be handled by the auth flow
+      if (__DEV__) {
+        this._httpClient.setAuthToken('demo_token_123');
+      }
     }
     return this._httpClient;
   }

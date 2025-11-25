@@ -1,13 +1,4 @@
-import { PRICING } from '@/constants/pricing';
-
-export const calculateTax = (subtotal: number): number => {
-  return Math.round(subtotal * PRICING.TAX_RATE);
-};
-
-export const calculateTotal = (
-  subtotal: number,
-  serviceFee: number = PRICING.SERVICE_FEE
-): number => {
-  const tax = calculateTax(subtotal);
-  return subtotal + serviceFee + tax;
-};
+export const PRICING = {
+  SERVICE_FEE: 15,
+  TAX_RATE: 0.08,
+} as const;

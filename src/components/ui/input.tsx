@@ -1,21 +1,93 @@
-import * as React from "react";
+import { View, Text, TextInput, StyleSheet, TextInputProps, ViewStyle } from 'react-native';
+import { colors } from '@theme';
 
-import { cn } from "./utils";
+interface InputProps extends TextInputProps {
+  label?: string;
+  error?: string;
+  containerStyle?: ViewStyle;
+  leftIcon?: React.ReactNode;
+  rightIcon?: React.ReactNode;
+}
 
-function Input({ className, type, ...props }: React.ComponentProps<"input">) {
+export function Input({
+  label,
+  error,
+  containerStyle,
+  leftIcon,
+  rightIcon,
+  style,
+  ...props
+}: InputProps) {
   return (
-    <input
-      type={type}
-      data-slot="input"
-      className={cn(
-        "file:text-foreground placeholder:text-muted-foreground selection:bg-primary selection:text-primary-foreground dark:bg-input/30 border-input flex h-9 w-full min-w-0 rounded-md border px-3 py-1 text-base bg-input-background transition-[color,box-shadow] outline-none file:inline-flex file:h-7 file:border-0 file:bg-transparent file:text-sm file:font-medium disabled:pointer-events-none disabled:cursor-not-allowed disabled:opacity-50 md:text-sm",
-        "focus-visible:border-ring focus-visible:ring-ring/50 focus-visible:ring-[3px]",
-        "aria-invalid:ring-destructive/20 dark:aria-invalid:ring-destructive/40 aria-invalid:border-destructive",
-        className,
-      )}
-      {...props}
-    />
+    <View style={[styles.container, containerStyle]}>
+      {label && <Text style={styles.label}>{label}</Text>}
+
+      <View style={[styles.inputContainer, error && styles.inputError]}>
+        {leftIcon && <View style={styles.leftIcon}>{leftIcon}</View>}
+
+        <TextInput
+          style={[
+            styles.input,
+            leftIcon && styles.inputWithLeftIcon,
+            rightIcon && styles.inputWithRightIcon,
+            style,
+          ]}
+          placeholderTextColor={colors.gray400}
+          {...props}
+        />
+
+        {rightIcon && <View style={styles.rightIcon}>{rightIcon}</View>}
+      </View>
+
+      {error && <Text style={styles.errorText}>{error}</Text>}
+    </View>
   );
 }
 
-export { Input };
+const styles = StyleSheet.create({
+  container: {
+    marginBottom: 16,
+  },
+  label: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: colors.text.primary,
+    marginBottom: 8,
+  },
+  inputContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    height: 56,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: 12,
+    backgroundColor: colors.white,
+    paddingHorizontal: 16,
+  },
+  inputError: {
+    borderColor: colors.error,
+  },
+  input: {
+    flex: 1,
+    fontSize: 16,
+    color: colors.text.primary,
+    height: '100%',
+  },
+  inputWithLeftIcon: {
+    paddingLeft: 8,
+  },
+  inputWithRightIcon: {
+    paddingRight: 8,
+  },
+  leftIcon: {
+    marginRight: 8,
+  },
+  rightIcon: {
+    marginLeft: 8,
+  },
+  errorText: {
+    fontSize: 12,
+    color: colors.error,
+    marginTop: 4,
+  },
+});

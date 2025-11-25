@@ -268,6 +268,89 @@ export function seedData(server: Server<AppRegistry>) {
     },
   });
 
+  // Create auth token for demo user (for development)
+  server.create('authToken', {
+    userId: demoUser.id,
+    token: 'demo_token_123',
+    expiresAt: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days
+    createdAt: new Date().toISOString(),
+  });
+
+  // Create sample favorites for demo user
+  const favoritedHotels = [1, 3, 11]; // Epic Sana, Ilha Resort, Intercontinental
+  favoritedHotels.forEach((hotelId, index) => {
+    server.create('favorite', {
+      userId: demoUser.id,
+      hotelId,
+      addedAt: new Date(Date.now() - index * 7 * 24 * 60 * 60 * 1000).toISOString(), // Stagger by weeks
+    });
+  });
+
+  // Create sample bookings for demo user
+  const now = Date.now();
+  const bookingsData = [
+    {
+      hotelId: 1, // Epic Sana
+      roomId: '1-2',
+      checkIn: new Date(now + 15 * 24 * 60 * 60 * 1000).toISOString(), // 15 days from now
+      checkOut: new Date(now + 18 * 24 * 60 * 60 * 1000).toISOString(), // 18 days from now
+      status: 'Confirmed',
+      subtotal: 840000, // 3 nights * 280000
+    },
+    {
+      hotelId: 3, // Ilha Resort
+      roomId: '3-1',
+      checkIn: new Date(now - 10 * 24 * 60 * 60 * 1000).toISOString(), // 10 days ago
+      checkOut: new Date(now - 7 * 24 * 60 * 60 * 1000).toISOString(), // 7 days ago
+      status: 'Completed',
+      subtotal: 660000, // 3 nights * 220000
+    },
+    {
+      hotelId: 11, // Intercontinental
+      roomId: '11-1',
+      checkIn: new Date(now + 30 * 24 * 60 * 60 * 1000).toISOString(), // 30 days from now
+      checkOut: new Date(now + 35 * 24 * 60 * 60 * 1000).toISOString(), // 35 days from now
+      status: 'Confirmed',
+      subtotal: 975000, // 5 nights * 195000
+    },
+  ];
+
+  bookingsData.forEach((bookingData, index) => {
+    const serviceFee = bookingData.subtotal * 0.1;
+    const tax = bookingData.subtotal * 0.14;
+    const total = bookingData.subtotal + serviceFee + tax;
+
+    server.create('booking', {
+      id: `BK-2025-${String(index + 1).padStart(6, '0')}`,
+      userId: demoUser.id,
+      hotelId: bookingData.hotelId,
+      roomId: bookingData.roomId,
+      checkIn: bookingData.checkIn,
+      checkOut: bookingData.checkOut,
+      guests: 2,
+      guestDetails: {
+        name: demoUser.name,
+        email: demoUser.email,
+        phone: demoUser.phone,
+      },
+      paymentMethod: 'card',
+      paymentDetails: {
+        cardNumber: '**** **** **** 4242',
+        cardHolder: demoUser.name,
+      },
+      pricing: {
+        subtotal: bookingData.subtotal,
+        serviceFee,
+        tax,
+        total,
+      },
+      status: bookingData.status,
+      confirmationCode: `CNF-${Math.random().toString(36).substring(2, 10).toUpperCase()}`,
+      qrCode: `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=BK-2025-${String(index + 1).padStart(6, '0')}`,
+      createdAt: new Date(Date.now() - (30 - index * 10) * 24 * 60 * 60 * 1000).toISOString(),
+    });
+  });
+
   // Create sample reviews for each hotel
   hotels.forEach((hotel, index) => {
     const reviewCount = Math.min(3, hotel.reviews);

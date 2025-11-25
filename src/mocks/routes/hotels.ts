@@ -1,5 +1,5 @@
-import type { Server, Request } from 'miragejs';
-import { Response } from 'miragejs';
+import { Server, Response } from 'miragejs';
+import type { Request } from 'miragejs';
 import type { AppRegistry } from '../server';
 
 export function hotelsRoutes(server: Server<AppRegistry>) {
