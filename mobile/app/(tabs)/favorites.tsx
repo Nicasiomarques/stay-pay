@@ -1,32 +1,48 @@
-import { View, Text, StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { HotelCard } from '@components';
+import { useFavorites } from '@/hooks/queries';
 import { colors } from '@theme';
 
-// Mock data - será substituído por dados reais
-const mockFavorites = [
-  {
-    id: 1,
-    name: 'Hotel Trópico',
-    location: 'Luanda, Angola',
-    rating: 4.8,
-    reviews: 245,
-    price: 25000,
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945',
-    distance: '2.5 km',
-  },
-];
-
 export default function FavoritesScreen() {
+  const { data: favorites, isLoading, error } = useFavorites();
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={styles.loadingText}>Carregando favoritos...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centered}>
+          <Text style={styles.errorText}>Erro ao carregar favoritos</Text>
+          <Text style={styles.errorSubtext}>
+            {error instanceof Error ? error.message : 'Erro desconhecido'}
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const favoritesList = favorites || [];
+
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
         <Text style={styles.title}>Favoritos</Text>
         <Text style={styles.subtitle}>
-          {mockFavorites.length} hotel{mockFavorites.length !== 1 ? 's' : ''}
+          {favoritesList.length} hotel{favoritesList.length !== 1 ? 's' : ''}
         </Text>
       </View>
 
-      {mockFavorites.length === 0 ? (
+      {favoritesList.length === 0 ? (
         <View style={styles.empty}>
           <Text style={styles.emptyText}>Nenhum hotel favorito ainda</Text>
           <Text style={styles.emptySubtext}>
@@ -35,18 +51,19 @@ export default function FavoritesScreen() {
         </View>
       ) : (
         <FlatList
-          data={mockFavorites}
+          data={favoritesList}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
             <HotelCard
-              id={item.id}
-              image={item.image}
-              name={item.name}
-              location={item.location}
-              rating={item.rating}
-              reviews={item.reviews}
-              price={item.price}
-              distance={item.distance}
+              id={item.hotel.id}
+              image={item.hotel.image}
+              name={item.hotel.name}
+              location={item.hotel.location}
+              rating={item.hotel.rating}
+              reviews={item.hotel.reviews}
+              price={item.hotel.price}
+              distance={item.hotel.distance}
+              hotelData={item.hotel}
             />
           )}
           contentContainerStyle={styles.list}
@@ -96,6 +113,28 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   emptySubtext: {
+    fontSize: 14,
+    color: colors.text.secondary,
+    textAlign: 'center',
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: colors.text.secondary,
+  },
+  errorText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text.primary,
+    marginBottom: 8,
+  },
+  errorSubtext: {
     fontSize: 14,
     color: colors.text.secondary,
     textAlign: 'center',

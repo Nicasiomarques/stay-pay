@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { View, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
+import { LinearGradient } from 'expo-linear-gradient';
 import { WelcomeHeader, OnboardingForm } from './components';
 import { colors } from '@theme';
 
@@ -19,6 +20,13 @@ export default function OnboardingScreen() {
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
+      {/* Subtle Gradient Background */}
+      <LinearGradient
+        colors={['#F0F9FF', '#FFFFFF', '#FEFCE8']}
+        locations={[0, 0.5, 1]}
+        style={styles.gradient}
+      />
+
       <View style={styles.content}>
         <View style={styles.centerContent}>
           <WelcomeHeader />
@@ -37,6 +45,13 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: colors.white,
+  },
+  gradient: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    top: 0,
+    bottom: 0,
   },
   content: {
     flex: 1,

@@ -1,13 +1,15 @@
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { User, Mail, Phone, Settings, Bell, HelpCircle, LogOut, ChevronRight } from 'lucide-react-native';
 import { Card } from '@/components/ui';
+import { showToast } from '@/utils';
 import { colors } from '@theme';
 
 export default function ProfileScreen() {
   const menuItems = [
-    { icon: Settings, label: 'Configurações', action: () => {} },
-    { icon: Bell, label: 'Notificações', action: () => {} },
-    { icon: HelpCircle, label: 'Ajuda & Suporte', action: () => {} },
+    { icon: Settings, label: 'Configurações', action: () => showToast.info('Funcionalidade em breve') },
+    { icon: Bell, label: 'Notificações', action: () => showToast.info('Funcionalidade em breve') },
+    { icon: HelpCircle, label: 'Ajuda & Suporte', action: () => showToast.info('Funcionalidade em breve') },
   ];
 
   return (
@@ -62,7 +64,10 @@ export default function ProfileScreen() {
           </View>
 
           {/* Logout */}
-          <Pressable style={styles.logoutButton}>
+          <Pressable
+            style={styles.logoutButton}
+            onPress={() => showToast.info('Funcionalidade de logout em breve')}
+          >
             <LogOut size={20} color={colors.error} />
             <Text style={styles.logoutText}>Sair</Text>
           </Pressable>

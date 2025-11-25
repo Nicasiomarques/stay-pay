@@ -1,22 +1,40 @@
-import { View, Text, StyleSheet, SafeAreaView, FlatList } from 'react-native';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import { Card } from '@/components/ui';
-import { Calendar, MapPin } from 'lucide-react-native';
+import { Calendar, MapPin, ChevronRight } from 'lucide-react-native';
+import { useBookings } from '@/hooks/queries';
 import { colors } from '@theme';
 
-// Mock data
-const mockBookings = [
-  {
-    id: 1,
-    hotel: 'Hotel Trópico',
-    location: 'Luanda, Angola',
-    dates: '15-20 Dez 2024',
-    status: 'Confirmed' as const,
-    bookingNumber: 'BK-001234',
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945',
-  },
-];
-
 export default function BookingsScreen() {
+  const router = useRouter();
+  const { data, isLoading, error } = useBookings();
+
+  if (isLoading) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centered}>
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text style={styles.loadingText}>Carregando reservas...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (error) {
+    return (
+      <SafeAreaView style={styles.container}>
+        <View style={styles.centered}>
+          <Text style={styles.errorText}>Erro ao carregar reservas</Text>
+          <Text style={styles.errorSubtext}>
+            {error instanceof Error ? error.message : 'Erro desconhecido'}
+          </Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  const bookings = data?.bookings || [];
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Confirmed':
@@ -35,11 +53,11 @@ export default function BookingsScreen() {
       <View style={styles.header}>
         <Text style={styles.title}>Minhas Reservas</Text>
         <Text style={styles.subtitle}>
-          {mockBookings.length} reserva{mockBookings.length !== 1 ? 's' : ''}
+          {bookings.length} reserva{bookings.length !== 1 ? 's' : ''}
         </Text>
       </View>
 
-      {mockBookings.length === 0 ? (
+      {bookings.length === 0 ? (
         <View style={styles.empty}>
           <Text style={styles.emptyText}>Nenhuma reserva ainda</Text>
           <Text style={styles.emptySubtext}>
@@ -48,46 +66,51 @@ export default function BookingsScreen() {
         </View>
       ) : (
         <FlatList
-          data={mockBookings}
+          data={bookings}
           keyExtractor={(item) => item.id.toString()}
           renderItem={({ item }) => (
-            <Card style={styles.bookingCard}>
-              <View style={styles.bookingHeader}>
-                <Text style={styles.hotelName}>{item.hotel}</Text>
-                <View
-                  style={[
-                    styles.statusBadge,
-                    { backgroundColor: getStatusColor(item.status) + '20' },
-                  ]}
-                >
-                  <Text
+            <TouchableOpacity onPress={() => router.push(`/booking/${item.id}`)}>
+              <Card style={styles.bookingCard}>
+                <View style={styles.bookingHeader}>
+                  <Text style={styles.hotelName}>{item.hotel}</Text>
+                  <View
                     style={[
-                      styles.statusText,
-                      { color: getStatusColor(item.status) },
+                      styles.statusBadge,
+                      { backgroundColor: getStatusColor(item.status) + '20' },
                     ]}
                   >
-                    {item.status}
+                    <Text
+                      style={[
+                        styles.statusText,
+                        { color: getStatusColor(item.status) },
+                      ]}
+                    >
+                      {item.status}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.bookingInfo}>
+                  <View style={styles.infoRow}>
+                    <MapPin size={16} color={colors.gray500} />
+                    <Text style={styles.infoText}>{item.location}</Text>
+                  </View>
+                  <View style={styles.infoRow}>
+                    <Calendar size={16} color={colors.gray500} />
+                    <Text style={styles.infoText}>
+                      {new Date(item.checkIn).toLocaleDateString('pt-PT')} - {new Date(item.checkOut).toLocaleDateString('pt-PT')}
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.bookingFooter}>
+                  <Text style={styles.bookingNumber}>
+                    #{item.id}
                   </Text>
+                  <ChevronRight size={20} color={colors.gray400} />
                 </View>
-              </View>
-
-              <View style={styles.bookingInfo}>
-                <View style={styles.infoRow}>
-                  <MapPin size={16} color={colors.gray500} />
-                  <Text style={styles.infoText}>{item.location}</Text>
-                </View>
-                <View style={styles.infoRow}>
-                  <Calendar size={16} color={colors.gray500} />
-                  <Text style={styles.infoText}>{item.dates}</Text>
-                </View>
-              </View>
-
-              <View style={styles.bookingFooter}>
-                <Text style={styles.bookingNumber}>
-                  #{item.bookingNumber}
-                </Text>
-              </View>
-            </Card>
+              </Card>
+            </TouchableOpacity>
           )}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}
@@ -179,6 +202,9 @@ const styles = StyleSheet.create({
     color: colors.text.secondary,
   },
   bookingFooter: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingTop: 12,
     borderTopWidth: 1,
     borderTopColor: colors.border,
@@ -187,5 +213,27 @@ const styles = StyleSheet.create({
     fontSize: 12,
     color: colors.gray400,
     fontWeight: '600',
+  },
+  centered: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: colors.white,
+  },
+  loadingText: {
+    marginTop: 16,
+    fontSize: 16,
+    color: colors.text.secondary,
+  },
+  errorText: {
+    fontSize: 18,
+    fontWeight: '600',
+    color: colors.text.primary,
+    marginBottom: 8,
+  },
+  errorSubtext: {
+    fontSize: 14,
+    color: colors.text.secondary,
+    textAlign: 'center',
   },
 });

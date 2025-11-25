@@ -1,11 +1,12 @@
 import { useState } from 'react';
-import { View, Text, StyleSheet, SafeAreaView, ScrollView, Pressable } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { CreditCard, Smartphone, Building2, Check } from 'lucide-react-native';
 import { Button, Input, Card } from '@/components/ui';
 import { useBooking } from '@context';
 import { PaymentMethod } from '@context';
-import { formatCurrency } from '@/utils';
+import { formatCurrency, showToast } from '@/utils';
 import { colors } from '@theme';
 
 export default function PaymentScreen() {
@@ -47,7 +48,7 @@ export default function PaymentScreen() {
     // Validação básica
     if (selectedMethod === 'card') {
       if (!cardNumber || !cardName || !expiryDate || !cvv) {
-        alert('Por favor, preencha todos os campos do cartão');
+        showToast.warning('Por favor, preencha todos os campos do cartão');
         return;
       }
     }

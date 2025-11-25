@@ -1,18 +1,17 @@
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
+import { QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { StyleSheet } from 'react-native';
+import Toast from 'react-native-toast-message';
 import { BookingProvider } from '@context';
+import { queryClient } from '@/config/queryClient';
+import { makeServer } from '@/mocks';
 
-// Create a client
-const queryClient = new QueryClient({
-  defaultOptions: {
-    queries: {
-      retry: 2,
-      staleTime: 5 * 60 * 1000, // 5 minutes
-    },
-  },
-});
+// Initialize MirageJS server for development
+if (__DEV__) {
+  makeServer({ environment: 'development' });
+}
 
 export default function RootLayout() {
   return (
@@ -30,6 +29,7 @@ export default function RootLayout() {
           </Stack>
         </BookingProvider>
       </QueryClientProvider>
+      <Toast />
     </GestureHandlerRootView>
   );
 }
