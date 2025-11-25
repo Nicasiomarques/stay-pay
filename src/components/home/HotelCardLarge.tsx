@@ -75,7 +75,7 @@ export function HotelCardLarge({
       <View className="w-full h-[200px] relative">
         <Image
           source={{ uri: image }}
-          className="w-full h-full"
+          className="w-full h-full rounded-br-xl rounded-bl-xl"
           resizeMode="cover"
         />
 
