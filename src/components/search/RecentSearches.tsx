@@ -1,10 +1,5 @@
-/**
- * RecentSearches Component
- * Displays recent search history with chips and stagger animations
- */
-
 import React, { useEffect, useState, useRef } from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import { View, Text, Pressable, ScrollView } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { Clock, X } from 'lucide-react-native';
 import { colors } from '@theme';
@@ -15,7 +10,6 @@ interface RecentSearchesProps {
   onSelectSearch: (search: string) => void;
 }
 
-// Animated Chip component for individual search items
 interface AnimatedChipProps {
   search: string;
   index: number;
@@ -45,20 +39,20 @@ function AnimatedSearchChip({ search, index, onSelect, onRemove }: AnimatedChipP
       animation="fadeInUp"
       delay={index * 50}
       duration={400}
-      style={styles.chipWrapper}
+      className="flex-row items-center"
     >
       <Pressable
-        style={styles.chip}
+        className="py-2 px-4 bg-gray-50 rounded-[20px] border border-gray-200 max-w-[200px]"
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         onPress={handlePress}
       >
-        <Text style={styles.chipText} numberOfLines={1}>
+        <Text className="text-sm font-medium text-gray-900" numberOfLines={1}>
           {search}
         </Text>
       </Pressable>
       <Pressable
-        style={styles.removeButton}
+        className="absolute right-2 top-2 p-1 bg-white rounded-xl"
         onPress={() => onRemove(search)}
         hitSlop={8}
       >
@@ -95,21 +89,27 @@ export function RecentSearches({ onSelectSearch }: RecentSearchesProps) {
   }
 
   return (
-    <View style={styles.container}>
-      <Animatable.View animation="fadeIn" duration={400} style={styles.header}>
-        <View style={styles.titleRow}>
+    <View className="py-4">
+      <Animatable.View
+        animation="fadeIn"
+        duration={400}
+        className="flex-row justify-between items-center px-6 mb-3"
+      >
+        <View className="flex-row items-center gap-2">
           <Clock size={18} color={colors.text.secondary} />
-          <Text style={styles.title}>Pesquisas Recentes</Text>
+          <Text className="text-base font-semibold text-gray-900">
+            Pesquisas Recentes
+          </Text>
         </View>
         <Pressable onPress={handleClearAll}>
-          <Text style={styles.clearButton}>Limpar tudo</Text>
+          <Text className="text-sm font-medium text-primary">Limpar tudo</Text>
         </Pressable>
       </Animatable.View>
 
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.chipsContainer}
+        contentContainerClassName="px-5 gap-2"
       >
         {searches.map((search, index) => (
           <AnimatedSearchChip
@@ -124,61 +124,3 @@ export function RecentSearches({ onSelectSearch }: RecentSearchesProps) {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    marginBottom: 12,
-  },
-  titleRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text.primary,
-  },
-  clearButton: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.primary,
-  },
-  chipsContainer: {
-    paddingHorizontal: 20,
-    gap: 8,
-  },
-  chipWrapper: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  chip: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: colors.gray50,
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: colors.border,
-    maxWidth: 200,
-  },
-  chipText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.text.primary,
-  },
-  removeButton: {
-    position: 'absolute',
-    right: 8,
-    top: 8,
-    padding: 4,
-    backgroundColor: colors.white,
-    borderRadius: 12,
-  },
-});

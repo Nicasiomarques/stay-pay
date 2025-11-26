@@ -4,7 +4,7 @@
  */
 
 import React, { useRef } from 'react';
-import { View, Text, StyleSheet, Pressable } from 'react-native';
+import { View, Text, Pressable } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { MapPin } from 'lucide-react-native';
 import { colors } from '@theme';
@@ -35,22 +35,19 @@ export function LocationSuggestionItem({ name, hotelCount, onPress }: LocationSu
   return (
     <Animatable.View ref={itemRef}>
       <Pressable
-        style={({ pressed }) => [
-          styles.container,
-          pressed && styles.containerPressed,
-        ]}
+        className="flex-row items-center py-3.5 px-4 min-h-[56px] bg-white active:bg-gray-50"
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         onPress={handlePress}
       >
-        <View style={styles.iconContainer}>
+        <View className="mr-3">
           <MapPin size={20} color={colors.text.secondary} />
         </View>
-        <View style={styles.textContainer}>
-          <Text style={styles.locationName} numberOfLines={1}>
+        <View className="flex-1">
+          <Text className="text-[15px] font-medium text-gray-900 mb-0.5" numberOfLines={1}>
             {name}
           </Text>
-          <Text style={styles.hotelCount}>
+          <Text className="text-[13px] text-gray-500">
             {hotelCount} {hotelCount === 1 ? 'hotel' : 'hotéis'}
           </Text>
         </View>
@@ -58,33 +55,3 @@ export function LocationSuggestionItem({ name, hotelCount, onPress }: LocationSu
     </Animatable.View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 14,
-    paddingHorizontal: 16,
-    minHeight: 56,
-    backgroundColor: colors.white,
-  },
-  containerPressed: {
-    backgroundColor: colors.gray50,
-  },
-  iconContainer: {
-    marginRight: 12,
-  },
-  textContainer: {
-    flex: 1,
-  },
-  locationName: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: colors.text.primary,
-    marginBottom: 2,
-  },
-  hotelCount: {
-    fontSize: 13,
-    color: colors.text.secondary,
-  },
-});

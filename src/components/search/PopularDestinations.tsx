@@ -4,7 +4,7 @@
  */
 
 import React, { useRef } from 'react';
-import { View, Text, StyleSheet, Pressable, FlatList, ImageBackground } from 'react-native';
+import { View, Text, Pressable, FlatList, ImageBackground } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { MapPin } from 'lucide-react-native';
 import { colors } from '@theme';
@@ -15,7 +15,6 @@ interface PopularDestinationsProps {
   onSelectDestination: (destination: string) => void;
 }
 
-// Animated destination card component
 interface AnimatedDestinationCardProps {
   item: { name: string; hotelCount: number };
   onSelect: (name: string) => void;
@@ -44,24 +43,25 @@ function AnimatedDestinationCard({ item, onSelect, index }: AnimatedDestinationC
       animation="fadeInUp"
       delay={index * 75}
       duration={400}
-      style={styles.card}
+      className="flex-1 rounded-xl overflow-hidden"
+      style={{ aspectRatio: 1.2 }}
     >
       <Pressable
-        style={styles.cardPressable}
+        className="flex-1"
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         onPress={handlePress}
       >
         <ImageBackground
           source={{ uri: `https://source.unsplash.com/400x300/?${encodeURIComponent(item.name)},hotel` }}
-          style={styles.cardImage}
-          imageStyle={styles.cardImageStyle}
+          className="flex-1 justify-end"
+          imageStyle={{ borderRadius: 12 }}
         >
-          <View style={styles.cardOverlay}>
-            <Text style={styles.cardTitle} numberOfLines={2}>
+          <View className="bg-black/40 p-3">
+            <Text className="text-[15px] font-semibold text-white mb-0.5" numberOfLines={2}>
               {item.name}
             </Text>
-            <Text style={styles.cardSubtitle}>
+            <Text className="text-xs font-medium text-white opacity-90">
               {item.hotelCount} {item.hotelCount === 1 ? 'hotel' : 'hotéis'}
             </Text>
           </View>
@@ -72,10 +72,7 @@ function AnimatedDestinationCard({ item, onSelect, index }: AnimatedDestinationC
 }
 
 export function PopularDestinations({ onSelectDestination }: PopularDestinationsProps) {
-  // Get popular destinations (empty query returns sorted by hotel count)
   const destinations = useLocationSuggestions('');
-
-  // Take top 6 destinations for grid
   const topDestinations = destinations.slice(0, 6);
 
   if (destinations.length === 0) {
@@ -83,10 +80,16 @@ export function PopularDestinations({ onSelectDestination }: PopularDestinations
   }
 
   return (
-    <View style={styles.container}>
-      <Animatable.View animation="fadeIn" duration={400} style={styles.header}>
+    <View className="py-4">
+      <Animatable.View
+        animation="fadeIn"
+        duration={400}
+        className="flex-row items-center gap-2 px-6 mb-3"
+      >
         <MapPin size={18} color={colors.text.secondary} />
-        <Text style={styles.title}>Destinos Populares</Text>
+        <Text className="text-base font-semibold text-gray-900">
+          Destinos Populares
+        </Text>
       </Animatable.View>
 
       <FlatList
@@ -94,7 +97,7 @@ export function PopularDestinations({ onSelectDestination }: PopularDestinations
         keyExtractor={(item) => item.name}
         numColumns={2}
         scrollEnabled={false}
-        columnWrapperStyle={styles.row}
+        columnWrapperClassName="px-5 gap-3 mb-3"
         renderItem={({ item, index }) => (
           <AnimatedDestinationCard
             item={item}
@@ -106,58 +109,3 @@ export function PopularDestinations({ onSelectDestination }: PopularDestinations
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 16,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    paddingHorizontal: 24,
-    marginBottom: 12,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text.primary,
-  },
-  row: {
-    paddingHorizontal: 20,
-    gap: 12,
-    marginBottom: 12,
-  },
-  card: {
-    flex: 1,
-    aspectRatio: 1.2,
-    borderRadius: 12,
-    overflow: 'hidden',
-  },
-  cardPressable: {
-    flex: 1,
-  },
-  cardImage: {
-    flex: 1,
-    justifyContent: 'flex-end',
-  },
-  cardImageStyle: {
-    borderRadius: 12,
-  },
-  cardOverlay: {
-    backgroundColor: 'rgba(0, 0, 0, 0.4)',
-    padding: 12,
-  },
-  cardTitle: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: colors.white,
-    marginBottom: 2,
-  },
-  cardSubtitle: {
-    fontSize: 12,
-    fontWeight: '500',
-    color: colors.white,
-    opacity: 0.9,
-  },
-});
