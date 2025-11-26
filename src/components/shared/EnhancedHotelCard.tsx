@@ -7,6 +7,7 @@ import { useBooking } from '@context';
 import { Hotel } from '@types';
 import { formatCurrency } from '@/utils/formatters';
 import { haptics } from '@/utils/haptics';
+import { shadows } from '@/utils/shadows';
 import { glass, glassRadius } from '@/utils/glassmorphism';
 import { colors } from '@theme';
 
@@ -24,14 +25,6 @@ interface EnhancedHotelCardProps {
   viewedRecently?: number;
   discount?: number;
 }
-
-const cardShadow = {
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.08,
-  shadowRadius: 12,
-  elevation: 4,
-};
 
 function EnhancedHotelCard({
   id,
@@ -97,7 +90,7 @@ function EnhancedHotelCard({
       >
         <Card
           className="overflow-hidden mb-4 rounded-2xl"
-          style={cardShadow}
+          style={shadows.card}
         >
           <View className="h-48 w-full overflow-hidden relative">
             <Image

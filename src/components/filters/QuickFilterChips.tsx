@@ -4,8 +4,7 @@
  */
 
 import React from 'react';
-import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
-import { colors } from '@theme';
+import { View, Text, Pressable, ScrollView } from 'react-native';
 import { QUICK_FILTERS } from '@/constants/filters';
 import { FilterState } from '@/types/filters';
 
@@ -42,21 +41,31 @@ export function QuickFilterChips({ filters, onApplyQuickFilter }: QuickFilterChi
   };
 
   return (
-    <View style={styles.container}>
+    <View className="py-2">
       <ScrollView
         horizontal
         showsHorizontalScrollIndicator={false}
-        contentContainerStyle={styles.scrollContent}
+        contentContainerClassName="px-1 gap-2"
       >
         {QUICK_FILTERS.map((filter) => {
           const isActive = isQuickFilterActive(filter.id);
           return (
             <Pressable
               key={filter.id}
-              style={[styles.chip, isActive && styles.chipActive]}
+              className={`py-2 px-4 rounded-[20px] border-[1.5px] ${
+                isActive
+                  ? 'bg-primary border-primary'
+                  : 'bg-white border-gray-300'
+              }`}
               onPress={() => onApplyQuickFilter(filter.id)}
             >
-              <Text style={[styles.chipLabel, isActive && styles.chipLabelActive]}>
+              <Text
+                className={`text-sm ${
+                  isActive
+                    ? 'text-white font-semibold'
+                    : 'text-gray-900 font-medium'
+                }`}
+              >
                 {filter.label}
               </Text>
             </Pressable>
@@ -66,34 +75,3 @@ export function QuickFilterChips({ filters, onApplyQuickFilter }: QuickFilterChi
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    paddingVertical: 8,
-  },
-  scrollContent: {
-    paddingHorizontal: 4,
-    gap: 8,
-  },
-  chip: {
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: colors.white,
-    borderRadius: 20,
-    borderWidth: 1.5,
-    borderColor: colors.gray300,
-  },
-  chipActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-  },
-  chipLabel: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.text.primary,
-  },
-  chipLabelActive: {
-    color: colors.white,
-    fontWeight: '600',
-  },
-});

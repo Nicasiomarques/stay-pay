@@ -7,7 +7,6 @@ import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   Modal,
   Pressable,
   ScrollView,
@@ -68,27 +67,30 @@ export function SearchModal({
       presentationStyle="fullScreen"
       onRequestClose={onClose}
     >
-      <SafeAreaView style={styles.container}>
+      <SafeAreaView className="flex-1 bg-white">
         <KeyboardAvoidingView
           behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-          style={styles.keyboardView}
+          className="flex-1"
         >
           {/* Header */}
-          <View style={styles.header}>
-            <Pressable onPress={onClose} style={styles.backButton} hitSlop={12}>
+          <View className="flex-row items-center justify-between px-4 py-3 border-b border-gray-200">
+            <Pressable onPress={onClose} className="p-1 w-20" hitSlop={12}>
               <ArrowLeft size={24} color={colors.text.primary} />
             </Pressable>
-            <Text style={styles.headerTitle}>Pesquisar</Text>
-            {searchQuery.length > 0 && (
+            <Text className="text-lg font-semibold text-gray-900">Pesquisar</Text>
+            {searchQuery.length > 0 ? (
               <Pressable onPress={handleClear}>
-                <Text style={styles.clearText}>Limpar</Text>
+                <Text className="text-[15px] font-medium text-primary w-20 text-right">
+                  Limpar
+                </Text>
               </Pressable>
+            ) : (
+              <View className="w-20" />
             )}
-            {searchQuery.length === 0 && <View style={styles.placeholder} />}
           </View>
 
           {/* Search Input */}
-          <View style={styles.searchContainer}>
+          <View className="px-6 py-4 bg-white">
             <LocationAutocomplete
               value={searchQuery}
               onChangeText={setSearchQuery}
@@ -101,8 +103,8 @@ export function SearchModal({
           {/* Suggestions Content */}
           {showSuggestions && (
             <ScrollView
-              style={styles.suggestionsScroll}
-              contentContainerStyle={styles.suggestionsContent}
+              className="flex-1"
+              contentContainerClassName="pb-6"
               keyboardShouldPersistTaps="handled"
             >
               <RecentSearches onSelectSearch={handleSelectLocation} />
@@ -114,52 +116,3 @@ export function SearchModal({
     </Modal>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  keyboardView: {
-    flex: 1,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  backButton: {
-    padding: 4,
-    width: 80,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text.primary,
-  },
-  clearText: {
-    fontSize: 15,
-    fontWeight: '500',
-    color: colors.primary,
-    width: 80,
-    textAlign: 'right',
-  },
-  placeholder: {
-    width: 80,
-  },
-  searchContainer: {
-    paddingHorizontal: 24,
-    paddingVertical: 16,
-    backgroundColor: colors.white,
-  },
-  suggestionsScroll: {
-    flex: 1,
-  },
-  suggestionsContent: {
-    paddingBottom: 24,
-  },
-});

@@ -3,6 +3,7 @@ import { View, Dimensions, Pressable, Text } from 'react-native';
 import { BlurView } from 'expo-blur';
 import { Compass, Heart, Calendar, MessageCircle } from 'lucide-react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+import { shadows } from '@/utils/shadows';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const TAB_BAR_WIDTH = SCREEN_WIDTH * 0.9;
@@ -24,20 +25,17 @@ const labels = {
 function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   return (
     <View
-      style={{
-        position: 'absolute',
-        bottom: 24,
-        width: TAB_BAR_WIDTH,
-        left: (SCREEN_WIDTH - TAB_BAR_WIDTH) / 2,
-        height: 64,
-        borderRadius: 40,
-        overflow: 'hidden',
-        elevation: 15,
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 8 },
-        shadowOpacity: 0.25,
-        shadowRadius: 16,
-      }}
+      className="absolute overflow-hidden"
+      style={[
+        {
+          bottom: 24,
+          width: TAB_BAR_WIDTH,
+          left: (SCREEN_WIDTH - TAB_BAR_WIDTH) / 2,
+          height: 64,
+          borderRadius: 40,
+        },
+        shadows.tabBar,
+      ]}
     >
       <BlurView
         intensity={100}
@@ -74,12 +72,7 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps) {
           <Pressable
             key={route.key}
             onPress={onPress}
-            style={{
-              flex: 1,
-              alignItems: 'center',
-              justifyContent: 'center',
-              paddingVertical: 8,
-            }}
+            className="flex-1 items-center justify-center py-2"
           >
             <Icon
               size={22}
@@ -87,12 +80,9 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps) {
               strokeWidth={isFocused ? 2 : 1.5}
             />
             <Text
-              style={{
-                fontSize: 11,
-                fontWeight: '500',
-                color: isFocused ? '#FFFFFF' : '#A3A3A3',
-                marginTop: 4,
-              }}
+              className={`text-[11px] font-medium mt-1 ${
+                isFocused ? 'text-white' : 'text-gray-400'
+              }`}
             >
               {label}
             </Text>

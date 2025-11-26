@@ -3,6 +3,7 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { MapPin, Star, Bed, Bath, Users, Heart } from 'lucide-react-native';
 import { haptics } from '@/utils/haptics';
+import { shadows } from '@/utils/shadows';
 import { useRouter } from 'expo-router';
 
 interface HotelCardLargeProps {
@@ -79,13 +80,7 @@ export function HotelCardLarge({
         onPressOut={handlePressOut}
         onPress={handlePress}
         activeOpacity={1}
-        style={{
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 4 },
-          shadowOpacity: 0.08,
-          shadowRadius: 12,
-          elevation: 4,
-        }}
+        style={shadows.card}
       >
         {/* Image */}
         <View className="w-full h-[200px] relative">
@@ -102,13 +97,7 @@ export function HotelCardLarge({
             }`}
             onPress={handleFavorite}
             activeOpacity={0.8}
-            style={{
-              shadowColor: '#000',
-              shadowOffset: { width: 0, height: 2 },
-              shadowOpacity: 0.1,
-              shadowRadius: 4,
-              elevation: 3,
-            }}
+            style={shadows.buttonLight}
           >
             <Animatable.View ref={heartRef}>
               <Heart

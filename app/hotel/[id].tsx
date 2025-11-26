@@ -28,6 +28,7 @@ import {
 import { useBooking } from '@context';
 import { useHotel } from '@/hooks/queries';
 import { haptics } from '@/utils/haptics';
+import { shadows } from '@/utils/shadows';
 
 export default function HotelDetailScreen() {
   const router = useRouter();
@@ -285,13 +286,7 @@ export default function HotelDetailScreen() {
         delay={300}
         duration={500}
         className="absolute bottom-6 left-4 right-4 flex-row items-center justify-between px-5 py-4 bg-neutral-900 rounded-full"
-        style={{
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: 8 },
-          shadowOpacity: 0.25,
-          shadowRadius: 16,
-          elevation: 15,
-        }}
+        style={shadows.hero}
       >
         <View className="flex-1">
           <Text className="text-sm text-gray-400">

@@ -7,7 +7,6 @@ import React, { useRef } from 'react';
 import {
   View,
   TextInput,
-  StyleSheet,
   FlatList,
   KeyboardAvoidingView,
   Platform,
@@ -17,6 +16,7 @@ import { colors } from '@theme';
 import { useDebounce } from '@/hooks/useDebounce';
 import { useLocationSuggestions } from '@/hooks/useLocationSuggestions';
 import { LocationSuggestionItem } from './LocationSuggestionItem';
+import { shadows } from '@/utils/shadows';
 
 interface LocationAutocompleteProps {
   value: string;
@@ -48,16 +48,16 @@ export function LocationAutocomplete({
   return (
     <KeyboardAvoidingView
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      style={styles.container}
+      className="z-[1000]"
     >
       {/* Search Input */}
-      <View style={styles.inputContainer}>
-        <View style={styles.searchIcon}>
+      <View className="flex-row items-center bg-gray-50 rounded-xl px-4 py-3 border-[1.5px] border-gray-200">
+        <View className="mr-3">
           <Search size={20} color={colors.text.secondary} />
         </View>
         <TextInput
           ref={inputRef}
-          style={styles.input}
+          className="flex-1 text-base text-gray-900 p-0"
           value={value}
           onChangeText={onChangeText}
           placeholder={placeholder}
@@ -71,7 +71,10 @@ export function LocationAutocomplete({
 
       {/* Suggestions Dropdown */}
       {showSuggestions && (
-        <View style={styles.suggestionsContainer}>
+        <View
+          className="absolute top-[60px] left-0 right-0 bg-white rounded-xl max-h-[350px] z-[1001]"
+          style={shadows.dropdown}
+        >
           <FlatList
             data={suggestions}
             keyExtractor={(item) => item.name}
@@ -83,57 +86,11 @@ export function LocationAutocomplete({
               />
             )}
             keyboardShouldPersistTaps="handled"
-            style={styles.suggestionsList}
-            contentContainerStyle={styles.suggestionsContent}
+            className="flex-grow-0"
+            contentContainerClassName="py-1"
           />
         </View>
       )}
     </KeyboardAvoidingView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    zIndex: 1000,
-  },
-  inputContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: colors.gray50,
-    borderRadius: 12,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderWidth: 1.5,
-    borderColor: colors.border,
-  },
-  searchIcon: {
-    marginRight: 12,
-  },
-  input: {
-    flex: 1,
-    fontSize: 16,
-    color: colors.text.primary,
-    padding: 0,
-  },
-  suggestionsContainer: {
-    position: 'absolute',
-    top: 60,
-    left: 0,
-    right: 0,
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 8,
-    maxHeight: 350,
-    zIndex: 1001,
-  },
-  suggestionsList: {
-    flexGrow: 0,
-  },
-  suggestionsContent: {
-    paddingVertical: 4,
-  },
-});

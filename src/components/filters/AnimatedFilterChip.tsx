@@ -4,9 +4,9 @@
  */
 
 import React, { useState } from 'react';
-import { Text, StyleSheet, Pressable, Animated } from 'react-native';
+import { Text, Pressable, Animated } from 'react-native';
 import { haptics } from '@/utils/haptics';
-import { colors } from '@theme';
+import { shadows } from '@/utils/shadows';
 
 interface AnimatedFilterChipProps {
   label: string;
@@ -49,20 +49,23 @@ export function AnimatedFilterChip({
   return (
     <Animated.View style={{ transform: [{ scale: scaleAnim }] }}>
       <Pressable
-        style={[
-          styles.chip,
-          isActive && styles.chipActive,
-        ]}
+        className={`flex-row items-center py-2 px-4 rounded-3xl border-[1.5px] gap-1.5 ${
+          isActive
+            ? 'bg-primary border-primary'
+            : 'bg-white border-gray-300'
+        }`}
+        style={isActive ? shadows.buttonActive : shadows.buttonLight}
         onPress={handlePress}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
       >
         {icon}
         <Text
-          style={[
-            styles.chipText,
-            isActive && styles.chipTextActive,
-          ]}
+          className={`text-sm ${
+            isActive
+              ? 'text-white font-semibold'
+              : 'text-gray-900 font-medium'
+          }`}
         >
           {label}
         </Text>
@@ -70,38 +73,3 @@ export function AnimatedFilterChip({
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  chip: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-    backgroundColor: colors.white,
-    borderRadius: 24,
-    borderWidth: 1.5,
-    borderColor: colors.gray300,
-    gap: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
-  },
-  chipActive: {
-    backgroundColor: colors.primary,
-    borderColor: colors.primary,
-    shadowOpacity: 0.15,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  chipText: {
-    fontSize: 14,
-    fontWeight: '500',
-    color: colors.text.primary,
-  },
-  chipTextActive: {
-    color: colors.white,
-    fontWeight: '600',
-  },
-});

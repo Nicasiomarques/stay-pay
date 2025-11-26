@@ -19,6 +19,7 @@ import {
   Edit3,
 } from 'lucide-react-native';
 import { haptics } from '@/utils/haptics';
+import { shadows } from '@/utils/shadows';
 
 const MENU_SECTIONS = [
   {
@@ -73,13 +74,7 @@ export default function ProfileScreen() {
           delay={100}
           duration={500}
           className="bg-white mx-5 mt-4 rounded-2xl p-6 items-center"
-          style={{
-            shadowColor: '#000',
-            shadowOffset: { width: 0, height: 2 },
-            shadowOpacity: 0.05,
-            shadowRadius: 8,
-            elevation: 2,
-          }}
+          style={shadows.elevation2}
         >
           <View className="relative mb-4">
             <Image

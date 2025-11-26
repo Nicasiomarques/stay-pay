@@ -10,6 +10,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import { TrendingUp, MapPin } from 'lucide-react-native';
 import { useRouter } from 'expo-router';
 import { haptics } from '@/utils/haptics';
+import { shadows } from '@/utils/shadows';
 import { glass, glassRadius } from '@/utils/glassmorphism';
 import { colors } from '@theme';
 
@@ -21,14 +22,6 @@ interface TrendingDestinationCardProps {
   trendPercentage: number;
   averagePrice: number;
 }
-
-const shadowStyle = {
-  shadowColor: '#000',
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.15,
-  shadowRadius: 12,
-  elevation: 6,
-};
 
 export function TrendingDestinationCard({
   destination,
@@ -76,7 +69,7 @@ export function TrendingDestinationCard({
         onPressOut={handlePressOut}
         activeOpacity={1}
         className="w-[280px] h-[200px] rounded-[20px] overflow-hidden mr-4"
-        style={shadowStyle}
+        style={shadows.card}
       >
         <ImageBackground
           source={{ uri: image }}

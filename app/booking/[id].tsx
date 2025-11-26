@@ -1,4 +1,4 @@
-import { View, Text, StyleSheet, ScrollView, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator, Alert, TouchableOpacity } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Calendar, MapPin, Users, CreditCard, QrCode, X, RefreshCw } from 'lucide-react-native';
@@ -47,10 +47,10 @@ export default function BookingDetailScreen() {
 
   if (isLoading) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.centered}>
+      <SafeAreaView className="flex-1 bg-gray-50">
+        <View className="flex-1 justify-center items-center p-6">
           <ActivityIndicator size="large" color={colors.primary} />
-          <Text style={styles.loadingText}>Carregando reserva...</Text>
+          <Text className="mt-4 text-base text-gray-500">Carregando reserva...</Text>
         </View>
       </SafeAreaView>
     );
@@ -58,13 +58,13 @@ export default function BookingDetailScreen() {
 
   if (error || !booking) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.centered}>
-          <Text style={styles.errorText}>Reserva não encontrada</Text>
-          <Text style={styles.errorSubtext}>
+      <SafeAreaView className="flex-1 bg-gray-50">
+        <View className="flex-1 justify-center items-center p-6">
+          <Text className="text-lg font-semibold text-gray-900 mb-2">Reserva não encontrada</Text>
+          <Text className="text-sm text-gray-500 text-center">
             {error instanceof Error ? error.message : 'Erro ao carregar reserva'}
           </Text>
-          <Button onPress={() => router.back()} style={{ marginTop: 16 }}>
+          <Button onPress={() => router.back()} className="mt-4">
             Voltar
           </Button>
         </View>
@@ -89,64 +89,60 @@ export default function BookingDetailScreen() {
   const canReschedule = booking.status === 'Confirmed';
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.header}>
-          <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
+        <View className="flex-row items-center justify-between bg-white px-4 py-3 border-b border-gray-200">
+          <TouchableOpacity onPress={() => router.back()} className="p-2">
             <X size={24} color={colors.text.primary} />
           </TouchableOpacity>
-          <Text style={styles.headerTitle}>Detalhes da Reserva</Text>
-          <View style={{ width: 24 }} />
+          <Text className="text-lg font-semibold text-gray-900">Detalhes da Reserva</Text>
+          <View className="w-6" />
         </View>
 
-        <View style={styles.content}>
+        <View className="p-6">
           {/* Status Badge */}
           <View
-            style={[
-              styles.statusBadge,
-              { backgroundColor: getStatusColor(booking.status) + '20' },
-            ]}
+            className="self-center px-4 py-2 rounded-2xl mb-6"
+            style={{ backgroundColor: getStatusColor(booking.status) + '20' }}
           >
             <Text
-              style={[
-                styles.statusText,
-                { color: getStatusColor(booking.status) },
-              ]}
+              className="text-sm font-semibold"
+              style={{ color: getStatusColor(booking.status) }}
             >
               {booking.status}
             </Text>
           </View>
 
           {/* Hotel Info */}
-          <Card style={styles.section}>
-            <Text style={styles.sectionTitle}>Hotel</Text>
-            <Text style={styles.hotelName}>{booking.hotel}</Text>
-            <View style={styles.infoRow}>
+          <Card className="p-4 mb-4">
+            <Text className="text-base font-semibold text-gray-900 mb-4">Hotel</Text>
+            <Text className="text-xl font-bold text-gray-900 mb-2">{booking.hotel}</Text>
+            <View className="flex-row items-center gap-2">
               <MapPin size={16} color={colors.gray500} />
-              <Text style={styles.infoText}>{booking.location}</Text>
+              <Text className="text-sm text-gray-500">{booking.location}</Text>
             </View>
           </Card>
 
           {/* Booking Details */}
-          <Card style={styles.section}>
-            <Text style={styles.sectionTitle}>Detalhes da Reserva</Text>
+          <Card className="p-4 mb-4">
+            <Text className="text-base font-semibold text-gray-900 mb-4">Detalhes da Reserva</Text>
 
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Código de Confirmação</Text>
-              <Text style={styles.detailValue}>{booking.confirmationCode}</Text>
+            <View className="flex-row items-center gap-3 mb-4">
+              <Text className="text-sm text-gray-500 mb-0.5">Código de Confirmação</Text>
+              <Text className="text-base text-gray-900 font-medium">{booking.confirmationCode}</Text>
             </View>
 
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Número da Reserva</Text>
-              <Text style={styles.detailValue}>#{booking.id}</Text>
+            <View className="flex-row items-center gap-3 mb-4">
+              <Text className="text-sm text-gray-500 mb-0.5">Número da Reserva</Text>
+              <Text className="text-base text-gray-900 font-medium">#{booking.id}</Text>
             </View>
 
-            <View style={styles.detailRow}>
+            <View className="flex-row items-center gap-3 mb-4">
               <Calendar size={16} color={colors.gray500} />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.detailLabel}>Check-in</Text>
-                <Text style={styles.detailValue}>
+              <View className="flex-1">
+                <Text className="text-sm text-gray-500 mb-0.5">Check-in</Text>
+                <Text className="text-base text-gray-900 font-medium">
                   {new Date(booking.checkIn).toLocaleDateString('pt-PT', {
                     weekday: 'short',
                     day: 'numeric',
@@ -157,11 +153,11 @@ export default function BookingDetailScreen() {
               </View>
             </View>
 
-            <View style={styles.detailRow}>
+            <View className="flex-row items-center gap-3 mb-4">
               <Calendar size={16} color={colors.gray500} />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.detailLabel}>Check-out</Text>
-                <Text style={styles.detailValue}>
+              <View className="flex-1">
+                <Text className="text-sm text-gray-500 mb-0.5">Check-out</Text>
+                <Text className="text-base text-gray-900 font-medium">
                   {new Date(booking.checkOut).toLocaleDateString('pt-PT', {
                     weekday: 'short',
                     day: 'numeric',
@@ -172,102 +168,104 @@ export default function BookingDetailScreen() {
               </View>
             </View>
 
-            <View style={styles.detailRow}>
+            <View className="flex-row items-center gap-3">
               <Users size={16} color={colors.gray500} />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.detailLabel}>Hóspedes</Text>
-                <Text style={styles.detailValue}>{booking.guests} pessoa{booking.guests > 1 ? 's' : ''}</Text>
+              <View className="flex-1">
+                <Text className="text-sm text-gray-500 mb-0.5">Hóspedes</Text>
+                <Text className="text-base text-gray-900 font-medium">
+                  {booking.guests} pessoa{booking.guests > 1 ? 's' : ''}
+                </Text>
               </View>
             </View>
           </Card>
 
           {/* Guest Details */}
-          <Card style={styles.section}>
-            <Text style={styles.sectionTitle}>Informações do Hóspede</Text>
+          <Card className="p-4 mb-4">
+            <Text className="text-base font-semibold text-gray-900 mb-4">Informações do Hóspede</Text>
 
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Nome</Text>
-              <Text style={styles.detailValue}>{booking.guestDetails.name}</Text>
+            <View className="flex-row items-center gap-3 mb-4">
+              <Text className="text-sm text-gray-500 mb-0.5">Nome</Text>
+              <Text className="text-base text-gray-900 font-medium">{booking.guestDetails.name}</Text>
             </View>
 
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Email</Text>
-              <Text style={styles.detailValue}>{booking.guestDetails.email}</Text>
+            <View className="flex-row items-center gap-3 mb-4">
+              <Text className="text-sm text-gray-500 mb-0.5">Email</Text>
+              <Text className="text-base text-gray-900 font-medium">{booking.guestDetails.email}</Text>
             </View>
 
-            <View style={styles.detailRow}>
-              <Text style={styles.detailLabel}>Telefone</Text>
-              <Text style={styles.detailValue}>{booking.guestDetails.phone}</Text>
+            <View className="flex-row items-center gap-3">
+              <Text className="text-sm text-gray-500 mb-0.5">Telefone</Text>
+              <Text className="text-base text-gray-900 font-medium">{booking.guestDetails.phone}</Text>
             </View>
           </Card>
 
           {/* Payment Info */}
-          <Card style={styles.section}>
-            <Text style={styles.sectionTitle}>Informações de Pagamento</Text>
+          <Card className="p-4 mb-4">
+            <Text className="text-base font-semibold text-gray-900 mb-4">Informações de Pagamento</Text>
 
-            <View style={styles.detailRow}>
+            <View className="flex-row items-center gap-3 mb-4">
               <CreditCard size={16} color={colors.gray500} />
-              <View style={{ flex: 1 }}>
-                <Text style={styles.detailLabel}>Método de Pagamento</Text>
-                <Text style={styles.detailValue}>
+              <View className="flex-1">
+                <Text className="text-sm text-gray-500 mb-0.5">Método de Pagamento</Text>
+                <Text className="text-base text-gray-900 font-medium">
                   {booking.paymentMethod === 'card' ? 'Cartão de Crédito' : 'Mobile Money'}
                 </Text>
               </View>
             </View>
 
             {booking.paymentDetails?.cardNumber && (
-              <View style={styles.detailRow}>
-                <Text style={styles.detailLabel}>Cartão</Text>
-                <Text style={styles.detailValue}>{booking.paymentDetails.cardNumber}</Text>
+              <View className="flex-row items-center gap-3 mb-4">
+                <Text className="text-sm text-gray-500 mb-0.5">Cartão</Text>
+                <Text className="text-base text-gray-900 font-medium">{booking.paymentDetails.cardNumber}</Text>
               </View>
             )}
 
-            <View style={styles.separator} />
+            <View className="h-px bg-gray-200 my-3" />
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Subtotal</Text>
-              <Text style={styles.priceValue}>{formatCurrency(booking.pricing.subtotal)}</Text>
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="text-sm text-gray-500">Subtotal</Text>
+              <Text className="text-sm text-gray-900 font-medium">{formatCurrency(booking.pricing.subtotal)}</Text>
             </View>
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Taxa de Serviço</Text>
-              <Text style={styles.priceValue}>{formatCurrency(booking.pricing.serviceFee)}</Text>
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="text-sm text-gray-500">Taxa de Serviço</Text>
+              <Text className="text-sm text-gray-900 font-medium">{formatCurrency(booking.pricing.serviceFee)}</Text>
             </View>
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Impostos</Text>
-              <Text style={styles.priceValue}>{formatCurrency(booking.pricing.tax)}</Text>
+            <View className="flex-row justify-between items-center mb-2">
+              <Text className="text-sm text-gray-500">Impostos</Text>
+              <Text className="text-sm text-gray-900 font-medium">{formatCurrency(booking.pricing.tax)}</Text>
             </View>
 
-            <View style={styles.separator} />
+            <View className="h-px bg-gray-200 my-3" />
 
-            <View style={styles.priceRow}>
-              <Text style={styles.totalLabel}>Total</Text>
-              <Text style={styles.totalValue}>{formatCurrency(booking.pricing.total)}</Text>
+            <View className="flex-row justify-between items-center">
+              <Text className="text-lg font-semibold text-gray-900">Total</Text>
+              <Text className="text-xl font-bold text-primary">{formatCurrency(booking.pricing.total)}</Text>
             </View>
           </Card>
 
           {/* QR Code */}
           {booking.qrCode && (
-            <Card style={styles.section}>
-              <View style={styles.qrContainer}>
+            <Card className="p-4 mb-4">
+              <View className="items-center p-4 gap-3">
                 <QrCode size={32} color={colors.primary} />
-                <Text style={styles.qrText}>QR Code disponível no app</Text>
+                <Text className="text-sm text-gray-500">QR Code disponível no app</Text>
               </View>
             </Card>
           )}
 
           {/* Action Buttons */}
           {(canCancel || canReschedule) && (
-            <View style={styles.actions}>
+            <View className="gap-3 mt-2">
               {canReschedule && (
                 <Button
                   variant="outline"
                   onPress={handleReschedule}
-                  style={styles.actionButton}
+                  className="flex-row items-center justify-center gap-2"
                 >
                   <RefreshCw size={16} color={colors.primary} />
-                  <Text style={styles.rescheduleText}>Reagendar</Text>
+                  <Text className="text-base font-semibold text-primary">Reagendar</Text>
                 </Button>
               )}
 
@@ -275,7 +273,7 @@ export default function BookingDetailScreen() {
                 <Button
                   variant="outline"
                   onPress={handleCancel}
-                  style={[styles.actionButton, styles.cancelButton]}
+                  className="flex-row items-center justify-center gap-2 border-error"
                   disabled={cancelMutation.isPending}
                 >
                   {cancelMutation.isPending ? (
@@ -283,7 +281,7 @@ export default function BookingDetailScreen() {
                   ) : (
                     <>
                       <X size={16} color={colors.error} />
-                      <Text style={styles.cancelText}>Cancelar Reserva</Text>
+                      <Text className="text-base font-semibold text-error">Cancelar Reserva</Text>
                     </>
                   )}
                 </Button>
@@ -295,167 +293,3 @@ export default function BookingDetailScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.gray50,
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    backgroundColor: colors.white,
-    paddingHorizontal: 16,
-    paddingVertical: 12,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  backButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text.primary,
-  },
-  content: {
-    padding: 24,
-  },
-  statusBadge: {
-    alignSelf: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 16,
-    marginBottom: 24,
-  },
-  statusText: {
-    fontSize: 14,
-    fontWeight: '600',
-  },
-  section: {
-    padding: 16,
-    marginBottom: 16,
-  },
-  sectionTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginBottom: 16,
-  },
-  hotelName: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.text.primary,
-    marginBottom: 8,
-  },
-  infoRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  infoText: {
-    fontSize: 14,
-    color: colors.text.secondary,
-  },
-  detailRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    marginBottom: 16,
-  },
-  detailLabel: {
-    fontSize: 14,
-    color: colors.text.secondary,
-    marginBottom: 2,
-  },
-  detailValue: {
-    fontSize: 16,
-    color: colors.text.primary,
-    fontWeight: '500',
-  },
-  separator: {
-    height: 1,
-    backgroundColor: colors.border,
-    marginVertical: 12,
-  },
-  priceRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 8,
-  },
-  priceLabel: {
-    fontSize: 14,
-    color: colors.text.secondary,
-  },
-  priceValue: {
-    fontSize: 14,
-    color: colors.text.primary,
-    fontWeight: '500',
-  },
-  totalLabel: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text.primary,
-  },
-  totalValue: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: colors.primary,
-  },
-  qrContainer: {
-    alignItems: 'center',
-    padding: 16,
-    gap: 12,
-  },
-  qrText: {
-    fontSize: 14,
-    color: colors.text.secondary,
-  },
-  actions: {
-    gap: 12,
-    marginTop: 8,
-  },
-  actionButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 8,
-  },
-  cancelButton: {
-    borderColor: colors.error,
-  },
-  rescheduleText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  cancelText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.error,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    padding: 24,
-  },
-  loadingText: {
-    marginTop: 16,
-    fontSize: 16,
-    color: colors.text.secondary,
-  },
-  errorText: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginBottom: 8,
-  },
-  errorSubtext: {
-    fontSize: 14,
-    color: colors.text.secondary,
-    textAlign: 'center',
-  },
-});
