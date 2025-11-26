@@ -88,7 +88,7 @@ export default function FavoritesScreen() {
               />
             </Animatable.View>
           )}
-          contentContainerClassName="p-6"
+          contentContainerClassName="p-6 pb-28"
           showsVerticalScrollIndicator={false}
         />
       )}

@@ -135,7 +135,7 @@ export default function BookingsScreen() {
               </TouchableOpacity>
             </Animatable.View>
           )}
-          contentContainerClassName="p-6"
+          contentContainerClassName="p-6 pb-28"
           showsVerticalScrollIndicator={false}
         />
       )}

@@ -6,6 +6,7 @@ interface CardProps {
   style?: ViewStyle;
   onPress?: () => void;
   elevation?: number;
+  className?: string;
 }
 
 const elevationStyles = {
@@ -32,13 +33,13 @@ const elevationStyles = {
   },
 };
 
-export function Card({ children, style, onPress, elevation = 2 }: CardProps) {
+export function Card({ children, style, onPress, elevation = 2, className }: CardProps) {
   const Container = onPress ? Pressable : View;
   const shadowStyle = elevationStyles[elevation as keyof typeof elevationStyles] || elevationStyles[2];
 
   return (
     <Container
-      className="bg-white rounded-2xl border border-gray-200"
+      className={`bg-white rounded-2xl border border-gray-200 ${className || ''}`}
       style={[shadowStyle, style]}
       onPress={onPress}
     >

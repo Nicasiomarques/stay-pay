@@ -1,82 +1,109 @@
 import { Tabs } from 'expo-router';
-import { Home, Heart, Calendar, User } from 'lucide-react-native';
+import { View, Dimensions, Pressable, Text } from 'react-native';
+import { Compass, Heart, Calendar, MessageCircle } from 'lucide-react-native';
+import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
+
+const { width: SCREEN_WIDTH } = Dimensions.get('window');
+const TAB_BAR_WIDTH = SCREEN_WIDTH * 0.9;
+
+const icons = {
+  index: Compass,
+  favorites: Heart,
+  bookings: Calendar,
+  profile: MessageCircle,
+};
+
+const labels = {
+  index: 'Discover',
+  favorites: 'Favorites',
+  bookings: 'Bookings',
+  profile: 'Messages',
+};
+
+function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+  return (
+    <View
+      style={{
+        position: 'absolute',
+        bottom: 24,
+        width: TAB_BAR_WIDTH,
+        left: (SCREEN_WIDTH - TAB_BAR_WIDTH) / 2,
+        height: 64,
+        backgroundColor: '#171717',
+        borderRadius: 40,
+        flexDirection: 'row',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        elevation: 15,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 8 },
+        shadowOpacity: 0.25,
+        shadowRadius: 16,
+      }}
+    >
+      {state.routes.map((route, index) => {
+        const { options } = descriptors[route.key];
+        const isFocused = state.index === index;
+        const Icon = icons[route.name as keyof typeof icons];
+        const label = labels[route.name as keyof typeof labels];
+
+        const onPress = () => {
+          const event = navigation.emit({
+            type: 'tabPress',
+            target: route.key,
+            canPreventDefault: true,
+          });
+
+          if (!isFocused && !event.defaultPrevented) {
+            navigation.navigate(route.name);
+          }
+        };
+
+        return (
+          <Pressable
+            key={route.key}
+            onPress={onPress}
+            style={{
+              flex: 1,
+              alignItems: 'center',
+              justifyContent: 'center',
+              paddingVertical: 8,
+            }}
+          >
+            <Icon
+              size={22}
+              color={isFocused ? '#FFFFFF' : '#A3A3A3'}
+              strokeWidth={isFocused ? 2 : 1.5}
+            />
+            <Text
+              style={{
+                fontSize: 11,
+                fontWeight: '500',
+                color: isFocused ? '#FFFFFF' : '#A3A3A3',
+                marginTop: 4,
+              }}
+            >
+              {label}
+            </Text>
+          </Pressable>
+        );
+      })}
+    </View>
+  );
+}
 
 export default function TabsLayout() {
   return (
     <Tabs
+      tabBar={(props) => <CustomTabBar {...props} />}
       screenOptions={{
         headerShown: false,
-        tabBarActiveTintColor: '#10B981',
-        tabBarInactiveTintColor: '#A3A3A3',
-        tabBarShowLabel: false,
-        tabBarStyle: {
-          height: 64,
-          paddingBottom: 8,
-          paddingTop: 8,
-          backgroundColor: '#FFFFFF',
-          borderTopWidth: 1,
-          borderTopColor: '#E5E5E5',
-          elevation: 8,
-          shadowColor: '#000',
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 8,
-        },
       }}
     >
-      <Tabs.Screen
-        name="index"
-        options={{
-          title: 'Home',
-          tabBarIcon: ({ color, focused }) => (
-            <Home
-              size={24}
-              color={color}
-              fill={focused ? '#10B981' : 'transparent'}
-              strokeWidth={focused ? 2 : 1.5}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="favorites"
-        options={{
-          title: 'Favorites',
-          tabBarIcon: ({ color, focused }) => (
-            <Heart
-              size={24}
-              color={color}
-              strokeWidth={focused ? 2 : 1.5}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="bookings"
-        options={{
-          title: 'Bookings',
-          tabBarIcon: ({ color, focused }) => (
-            <Calendar
-              size={24}
-              color={color}
-              strokeWidth={focused ? 2 : 1.5}
-            />
-          ),
-        }}
-      />
-      <Tabs.Screen
-        name="profile"
-        options={{
-          title: 'Profile',
-          tabBarIcon: ({ color, focused }) => (
-            <User
-              size={24}
-              color={color}
-              strokeWidth={focused ? 2 : 1.5}
-            />
-          ),
-        }}
-      />
+      <Tabs.Screen name="index" />
+      <Tabs.Screen name="favorites" />
+      <Tabs.Screen name="bookings" />
+      <Tabs.Screen name="profile" />
     </Tabs>
   );
 }

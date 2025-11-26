@@ -81,7 +81,7 @@ export default function HomeScreen() {
       <ScrollView
         className="flex-1"
         showsVerticalScrollIndicator={false}
-        contentContainerStyle={{ paddingBottom: 24 }}
+        contentContainerStyle={{ paddingBottom: 100 }}
       >
         {/* Search Header */}
         <SearchHeader

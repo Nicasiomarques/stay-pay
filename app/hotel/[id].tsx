@@ -118,7 +118,7 @@ export default function HotelDetailScreen() {
     <View className="flex-1 bg-white">
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Hero Image */}
-        <Animatable.View animation="fadeIn" duration={400} className="h-80 w-full relative">
+        <Animatable.View animation="fadeIn" duration={400} className="h-96 w-full relative overflow-hidden rounded-b-3xl">
           <Image
             source={{ uri: images[currentImageIndex] }}
             className="w-full h-full"
@@ -284,34 +284,27 @@ export default function HotelDetailScreen() {
         animation="slideInUp"
         delay={300}
         duration={500}
-        className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between px-5 py-4 pb-8 bg-white border-t border-gray-200"
+        className="absolute bottom-6 left-4 right-4 flex-row items-center justify-between px-5 py-4 bg-neutral-900 rounded-full"
         style={{
           shadowColor: '#000',
-          shadowOffset: { width: 0, height: -4 },
-          shadowOpacity: 0.1,
-          shadowRadius: 12,
-          elevation: 10,
+          shadowOffset: { width: 0, height: 8 },
+          shadowOpacity: 0.25,
+          shadowRadius: 16,
+          elevation: 15,
         }}
       >
         <View className="flex-1">
-          <Text className="text-xl font-bold text-secondary mb-1">${totalPrice.toLocaleString()} Total</Text>
-          <Text className="text-[13px] text-gray-500">
+          <Text className="text-sm text-gray-400">
             {nights} days · ${pricePerNight.toLocaleString()}/night
           </Text>
+          <Text className="text-xl font-bold text-white">€{totalPrice.toLocaleString()}</Text>
         </View>
         <TouchableOpacity
-          className="bg-secondary px-8 py-4 rounded-xl"
-          style={{
-            shadowColor: '#10B981',
-            shadowOffset: { width: 0, height: 4 },
-            shadowOpacity: 0.3,
-            shadowRadius: 8,
-            elevation: 5,
-          }}
+          className="bg-white px-6 py-3 rounded-full"
           onPress={handleBookNow}
           activeOpacity={0.9}
         >
-          <Text className="text-base font-bold text-white">Book Now</Text>
+          <Text className="text-sm font-bold text-neutral-900">Book now</Text>
         </TouchableOpacity>
       </Animatable.View>
     </View>
