@@ -1,9 +1,10 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { View, Text, Image, TouchableOpacity, StyleProp, ViewStyle } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { Star, Heart } from 'lucide-react-native';
 import { haptics } from '@/utils/haptics';
 import { useRouter } from 'expo-router';
+import { StarRating, FavoriteButton } from '@/components/ui';
+import { formatCurrency } from '@/utils/formatters';
 
 interface HotelCardCompactProps {
   id: number;
@@ -29,9 +30,7 @@ export function HotelCardCompact({
   style,
 }: HotelCardCompactProps) {
   const router = useRouter();
-  const [favorite, setFavorite] = useState(isFavorite);
   const cardRef = useRef<any>(null);
-  const heartRef = useRef<any>(null);
 
   const handlePress = () => {
     haptics.light();
@@ -39,14 +38,7 @@ export function HotelCardCompact({
   };
 
   const handleFavorite = () => {
-    haptics.medium();
-    heartRef.current?.pulse?.(300);
-    setFavorite(!favorite);
     onFavoritePress?.();
-  };
-
-  const formatPrice = (value: number) => {
-    return `$${value.toLocaleString()}`;
   };
 
   return (
@@ -64,21 +56,13 @@ export function HotelCardCompact({
           />
 
           {/* Favorite Button - Airbnb style */}
-          <TouchableOpacity
-            className="absolute top-2 right-2 w-8 h-8 items-center justify-center"
+          <FavoriteButton
+            isFavorite={isFavorite}
             onPress={handleFavorite}
-            activeOpacity={0.8}
-            hitSlop={{ top: 8, bottom: 8, left: 8, right: 8 }}
-          >
-            <Animatable.View ref={heartRef}>
-              <Heart
-                size={22}
-                color="#FFFFFF"
-                fill={favorite ? '#FF385C' : 'rgba(0,0,0,0.5)'}
-                strokeWidth={2}
-              />
-            </Animatable.View>
-          </TouchableOpacity>
+            variant="airbnb"
+            size="sm"
+            style={{ position: 'absolute', top: 8, right: 8 }}
+          />
         </View>
 
         {/* Content - Airbnb style minimal */}
@@ -88,9 +72,8 @@ export function HotelCardCompact({
             <Text className="flex-1 text-[15px] font-semibold text-gray-900" numberOfLines={1}>
               {name}
             </Text>
-            <View className="flex-row items-center gap-1 ml-2">
-              <Star size={12} color="#000000" fill="#000000" strokeWidth={0} />
-              <Text className="text-[13px] text-gray-900">{rating}</Text>
+            <View className="ml-2">
+              <StarRating rating={rating} size="sm" variant="black" showReviews={false} />
             </View>
           </View>
 
@@ -104,9 +87,9 @@ export function HotelCardCompact({
           {/* Price */}
           <View className="flex-row items-baseline mt-1">
             <Text className="text-[15px] font-semibold text-gray-900">
-              {formatPrice(price)}
+              {formatCurrency(price)}
             </Text>
-            <Text className="text-[13px] text-gray-500"> night</Text>
+            <Text className="text-[13px] text-gray-500"> / noite</Text>
           </View>
         </View>
       </TouchableOpacity>

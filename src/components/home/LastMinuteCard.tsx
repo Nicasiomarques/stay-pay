@@ -1,8 +1,10 @@
 import React from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
-import { Clock, Star } from 'lucide-react-native';
+import { Clock } from 'lucide-react-native';
 import { haptics } from '@/utils/haptics';
 import { useRouter } from 'expo-router';
+import { StarRating } from '@/components/ui';
+import { formatCurrency } from '@/utils/formatters';
 
 interface LastMinuteCardProps {
   id: number;
@@ -30,10 +32,6 @@ export function LastMinuteCard({
   const handlePress = () => {
     haptics.light();
     router.push(`/hotel/${id}`);
-  };
-
-  const formatPrice = (value: number) => {
-    return `${value.toLocaleString()} Kz`;
   };
 
   const discountPercent = Math.round(
@@ -74,16 +72,13 @@ export function LastMinuteCard({
         </Text>
 
         <View className="flex-row items-center justify-between mt-2">
-          <View className="flex-row items-center gap-1">
-            <Star size={12} color="#000000" fill="#000000" strokeWidth={0} />
-            <Text className="text-xs text-gray-900">{rating}</Text>
-          </View>
+          <StarRating rating={rating} size="sm" variant="black" showReviews={false} />
           <View className="items-end">
             <Text className="text-[10px] text-gray-400 line-through">
-              {formatPrice(originalPrice)}
+              {formatCurrency(originalPrice)}
             </Text>
             <Text className="text-sm font-bold text-red-500">
-              {formatPrice(discountedPrice)}
+              {formatCurrency(discountedPrice)}
             </Text>
           </View>
         </View>

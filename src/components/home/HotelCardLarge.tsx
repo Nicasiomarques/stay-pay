@@ -1,10 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useRef } from 'react';
 import { View, Text, Image, TouchableOpacity } from 'react-native';
 import * as Animatable from 'react-native-animatable';
-import { MapPin, Star, Bed, Bath, Users, Heart } from 'lucide-react-native';
+import { MapPin, Bed, Bath, Users } from 'lucide-react-native';
 import { haptics } from '@/utils/haptics';
 import { shadows } from '@/utils/shadows';
 import { useRouter } from 'expo-router';
+import { StarRating, FavoriteButton } from '@/components/ui';
+import { formatCurrency, formatReviewCount } from '@/utils/formatters';
 
 interface HotelCardLargeProps {
   id: number;
@@ -36,9 +38,7 @@ export function HotelCardLarge({
   onFavoritePress,
 }: HotelCardLargeProps) {
   const router = useRouter();
-  const [favorite, setFavorite] = useState(isFavorite);
   const cardRef = useRef<any>(null);
-  const heartRef = useRef<any>(null);
 
   const handlePress = () => {
     haptics.light();
@@ -55,21 +55,7 @@ export function HotelCardLarge({
   };
 
   const handleFavorite = () => {
-    haptics.medium();
-    heartRef.current?.pulse?.(300);
-    setFavorite(!favorite);
     onFavoritePress?.();
-  };
-
-  const formatPrice = (value: number) => {
-    return `$${value.toLocaleString()}`;
-  };
-
-  const formatReviews = (count: number) => {
-    if (count >= 1000) {
-      return `(${(count / 1000).toFixed(1)}K)`;
-    }
-    return `(${count})`;
   };
 
   return (
@@ -90,24 +76,14 @@ export function HotelCardLarge({
             resizeMode="cover"
           />
 
-          {/* Favorite Button - Animated */}
-          <TouchableOpacity
-            className={`absolute top-3 right-3 w-9 h-9 rounded-full items-center justify-center ${
-              favorite ? 'bg-secondary' : 'bg-white'
-            }`}
+          {/* Favorite Button */}
+          <FavoriteButton
+            isFavorite={isFavorite}
             onPress={handleFavorite}
-            activeOpacity={0.8}
-            style={shadows.buttonLight}
-          >
-            <Animatable.View ref={heartRef}>
-              <Heart
-                size={18}
-                color={favorite ? '#FFFFFF' : '#10B981'}
-                fill={favorite ? '#FFFFFF' : 'transparent'}
-                strokeWidth={2}
-              />
-            </Animatable.View>
-          </TouchableOpacity>
+            variant="solid"
+            size="sm"
+            style={[{ position: 'absolute', top: 12, right: 12 }, shadows.buttonLight]}
+          />
         </View>
 
         {/* Content */}
@@ -117,7 +93,7 @@ export function HotelCardLarge({
             <Text className="flex-1 text-lg font-semibold text-gray-900 mr-3" numberOfLines={1}>
               {name}
             </Text>
-            <Text className="text-lg font-bold text-secondary">{formatPrice(price)}</Text>
+            <Text className="text-lg font-bold text-secondary">{formatCurrency(price)}</Text>
           </View>
 
           {/* Location Row */}
@@ -125,9 +101,8 @@ export function HotelCardLarge({
             <MapPin size={14} color="#737373" strokeWidth={2} />
             <Text className="text-[13px] text-gray-500 ml-1">{location}</Text>
             <Text className="text-[13px] text-gray-500 mx-1">·</Text>
-            <Star size={14} color="#F59E0B" fill="#F59E0B" strokeWidth={0} />
-            <Text className="text-[13px] font-semibold text-gray-900 ml-1">{rating}</Text>
-            <Text className="text-[13px] text-gray-500">{formatReviews(reviews)}</Text>
+            <StarRating rating={rating} reviews={reviews} size="sm" showReviews={false} />
+            <Text className="text-[13px] text-gray-500">{formatReviewCount(reviews)}</Text>
           </View>
 
           {/* Specs Row */}
