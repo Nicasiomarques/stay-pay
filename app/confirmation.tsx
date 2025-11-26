@@ -1,5 +1,5 @@
 import { useEffect } from 'react';
-import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import { View, Text, ScrollView } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -14,7 +14,6 @@ export default function ConfirmationScreen() {
   const router = useRouter();
   const { booking, calculateTotal, getNights, resetBooking } = useBooking();
 
-  // Trigger success haptic on mount
   useEffect(() => {
     if (booking.hotel) {
       haptics.success();
@@ -23,9 +22,9 @@ export default function ConfirmationScreen() {
 
   if (!booking.hotel) {
     return (
-      <SafeAreaView style={styles.container}>
-        <View style={styles.centered}>
-          <Text style={styles.errorText}>Nenhuma reserva encontrada</Text>
+      <SafeAreaView className="flex-1 bg-white">
+        <View className="flex-1 justify-center items-center">
+          <Text className="text-base text-gray-500">Nenhuma reserva encontrada</Text>
         </View>
       </SafeAreaView>
     );
@@ -54,70 +53,89 @@ export default function ConfirmationScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        {/* Success Icon - Animated */}
-        <Animatable.View animation="bounceIn" duration={600} style={styles.successIcon}>
+    <SafeAreaView className="flex-1 bg-white">
+      <ScrollView showsVerticalScrollIndicator={false} contentContainerClassName="pb-6">
+        {/* Success Icon */}
+        <Animatable.View animation="bounceIn" duration={600} className="items-center pt-12 pb-6">
           <CheckCircle size={80} color={colors.success} />
         </Animatable.View>
 
-        {/* Title - Animated */}
-        <Animatable.View animation="fadeInUp" delay={200} duration={400} style={styles.header}>
-          <Text style={styles.title}>Reserva Confirmada!</Text>
-          <Text style={styles.subtitle}>
+        {/* Title */}
+        <Animatable.View animation="fadeInUp" delay={200} duration={400} className="items-center px-6 mb-8">
+          <Text className="text-[28px] font-bold text-gray-900 mb-2 text-center">
+            Reserva Confirmada!
+          </Text>
+          <Text className="text-base text-gray-500 text-center">
             A sua reserva foi confirmada com sucesso
           </Text>
         </Animatable.View>
 
-        <View style={styles.content}>
-          {/* Booking Number - Animated */}
+        <View className="px-6 gap-4">
+          {/* Booking Number */}
           <Animatable.View animation="fadeInUp" delay={300} duration={400}>
-            <Card style={styles.bookingNumberCard}>
-              <Text style={styles.bookingNumberLabel}>Número da Reserva</Text>
-              <Text style={styles.bookingNumber}>{bookingNumber}</Text>
+            <Card
+              className="p-5 items-center"
+              style={{
+                backgroundColor: colors.primary + '10',
+                borderWidth: 1,
+                borderColor: colors.primary + '40',
+              }}
+            >
+              <Text className="text-sm text-gray-500 mb-2">Número da Reserva</Text>
+              <Text className="text-2xl font-bold text-primary tracking-widest">
+                {bookingNumber}
+              </Text>
             </Card>
           </Animatable.View>
 
-          {/* Hotel Info - Animated */}
+          {/* Hotel Info */}
           <Animatable.View animation="fadeInUp" delay={400} duration={400}>
-            <Card style={styles.infoCard}>
-              <Text style={styles.cardTitle}>Detalhes da Reserva</Text>
+            <Card className="p-4">
+              <Text className="text-lg font-semibold text-gray-900 mb-4">
+                Detalhes da Reserva
+              </Text>
 
-              <View style={styles.hotelHeader}>
-                <Text style={styles.hotelName}>{booking.hotel.name}</Text>
-                <View style={styles.roomBadge}>
-                  <Text style={styles.roomBadgeText}>{selectedRoom.type}</Text>
+              <View className="mb-4">
+                <Text className="text-xl font-semibold text-gray-900 mb-2">
+                  {booking.hotel.name}
+                </Text>
+                <View className="self-start bg-gray-100 px-3 py-1.5 rounded-lg">
+                  <Text className="text-xs font-semibold text-gray-700">
+                    {selectedRoom.type}
+                  </Text>
                 </View>
               </View>
 
-              <View style={styles.detailsList}>
-                <View style={styles.detailItem}>
+              <View className="gap-4">
+                <View className="flex-row items-start gap-3">
                   <MapPin size={20} color={colors.gray500} />
-                  <Text style={styles.detailText}>{booking.hotel.location}</Text>
+                  <Text className="text-base text-gray-900 flex-1">
+                    {booking.hotel.location}
+                  </Text>
                 </View>
 
-                <View style={styles.detailItem}>
+                <View className="flex-row items-start gap-3">
                   <Calendar size={20} color={colors.gray500} />
                   <View>
-                    <Text style={styles.detailText}>
+                    <Text className="text-base text-gray-900">
                       {formatDate(booking.checkIn)}
                     </Text>
-                    <Text style={styles.detailSubtext}>
+                    <Text className="text-sm text-gray-500 mt-0.5">
                       até {formatDate(booking.checkOut)} ({getNights()} {getNights() === 1 ? 'noite' : 'noites'})
                     </Text>
                   </View>
                 </View>
 
-                <View style={styles.detailItem}>
+                <View className="flex-row items-start gap-3">
                   <Users size={20} color={colors.gray500} />
-                  <Text style={styles.detailText}>
+                  <Text className="text-base text-gray-900">
                     {formatGuestCount(booking.guests)}
                   </Text>
                 </View>
 
-                <View style={styles.detailItem}>
+                <View className="flex-row items-start gap-3">
                   <CreditCard size={20} color={colors.gray500} />
-                  <Text style={styles.detailText}>
+                  <Text className="text-base text-gray-900">
                     {booking.paymentMethod === 'card' ? 'Cartão' :
                      booking.paymentMethod === 'mobile' ? 'Mobile Money' :
                      'Pagar na Propriedade'}
@@ -127,45 +145,51 @@ export default function ConfirmationScreen() {
             </Card>
           </Animatable.View>
 
-          {/* Price Summary - Animated */}
+          {/* Price Summary */}
           <Animatable.View animation="fadeInUp" delay={500} duration={400}>
-            <Card style={styles.priceCard}>
-              <Text style={styles.cardTitle}>Total Pago</Text>
-              <Text style={styles.totalAmount}>{formatCurrency(calculateTotal())}</Text>
+            <Card className="p-4 items-center">
+              <Text className="text-lg font-semibold text-gray-900 mb-4">
+                Total Pago
+              </Text>
+              <Text className="text-[32px] font-bold text-success my-2">
+                {formatCurrency(calculateTotal())}
+              </Text>
               {booking.paymentMethod === 'property' && (
-                <Text style={styles.paymentNote}>
+                <Text className="text-xs text-gray-500 italic">
                   * Pagamento será realizado no check-in
                 </Text>
               )}
             </Card>
           </Animatable.View>
 
-          {/* Next Steps - Animated */}
+          {/* Next Steps */}
           <Animatable.View animation="fadeInUp" delay={600} duration={400}>
-            <Card style={styles.nextStepsCard}>
-              <Text style={styles.cardTitle}>Próximos Passos</Text>
-              <View style={styles.stepsList}>
-                <View style={styles.step}>
-                  <View style={styles.stepNumber}>
-                    <Text style={styles.stepNumberText}>1</Text>
+            <Card className="p-4">
+              <Text className="text-lg font-semibold text-gray-900 mb-4">
+                Próximos Passos
+              </Text>
+              <View className="gap-4">
+                <View className="flex-row items-start gap-3">
+                  <View className="w-7 h-7 rounded-full bg-primary items-center justify-center">
+                    <Text className="text-sm font-bold text-white">1</Text>
                   </View>
-                  <Text style={styles.stepText}>
+                  <Text className="flex-1 text-sm text-gray-900 leading-5 pt-1">
                     Recebera um email de confirmação
                   </Text>
                 </View>
-                <View style={styles.step}>
-                  <View style={styles.stepNumber}>
-                    <Text style={styles.stepNumberText}>2</Text>
+                <View className="flex-row items-start gap-3">
+                  <View className="w-7 h-7 rounded-full bg-primary items-center justify-center">
+                    <Text className="text-sm font-bold text-white">2</Text>
                   </View>
-                  <Text style={styles.stepText}>
+                  <Text className="flex-1 text-sm text-gray-900 leading-5 pt-1">
                     Chegue no hotel na data de check-in
                   </Text>
                 </View>
-                <View style={styles.step}>
-                  <View style={styles.stepNumber}>
-                    <Text style={styles.stepNumberText}>3</Text>
+                <View className="flex-row items-start gap-3">
+                  <View className="w-7 h-7 rounded-full bg-primary items-center justify-center">
+                    <Text className="text-sm font-bold text-white">3</Text>
                   </View>
-                  <Text style={styles.stepText}>
+                  <Text className="flex-1 text-sm text-gray-900 leading-5 pt-1">
                     Apresente o número da reserva na recepção
                   </Text>
                 </View>
@@ -173,216 +197,32 @@ export default function ConfirmationScreen() {
             </Card>
           </Animatable.View>
 
-          {/* Download Button - Animated */}
+          {/* Download Button */}
           <Animatable.View animation="fadeInUp" delay={700} duration={400}>
-            <Button
-              variant="outline"
-              fullWidth
-              style={styles.downloadButton}
-            >
+            <Button variant="outline" fullWidth className="flex-row gap-2 items-center justify-center">
               <Download size={20} color={colors.primary} />
-              <Text style={styles.downloadText}>Baixar Comprovante</Text>
+              <Text className="text-base font-semibold text-primary">
+                Baixar Comprovante
+              </Text>
             </Button>
           </Animatable.View>
         </View>
       </ScrollView>
 
       {/* Bottom Buttons */}
-      <Animatable.View animation="slideInUp" delay={800} duration={400} style={styles.footer}>
-        <Button
-          variant="outline"
-          fullWidth
-          onPress={handleViewBookings}
-          style={styles.footerButton}
-        >
+      <Animatable.View
+        animation="slideInUp"
+        delay={800}
+        duration={400}
+        className="p-6 bg-white border-t border-gray-200 gap-3"
+      >
+        <Button variant="outline" fullWidth onPress={handleViewBookings}>
           Ver Minhas Reservas
         </Button>
-        <Button
-          fullWidth
-          onPress={handleBackToHome}
-          style={styles.footerButton}
-        >
+        <Button fullWidth onPress={handleBackToHome}>
           Voltar ao Início
         </Button>
       </Animatable.View>
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.white,
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  errorText: {
-    fontSize: 16,
-    color: colors.text.secondary,
-  },
-  scrollContent: {
-    paddingBottom: 24,
-  },
-  successIcon: {
-    alignItems: 'center',
-    paddingTop: 48,
-    paddingBottom: 24,
-  },
-  header: {
-    alignItems: 'center',
-    paddingHorizontal: 24,
-    marginBottom: 32,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: colors.text.primary,
-    marginBottom: 8,
-    textAlign: 'center',
-  },
-  subtitle: {
-    fontSize: 16,
-    color: colors.text.secondary,
-    textAlign: 'center',
-  },
-  content: {
-    paddingHorizontal: 24,
-    gap: 16,
-  },
-  bookingNumberCard: {
-    padding: 20,
-    alignItems: 'center',
-    backgroundColor: colors.primary + '10',
-    borderWidth: 1,
-    borderColor: colors.primary + '40',
-  },
-  bookingNumberLabel: {
-    fontSize: 14,
-    color: colors.text.secondary,
-    marginBottom: 8,
-  },
-  bookingNumber: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.primary,
-    letterSpacing: 2,
-  },
-  infoCard: {
-    padding: 16,
-  },
-  cardTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginBottom: 16,
-  },
-  hotelHeader: {
-    marginBottom: 16,
-  },
-  hotelName: {
-    fontSize: 20,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginBottom: 8,
-  },
-  roomBadge: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.gray100,
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 8,
-  },
-  roomBadgeText: {
-    fontSize: 12,
-    fontWeight: '600',
-    color: colors.gray700,
-  },
-  detailsList: {
-    gap: 16,
-  },
-  detailItem: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-  },
-  detailText: {
-    fontSize: 16,
-    color: colors.text.primary,
-    flex: 1,
-  },
-  detailSubtext: {
-    fontSize: 14,
-    color: colors.text.secondary,
-    marginTop: 2,
-  },
-  priceCard: {
-    padding: 16,
-    alignItems: 'center',
-  },
-  totalAmount: {
-    fontSize: 32,
-    fontWeight: 'bold',
-    color: colors.success,
-    marginVertical: 8,
-  },
-  paymentNote: {
-    fontSize: 12,
-    color: colors.text.secondary,
-    fontStyle: 'italic',
-  },
-  nextStepsCard: {
-    padding: 16,
-  },
-  stepsList: {
-    gap: 16,
-  },
-  step: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
-    gap: 12,
-  },
-  stepNumber: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  stepNumberText: {
-    fontSize: 14,
-    fontWeight: 'bold',
-    color: colors.white,
-  },
-  stepText: {
-    flex: 1,
-    fontSize: 14,
-    color: colors.text.primary,
-    lineHeight: 20,
-    paddingTop: 4,
-  },
-  downloadButton: {
-    flexDirection: 'row',
-    gap: 8,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  downloadText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-  footer: {
-    padding: 24,
-    backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-    gap: 12,
-  },
-  footerButton: {
-    marginBottom: 0,
-  },
-});

@@ -1,5 +1,5 @@
 import { useState, useRef } from 'react';
-import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import { View, Text, ScrollView, Pressable } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
@@ -63,19 +63,25 @@ export default function PaymentScreen() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
+    <SafeAreaView className="flex-1 bg-gray-50">
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <Animatable.View animation="fadeInDown" duration={500} style={styles.header}>
-          <Text style={styles.title}>Pagamento</Text>
-          <Text style={styles.subtitle}>
+        <Animatable.View
+          animation="fadeInDown"
+          duration={500}
+          className="bg-white p-6 pt-8 border-b border-gray-200"
+        >
+          <Text className="text-[28px] font-bold text-gray-900 mb-2">
+            Pagamento
+          </Text>
+          <Text className="text-base text-gray-500">
             Escolha o método de pagamento
           </Text>
         </Animatable.View>
 
-        <View style={styles.content}>
+        <View className="p-6 gap-4">
           {/* Payment Methods */}
-          <View style={styles.methodsContainer}>
+          <View className="gap-3">
             {paymentMethods.map((method, index) => {
               const isSelected = selectedMethod === method.id;
               return (
@@ -86,28 +92,30 @@ export default function PaymentScreen() {
                   duration={500}
                 >
                   <Pressable
-                    style={[
-                      styles.methodCard,
-                      isSelected && styles.methodCardSelected,
-                    ]}
+                    className={`flex-row items-center p-4 bg-white rounded-xl border-2 ${
+                      isSelected ? 'border-primary' : 'border-gray-200'
+                    }`}
+                    style={isSelected ? { backgroundColor: colors.primary + '10' } : undefined}
                     onPress={() => handlePaymentMethodSelect(method.id)}
                   >
-                    <View style={styles.methodIcon}>
+                    <View className="w-12 h-12 rounded-full bg-gray-100 items-center justify-center mr-3">
                       <method.icon
                         size={24}
                         color={isSelected ? colors.primary : colors.gray600}
                       />
                     </View>
-                    <View style={styles.methodInfo}>
-                      <Text style={styles.methodTitle}>{method.title}</Text>
-                      <Text style={styles.methodSubtitle}>{method.subtitle}</Text>
+                    <View className="flex-1">
+                      <Text className="text-base font-semibold text-gray-900 mb-1">
+                        {method.title}
+                      </Text>
+                      <Text className="text-sm text-gray-500">{method.subtitle}</Text>
                     </View>
                     {isSelected && (
                       <Animatable.View
                         ref={(ref) => { checkRefs.current[method.id] = ref; }}
                         animation="bounceIn"
                         duration={400}
-                        style={styles.checkIcon}
+                        className="w-7 h-7 rounded-full bg-primary items-center justify-center"
                       >
                         <Check size={20} color={colors.white} />
                       </Animatable.View>
@@ -121,8 +129,10 @@ export default function PaymentScreen() {
           {/* Card Details Form */}
           {selectedMethod === 'card' && (
             <Animatable.View animation="fadeInUp" duration={400}>
-              <Card style={styles.cardForm}>
-                <Text style={styles.formTitle}>Detalhes do Cartão</Text>
+              <Card className="p-4">
+                <Text className="text-lg font-semibold text-gray-900 mb-4">
+                  Detalhes do Cartão
+                </Text>
 
                 <Input
                   label="Número do Cartão"
@@ -141,8 +151,8 @@ export default function PaymentScreen() {
                   autoCapitalize="characters"
                 />
 
-                <View style={styles.cardRow}>
-                  <View style={styles.cardRowItem}>
+                <View className="flex-row gap-3">
+                  <View className="flex-1">
                     <Input
                       label="Validade"
                       placeholder="MM/AA"
@@ -153,7 +163,7 @@ export default function PaymentScreen() {
                       containerStyle={{ marginBottom: 0 }}
                     />
                   </View>
-                  <View style={styles.cardRowItem}>
+                  <View className="flex-1">
                     <Input
                       label="CVV"
                       placeholder="123"
@@ -173,9 +183,11 @@ export default function PaymentScreen() {
           {/* Mobile Money Info */}
           {selectedMethod === 'mobile' && (
             <Animatable.View animation="fadeInUp" duration={400}>
-              <Card style={styles.infoCard}>
-                <Text style={styles.infoTitle}>Instruções</Text>
-                <Text style={styles.infoText}>
+              <Card className="p-4">
+                <Text className="text-base font-semibold text-gray-900 mb-2">
+                  Instruções
+                </Text>
+                <Text className="text-sm text-gray-500 leading-5">
                   Será redirecionado para o seu serviço de Mobile Money para completar o pagamento.
                 </Text>
               </Card>
@@ -185,9 +197,11 @@ export default function PaymentScreen() {
           {/* Property Payment Info */}
           {selectedMethod === 'property' && (
             <Animatable.View animation="fadeInUp" duration={400}>
-              <Card style={styles.infoCard}>
-                <Text style={styles.infoTitle}>Pagamento na Propriedade</Text>
-                <Text style={styles.infoText}>
+              <Card className="p-4">
+                <Text className="text-base font-semibold text-gray-900 mb-2">
+                  Pagamento na Propriedade
+                </Text>
+                <Text className="text-sm text-gray-500 leading-5">
                   Você pode pagar no check-in com dinheiro ou cartão. A reserva será confirmada mas o pagamento será processado no hotel.
                 </Text>
               </Card>
@@ -196,10 +210,19 @@ export default function PaymentScreen() {
 
           {/* Total Summary */}
           <Animatable.View animation="fadeIn" delay={400} duration={500}>
-            <Card style={styles.totalCard}>
-              <View style={styles.totalRow}>
-                <Text style={styles.totalLabel}>Total a Pagar</Text>
-                <Animatable.Text animation="pulse" iterationCount={1} style={styles.totalValue}>
+            <Card
+              className="p-4 border border-primary/40"
+              style={{ backgroundColor: colors.primary + '10' }}
+            >
+              <View className="flex-row justify-between items-center">
+                <Text className="text-lg font-semibold text-gray-900">
+                  Total a Pagar
+                </Text>
+                <Animatable.Text
+                  animation="pulse"
+                  iterationCount={1}
+                  className="text-2xl font-bold text-primary"
+                >
                   {formatCurrency(calculateTotal())}
                 </Animatable.Text>
               </View>
@@ -209,7 +232,12 @@ export default function PaymentScreen() {
       </ScrollView>
 
       {/* Bottom Button */}
-      <Animatable.View animation="slideInUp" delay={500} duration={500} style={styles.footer}>
+      <Animatable.View
+        animation="slideInUp"
+        delay={500}
+        duration={500}
+        className="p-6 bg-white border-t border-gray-200"
+      >
         <Button size="lg" fullWidth onPress={handleConfirmPayment}>
           {selectedMethod === 'property' ? 'Confirmar Reserva' : 'Pagar Agora'}
         </Button>
@@ -217,134 +245,3 @@ export default function PaymentScreen() {
     </SafeAreaView>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: colors.gray50,
-  },
-  header: {
-    backgroundColor: colors.white,
-    padding: 24,
-    paddingTop: 32,
-    borderBottomWidth: 1,
-    borderBottomColor: colors.border,
-  },
-  title: {
-    fontSize: 28,
-    fontWeight: 'bold',
-    color: colors.text.primary,
-    marginBottom: 8,
-  },
-  subtitle: {
-    fontSize: 16,
-    color: colors.text.secondary,
-  },
-  content: {
-    padding: 24,
-    gap: 16,
-  },
-  methodsContainer: {
-    gap: 12,
-  },
-  methodCard: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: colors.white,
-    borderRadius: 12,
-    borderWidth: 2,
-    borderColor: colors.border,
-  },
-  methodCardSelected: {
-    borderColor: colors.primary,
-    backgroundColor: colors.primary + '10',
-  },
-  methodIcon: {
-    width: 48,
-    height: 48,
-    borderRadius: 24,
-    backgroundColor: colors.gray100,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginRight: 12,
-  },
-  methodInfo: {
-    flex: 1,
-  },
-  methodTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginBottom: 4,
-  },
-  methodSubtitle: {
-    fontSize: 14,
-    color: colors.text.secondary,
-  },
-  checkIcon: {
-    width: 28,
-    height: 28,
-    borderRadius: 14,
-    backgroundColor: colors.primary,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  cardForm: {
-    padding: 16,
-  },
-  formTitle: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginBottom: 16,
-  },
-  cardRow: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  cardRowItem: {
-    flex: 1,
-  },
-  infoCard: {
-    padding: 16,
-  },
-  infoTitle: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text.primary,
-    marginBottom: 8,
-  },
-  infoText: {
-    fontSize: 14,
-    color: colors.text.secondary,
-    lineHeight: 20,
-  },
-  totalCard: {
-    padding: 16,
-    backgroundColor: colors.primary + '10',
-    borderWidth: 1,
-    borderColor: colors.primary + '40',
-  },
-  totalRow: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  totalLabel: {
-    fontSize: 18,
-    fontWeight: '600',
-    color: colors.text.primary,
-  },
-  totalValue: {
-    fontSize: 24,
-    fontWeight: 'bold',
-    color: colors.primary,
-  },
-  footer: {
-    padding: 24,
-    backgroundColor: colors.white,
-    borderTopWidth: 1,
-    borderTopColor: colors.border,
-  },
-});
