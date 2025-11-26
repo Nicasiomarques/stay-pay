@@ -1,5 +1,6 @@
 import { Tabs } from 'expo-router';
 import { View, Dimensions, Pressable, Text } from 'react-native';
+import { BlurView } from 'expo-blur';
 import { Compass, Heart, Calendar, MessageCircle } from 'lucide-react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 
@@ -20,7 +21,7 @@ const labels = {
   profile: 'Messages',
 };
 
-function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
+function CustomTabBar({ state, navigation }: BottomTabBarProps) {
   return (
     <View
       style={{
@@ -29,11 +30,8 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         width: TAB_BAR_WIDTH,
         left: (SCREEN_WIDTH - TAB_BAR_WIDTH) / 2,
         height: 64,
-        backgroundColor: '#171717',
         borderRadius: 40,
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-around',
+        overflow: 'hidden',
         elevation: 15,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 8 },
@@ -41,8 +39,21 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
         shadowRadius: 16,
       }}
     >
+      <BlurView
+        intensity={100}
+        tint="dark"
+        experimentalBlurMethod="dimezisBlurView"
+        style={{
+          flex: 1,
+          flexDirection: 'row',
+          alignItems: 'center',
+          justifyContent: 'space-around',
+          borderRadius: 40,
+          borderWidth: 1,
+          borderColor: 'rgba(255, 255, 255, 0.15)',
+        }}
+      >
       {state.routes.map((route, index) => {
-        const { options } = descriptors[route.key];
         const isFocused = state.index === index;
         const Icon = icons[route.name as keyof typeof icons];
         const label = labels[route.name as keyof typeof labels];
@@ -88,6 +99,7 @@ function CustomTabBar({ state, descriptors, navigation }: BottomTabBarProps) {
           </Pressable>
         );
       })}
+      </BlurView>
     </View>
   );
 }
