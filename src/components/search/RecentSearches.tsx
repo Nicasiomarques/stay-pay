@@ -1,16 +1,71 @@
 /**
  * RecentSearches Component
- * Displays recent search history with chips
+ * Displays recent search history with chips and stagger animations
  */
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useRef } from 'react';
 import { View, Text, StyleSheet, Pressable, ScrollView } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { Clock, X } from 'lucide-react-native';
 import { colors } from '@theme';
 import { RecentSearchesService } from '@/services/recentSearches';
+import { haptics } from '@/utils/haptics';
 
 interface RecentSearchesProps {
   onSelectSearch: (search: string) => void;
+}
+
+// Animated Chip component for individual search items
+interface AnimatedChipProps {
+  search: string;
+  index: number;
+  onSelect: (search: string) => void;
+  onRemove: (search: string) => void;
+}
+
+function AnimatedSearchChip({ search, index, onSelect, onRemove }: AnimatedChipProps) {
+  const chipRef = useRef<any>(null);
+
+  const handlePressIn = () => {
+    chipRef.current?.animate?.({ 0: { scale: 1 }, 1: { scale: 0.95 } }, 100);
+  };
+
+  const handlePressOut = () => {
+    chipRef.current?.animate?.({ 0: { scale: 0.95 }, 1: { scale: 1 } }, 100);
+  };
+
+  const handlePress = () => {
+    haptics.light();
+    onSelect(search);
+  };
+
+  return (
+    <Animatable.View
+      ref={chipRef}
+      animation="fadeInUp"
+      delay={index * 50}
+      duration={400}
+      style={styles.chipWrapper}
+    >
+      <Pressable
+        style={styles.chip}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={handlePress}
+      >
+        <Text style={styles.chipText} numberOfLines={1}>
+          {search}
+        </Text>
+      </Pressable>
+      <Pressable
+        style={styles.removeButton}
+        onPress={() => onRemove(search)}
+        hitSlop={8}
+      >
+        <X size={14} color={colors.text.secondary} />
+      </Pressable>
+    </Animatable.View>
+  );
 }
 
 export function RecentSearches({ onSelectSearch }: RecentSearchesProps) {
@@ -41,7 +96,7 @@ export function RecentSearches({ onSelectSearch }: RecentSearchesProps) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.header}>
+      <Animatable.View animation="fadeIn" duration={400} style={styles.header}>
         <View style={styles.titleRow}>
           <Clock size={18} color={colors.text.secondary} />
           <Text style={styles.title}>Pesquisas Recentes</Text>
@@ -49,7 +104,7 @@ export function RecentSearches({ onSelectSearch }: RecentSearchesProps) {
         <Pressable onPress={handleClearAll}>
           <Text style={styles.clearButton}>Limpar tudo</Text>
         </Pressable>
-      </View>
+      </Animatable.View>
 
       <ScrollView
         horizontal
@@ -57,23 +112,13 @@ export function RecentSearches({ onSelectSearch }: RecentSearchesProps) {
         contentContainerStyle={styles.chipsContainer}
       >
         {searches.map((search, index) => (
-          <View key={index} style={styles.chipWrapper}>
-            <Pressable
-              style={styles.chip}
-              onPress={() => onSelectSearch(search)}
-            >
-              <Text style={styles.chipText} numberOfLines={1}>
-                {search}
-              </Text>
-            </Pressable>
-            <Pressable
-              style={styles.removeButton}
-              onPress={() => handleRemoveSearch(search)}
-              hitSlop={8}
-            >
-              <X size={14} color={colors.text.secondary} />
-            </Pressable>
-          </View>
+          <AnimatedSearchChip
+            key={index}
+            search={search}
+            index={index}
+            onSelect={onSelectSearch}
+            onRemove={handleRemoveSearch}
+          />
         ))}
       </ScrollView>
     </View>

@@ -1,5 +1,8 @@
+import { useRef } from 'react';
 import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { colors } from '@theme';
+import { haptics } from '@/utils/haptics';
 
 interface ButtonProps {
   children: React.ReactNode;
@@ -25,32 +28,60 @@ export function Button({
   textStyle,
 }: ButtonProps) {
   const isDisabled = disabled || loading;
+  const buttonRef = useRef<any>(null);
+
+  const handlePressIn = () => {
+    if (!isDisabled) {
+      buttonRef.current?.animate?.({ 0: { scale: 1 }, 1: { scale: 0.96 } }, 100);
+    }
+  };
+
+  const handlePressOut = () => {
+    if (!isDisabled) {
+      buttonRef.current?.animate?.({ 0: { scale: 0.96 }, 1: { scale: 1 } }, 100);
+    }
+  };
+
+  const handlePress = () => {
+    if (!isDisabled) {
+      if (variant === 'primary') {
+        haptics.medium();
+      } else {
+        haptics.light();
+      }
+      onPress?.();
+    }
+  };
 
   return (
-    <TouchableOpacity
-      style={[
-        styles.base,
-        styles[variant],
-        styles[`size_${size}`],
-        fullWidth && styles.fullWidth,
-        isDisabled && styles.disabled,
-        style,
-      ]}
-      onPress={onPress}
-      disabled={isDisabled}
-      activeOpacity={0.7}
-    >
-      {loading ? (
-        <ActivityIndicator
-          color={variant === 'primary' ? colors.white : colors.primary}
-          size="small"
-        />
-      ) : (
-        <Text style={[styles.text, styles[`text_${variant}`], styles[`text_${size}`], textStyle]}>
-          {children}
-        </Text>
-      )}
-    </TouchableOpacity>
+    <Animatable.View ref={buttonRef} style={fullWidth && styles.fullWidth}>
+      <TouchableOpacity
+        style={[
+          styles.base,
+          styles[variant],
+          styles[`size_${size}`],
+          fullWidth && styles.fullWidth,
+          isDisabled && styles.disabled,
+          style,
+        ]}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={handlePress}
+        disabled={isDisabled}
+        activeOpacity={1}
+      >
+        {loading ? (
+          <ActivityIndicator
+            color={variant === 'primary' ? colors.white : colors.primary}
+            size="small"
+          />
+        ) : (
+          <Text style={[styles.text, styles[`text_${variant}`], styles[`text_${size}`], textStyle]}>
+            {children}
+          </Text>
+        )}
+      </TouchableOpacity>
+    </Animatable.View>
   );
 }
 

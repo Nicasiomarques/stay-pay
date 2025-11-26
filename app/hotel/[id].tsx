@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import {
   View,
   Text,
@@ -7,6 +7,7 @@ import {
   Image,
   Share,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import {
@@ -40,6 +41,8 @@ export default function HotelDetailScreen() {
   const [currentImageIndex] = useState(0);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
+  const heartRef = useRef<Animatable.View & View>(null);
+
   const handleBack = () => {
     haptics.light();
     router.back();
@@ -48,6 +51,7 @@ export default function HotelDetailScreen() {
   const handleFavorite = () => {
     haptics.medium();
     setIsFavorite(!isFavorite);
+    heartRef.current?.pulse?.(400);
   };
 
   const handleShare = async () => {
@@ -114,7 +118,7 @@ export default function HotelDetailScreen() {
     <View className="flex-1 bg-white">
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Hero Image */}
-        <View className="h-80 w-full relative">
+        <Animatable.View animation="fadeIn" duration={400} className="h-80 w-full relative">
           <Image
             source={{ uri: images[currentImageIndex] }}
             className="w-full h-full"
@@ -122,57 +126,79 @@ export default function HotelDetailScreen() {
           />
 
           {/* Image Counter */}
-          <View className="absolute top-[60px] right-5 bg-black/50 px-3 py-1.5 rounded-2xl">
+          <Animatable.View
+            animation="fadeIn"
+            delay={300}
+            className="absolute top-[60px] right-5 bg-black/50 px-3 py-1.5 rounded-2xl"
+          >
             <Text className="text-[13px] font-semibold text-white">
               {currentImageIndex + 1}/{totalImages}
             </Text>
-          </View>
+          </Animatable.View>
 
           {/* Floating Header */}
           <SafeAreaView className="absolute top-0 left-0 right-0" edges={['top']}>
             <View className="flex-row justify-between items-center px-5 pt-2">
               {/* Back Button */}
-              <TouchableOpacity
-                className="w-11 h-11 rounded-full bg-black/30 items-center justify-center"
-                onPress={handleBack}
-                activeOpacity={0.8}
-              >
-                <ArrowLeft size={22} color="#FFFFFF" strokeWidth={2} />
-              </TouchableOpacity>
+              <Animatable.View animation="fadeIn" delay={200}>
+                <TouchableOpacity
+                  className="w-11 h-11 rounded-full bg-black/30 items-center justify-center"
+                  onPress={handleBack}
+                  activeOpacity={0.8}
+                >
+                  <ArrowLeft size={22} color="#FFFFFF" strokeWidth={2} />
+                </TouchableOpacity>
+              </Animatable.View>
 
               {/* Right Buttons */}
               <View className="flex-row gap-3">
-                <TouchableOpacity
-                  className="w-11 h-11 rounded-full bg-black/30 items-center justify-center"
-                  onPress={handleFavorite}
-                  activeOpacity={0.8}
-                >
-                  <Heart
-                    size={22}
-                    color="#FFFFFF"
-                    fill={isFavorite ? '#FFFFFF' : 'transparent'}
-                    strokeWidth={2}
-                  />
-                </TouchableOpacity>
-                <TouchableOpacity
-                  className="w-11 h-11 rounded-full bg-black/30 items-center justify-center"
-                  onPress={handleShare}
-                  activeOpacity={0.8}
-                >
-                  <Share2 size={22} color="#FFFFFF" strokeWidth={2} />
-                </TouchableOpacity>
+                <Animatable.View ref={heartRef} animation="fadeIn" delay={300}>
+                  <TouchableOpacity
+                    className="w-11 h-11 rounded-full bg-black/30 items-center justify-center"
+                    onPress={handleFavorite}
+                    activeOpacity={0.8}
+                  >
+                    <Heart
+                      size={22}
+                      color="#FFFFFF"
+                      fill={isFavorite ? '#FFFFFF' : 'transparent'}
+                      strokeWidth={2}
+                    />
+                  </TouchableOpacity>
+                </Animatable.View>
+                <Animatable.View animation="fadeIn" delay={400}>
+                  <TouchableOpacity
+                    className="w-11 h-11 rounded-full bg-black/30 items-center justify-center"
+                    onPress={handleShare}
+                    activeOpacity={0.8}
+                  >
+                    <Share2 size={22} color="#FFFFFF" strokeWidth={2} />
+                  </TouchableOpacity>
+                </Animatable.View>
               </View>
             </View>
           </SafeAreaView>
-        </View>
+        </Animatable.View>
 
         {/* Content */}
         <View className="p-5 pb-[120px]">
           {/* Hotel Name */}
-          <Text className="text-2xl font-bold text-gray-900 mb-3">{hotel.name}</Text>
+          <Animatable.Text
+            animation="fadeInUp"
+            delay={100}
+            duration={500}
+            className="text-2xl font-bold text-gray-900 mb-3"
+          >
+            {hotel.name}
+          </Animatable.Text>
 
           {/* Location & Rating Row */}
-          <View className="flex-row items-center justify-between mb-4">
+          <Animatable.View
+            animation="fadeInUp"
+            delay={200}
+            duration={500}
+            className="flex-row items-center justify-between mb-4"
+          >
             <View className="flex-row items-center gap-1">
               <MapPin size={16} color="#737373" strokeWidth={2} />
               <Text className="text-sm text-gray-500">{hotel.location}</Text>
@@ -185,10 +211,15 @@ export default function HotelDetailScreen() {
               </Text>
               <ChevronRight size={16} color="#737373" strokeWidth={2} />
             </View>
-          </View>
+          </Animatable.View>
 
           {/* Specs Row */}
-          <View className="flex-row items-center py-4 border-t border-b border-gray-200 mb-6">
+          <Animatable.View
+            animation="fadeIn"
+            delay={300}
+            duration={500}
+            className="flex-row items-center py-4 border-t border-b border-gray-200 mb-6"
+          >
             <View className="flex-row items-center gap-2">
               <Users size={18} color="#737373" strokeWidth={2} />
               <Text className="text-sm text-gray-500 font-medium">4 Guests</Text>
@@ -203,26 +234,31 @@ export default function HotelDetailScreen() {
               <Bath size={18} color="#737373" strokeWidth={2} />
               <Text className="text-sm text-gray-500 font-medium">2 Baths</Text>
             </View>
-          </View>
+          </Animatable.View>
 
           {/* Highlights Section */}
-          <View className="mb-6">
+          <Animatable.View animation="fadeInUp" delay={400} duration={500} className="mb-6">
             <Text className="text-lg font-semibold text-gray-900 mb-4">Highlights</Text>
             <View className="flex-row flex-wrap gap-3">
               {highlights.map((highlight, index) => {
                 const IconComponent = highlight.icon;
                 return (
-                  <View key={index} className="flex-row items-center gap-2 bg-gray-100 px-4 py-3 rounded-xl">
+                  <Animatable.View
+                    key={index}
+                    animation="fadeIn"
+                    delay={500 + index * 100}
+                    className="flex-row items-center gap-2 bg-gray-100 px-4 py-3 rounded-xl"
+                  >
                     <IconComponent size={20} color="#737373" strokeWidth={1.5} />
                     <Text className="text-sm text-neutral-600 font-medium">{highlight.label}</Text>
-                  </View>
+                  </Animatable.View>
                 );
               })}
             </View>
-          </View>
+          </Animatable.View>
 
           {/* Description Section */}
-          <View className="mb-6">
+          <Animatable.View animation="fadeInUp" delay={600} duration={500} className="mb-6">
             <Text className="text-lg font-semibold text-gray-900 mb-4">Description</Text>
             <Text
               className="text-[15px] text-neutral-600 leading-6"
@@ -239,12 +275,15 @@ export default function HotelDetailScreen() {
                 {showFullDescription ? 'Less' : '...More'}
               </Text>
             </TouchableOpacity>
-          </View>
+          </Animatable.View>
         </View>
       </ScrollView>
 
       {/* Bottom Bar */}
-      <View
+      <Animatable.View
+        animation="slideInUp"
+        delay={300}
+        duration={500}
         className="absolute bottom-0 left-0 right-0 flex-row items-center justify-between px-5 py-4 pb-8 bg-white border-t border-gray-200"
         style={{
           shadowColor: '#000',
@@ -274,7 +313,7 @@ export default function HotelDetailScreen() {
         >
           <Text className="text-base font-bold text-white">Book Now</Text>
         </TouchableOpacity>
-      </View>
+      </Animatable.View>
     </View>
   );
 }

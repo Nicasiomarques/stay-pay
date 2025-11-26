@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TouchableOpacity } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Card } from '@/components/ui';
@@ -50,67 +51,75 @@ export default function BookingsScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      <Animatable.View animation="fadeInDown" duration={500} style={styles.header}>
         <Text style={styles.title}>Minhas Reservas</Text>
         <Text style={styles.subtitle}>
           {bookings.length} reserva{bookings.length !== 1 ? 's' : ''}
         </Text>
-      </View>
+      </Animatable.View>
 
       {bookings.length === 0 ? (
-        <View style={styles.empty}>
+        <Animatable.View animation="fadeIn" delay={200} style={styles.empty}>
           <Text style={styles.emptyText}>Nenhuma reserva ainda</Text>
           <Text style={styles.emptySubtext}>
             Suas reservas aparecerão aqui
           </Text>
-        </View>
+        </Animatable.View>
       ) : (
         <FlatList
           data={bookings}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <TouchableOpacity onPress={() => router.push(`/booking/${item.id}`)}>
-              <Card style={styles.bookingCard}>
-                <View style={styles.bookingHeader}>
-                  <Text style={styles.hotelName}>{item.hotel}</Text>
-                  <View
-                    style={[
-                      styles.statusBadge,
-                      { backgroundColor: getStatusColor(item.status) + '20' },
-                    ]}
-                  >
-                    <Text
+          renderItem={({ item, index }) => (
+            <Animatable.View
+              animation="fadeInUp"
+              delay={index * 100}
+              duration={500}
+            >
+              <TouchableOpacity onPress={() => router.push(`/booking/${item.id}`)}>
+                <Card style={styles.bookingCard}>
+                  <View style={styles.bookingHeader}>
+                    <Text style={styles.hotelName}>{item.hotel}</Text>
+                    <Animatable.View
+                      animation="fadeIn"
+                      delay={index * 100 + 200}
                       style={[
-                        styles.statusText,
-                        { color: getStatusColor(item.status) },
+                        styles.statusBadge,
+                        { backgroundColor: getStatusColor(item.status) + '20' },
                       ]}
                     >
-                      {item.status}
-                    </Text>
+                      <Text
+                        style={[
+                          styles.statusText,
+                          { color: getStatusColor(item.status) },
+                        ]}
+                      >
+                        {item.status}
+                      </Text>
+                    </Animatable.View>
                   </View>
-                </View>
 
-                <View style={styles.bookingInfo}>
-                  <View style={styles.infoRow}>
-                    <MapPin size={16} color={colors.gray500} />
-                    <Text style={styles.infoText}>{item.location}</Text>
+                  <View style={styles.bookingInfo}>
+                    <View style={styles.infoRow}>
+                      <MapPin size={16} color={colors.gray500} />
+                      <Text style={styles.infoText}>{item.location}</Text>
+                    </View>
+                    <View style={styles.infoRow}>
+                      <Calendar size={16} color={colors.gray500} />
+                      <Text style={styles.infoText}>
+                        {new Date(item.checkIn).toLocaleDateString('pt-PT')} - {new Date(item.checkOut).toLocaleDateString('pt-PT')}
+                      </Text>
+                    </View>
                   </View>
-                  <View style={styles.infoRow}>
-                    <Calendar size={16} color={colors.gray500} />
-                    <Text style={styles.infoText}>
-                      {new Date(item.checkIn).toLocaleDateString('pt-PT')} - {new Date(item.checkOut).toLocaleDateString('pt-PT')}
-                    </Text>
-                  </View>
-                </View>
 
-                <View style={styles.bookingFooter}>
-                  <Text style={styles.bookingNumber}>
-                    #{item.id}
-                  </Text>
-                  <ChevronRight size={20} color={colors.gray400} />
-                </View>
-              </Card>
-            </TouchableOpacity>
+                  <View style={styles.bookingFooter}>
+                    <Text style={styles.bookingNumber}>
+                      #{item.id}
+                    </Text>
+                    <ChevronRight size={20} color={colors.gray400} />
+                  </View>
+                </Card>
+              </TouchableOpacity>
+            </Animatable.View>
           )}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}

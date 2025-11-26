@@ -1,5 +1,6 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 import { View, Text, StyleSheet, ScrollView, Pressable } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { CreditCard, Smartphone, Building2, Check } from 'lucide-react-native';
@@ -17,6 +18,8 @@ export default function PaymentScreen() {
   const [cardName, setCardName] = useState('');
   const [expiryDate, setExpiryDate] = useState('');
   const [cvv, setCvv] = useState('');
+
+  const checkRefs = useRef<Record<string, any>>({});
 
   const paymentMethods = [
     {
@@ -42,6 +45,8 @@ export default function PaymentScreen() {
   const handlePaymentMethodSelect = (method: PaymentMethod) => {
     setSelectedMethod(method);
     setPaymentMethod(method);
+    // Animate checkmark
+    checkRefs.current[method]?.bounceIn?.(400);
   };
 
   const handleConfirmPayment = () => {
@@ -61,135 +66,154 @@ export default function PaymentScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.header}>
+        <Animatable.View animation="fadeInDown" duration={500} style={styles.header}>
           <Text style={styles.title}>Pagamento</Text>
           <Text style={styles.subtitle}>
             Escolha o método de pagamento
           </Text>
-        </View>
+        </Animatable.View>
 
         <View style={styles.content}>
           {/* Payment Methods */}
           <View style={styles.methodsContainer}>
-            {paymentMethods.map((method) => {
+            {paymentMethods.map((method, index) => {
               const isSelected = selectedMethod === method.id;
               return (
-                <Pressable
+                <Animatable.View
                   key={method.id}
-                  style={[
-                    styles.methodCard,
-                    isSelected && styles.methodCardSelected,
-                  ]}
-                  onPress={() => handlePaymentMethodSelect(method.id)}
+                  animation="fadeInUp"
+                  delay={100 + index * 100}
+                  duration={500}
                 >
-                  <View style={styles.methodIcon}>
-                    <method.icon
-                      size={24}
-                      color={isSelected ? colors.primary : colors.gray600}
-                    />
-                  </View>
-                  <View style={styles.methodInfo}>
-                    <Text style={styles.methodTitle}>{method.title}</Text>
-                    <Text style={styles.methodSubtitle}>{method.subtitle}</Text>
-                  </View>
-                  {isSelected && (
-                    <View style={styles.checkIcon}>
-                      <Check size={20} color={colors.white} />
+                  <Pressable
+                    style={[
+                      styles.methodCard,
+                      isSelected && styles.methodCardSelected,
+                    ]}
+                    onPress={() => handlePaymentMethodSelect(method.id)}
+                  >
+                    <View style={styles.methodIcon}>
+                      <method.icon
+                        size={24}
+                        color={isSelected ? colors.primary : colors.gray600}
+                      />
                     </View>
-                  )}
-                </Pressable>
+                    <View style={styles.methodInfo}>
+                      <Text style={styles.methodTitle}>{method.title}</Text>
+                      <Text style={styles.methodSubtitle}>{method.subtitle}</Text>
+                    </View>
+                    {isSelected && (
+                      <Animatable.View
+                        ref={(ref) => { checkRefs.current[method.id] = ref; }}
+                        animation="bounceIn"
+                        duration={400}
+                        style={styles.checkIcon}
+                      >
+                        <Check size={20} color={colors.white} />
+                      </Animatable.View>
+                    )}
+                  </Pressable>
+                </Animatable.View>
               );
             })}
           </View>
 
           {/* Card Details Form */}
           {selectedMethod === 'card' && (
-            <Card style={styles.cardForm}>
-              <Text style={styles.formTitle}>Detalhes do Cartão</Text>
+            <Animatable.View animation="fadeInUp" duration={400}>
+              <Card style={styles.cardForm}>
+                <Text style={styles.formTitle}>Detalhes do Cartão</Text>
 
-              <Input
-                label="Número do Cartão"
-                placeholder="1234 5678 9012 3456"
-                value={cardNumber}
-                onChangeText={setCardNumber}
-                keyboardType="number-pad"
-                maxLength={19}
-              />
+                <Input
+                  label="Número do Cartão"
+                  placeholder="1234 5678 9012 3456"
+                  value={cardNumber}
+                  onChangeText={setCardNumber}
+                  keyboardType="number-pad"
+                  maxLength={19}
+                />
 
-              <Input
-                label="Nome no Cartão"
-                placeholder="JOÃO SILVA"
-                value={cardName}
-                onChangeText={setCardName}
-                autoCapitalize="characters"
-              />
+                <Input
+                  label="Nome no Cartão"
+                  placeholder="JOÃO SILVA"
+                  value={cardName}
+                  onChangeText={setCardName}
+                  autoCapitalize="characters"
+                />
 
-              <View style={styles.cardRow}>
-                <View style={styles.cardRowItem}>
-                  <Input
-                    label="Validade"
-                    placeholder="MM/AA"
-                    value={expiryDate}
-                    onChangeText={setExpiryDate}
-                    keyboardType="number-pad"
-                    maxLength={5}
-                    containerStyle={{ marginBottom: 0 }}
-                  />
+                <View style={styles.cardRow}>
+                  <View style={styles.cardRowItem}>
+                    <Input
+                      label="Validade"
+                      placeholder="MM/AA"
+                      value={expiryDate}
+                      onChangeText={setExpiryDate}
+                      keyboardType="number-pad"
+                      maxLength={5}
+                      containerStyle={{ marginBottom: 0 }}
+                    />
+                  </View>
+                  <View style={styles.cardRowItem}>
+                    <Input
+                      label="CVV"
+                      placeholder="123"
+                      value={cvv}
+                      onChangeText={setCvv}
+                      keyboardType="number-pad"
+                      maxLength={3}
+                      secureTextEntry
+                      containerStyle={{ marginBottom: 0 }}
+                    />
+                  </View>
                 </View>
-                <View style={styles.cardRowItem}>
-                  <Input
-                    label="CVV"
-                    placeholder="123"
-                    value={cvv}
-                    onChangeText={setCvv}
-                    keyboardType="number-pad"
-                    maxLength={3}
-                    secureTextEntry
-                    containerStyle={{ marginBottom: 0 }}
-                  />
-                </View>
-              </View>
-            </Card>
+              </Card>
+            </Animatable.View>
           )}
 
           {/* Mobile Money Info */}
           {selectedMethod === 'mobile' && (
-            <Card style={styles.infoCard}>
-              <Text style={styles.infoTitle}>Instruções</Text>
-              <Text style={styles.infoText}>
-                Será redirecionado para o seu serviço de Mobile Money para completar o pagamento.
-              </Text>
-            </Card>
+            <Animatable.View animation="fadeInUp" duration={400}>
+              <Card style={styles.infoCard}>
+                <Text style={styles.infoTitle}>Instruções</Text>
+                <Text style={styles.infoText}>
+                  Será redirecionado para o seu serviço de Mobile Money para completar o pagamento.
+                </Text>
+              </Card>
+            </Animatable.View>
           )}
 
           {/* Property Payment Info */}
           {selectedMethod === 'property' && (
-            <Card style={styles.infoCard}>
-              <Text style={styles.infoTitle}>Pagamento na Propriedade</Text>
-              <Text style={styles.infoText}>
-                Você pode pagar no check-in com dinheiro ou cartão. A reserva será confirmada mas o pagamento será processado no hotel.
-              </Text>
-            </Card>
+            <Animatable.View animation="fadeInUp" duration={400}>
+              <Card style={styles.infoCard}>
+                <Text style={styles.infoTitle}>Pagamento na Propriedade</Text>
+                <Text style={styles.infoText}>
+                  Você pode pagar no check-in com dinheiro ou cartão. A reserva será confirmada mas o pagamento será processado no hotel.
+                </Text>
+              </Card>
+            </Animatable.View>
           )}
 
           {/* Total Summary */}
-          <Card style={styles.totalCard}>
-            <View style={styles.totalRow}>
-              <Text style={styles.totalLabel}>Total a Pagar</Text>
-              <Text style={styles.totalValue}>
-                {formatCurrency(calculateTotal())}
-              </Text>
-            </View>
-          </Card>
+          <Animatable.View animation="fadeIn" delay={400} duration={500}>
+            <Card style={styles.totalCard}>
+              <View style={styles.totalRow}>
+                <Text style={styles.totalLabel}>Total a Pagar</Text>
+                <Animatable.Text animation="pulse" iterationCount={1} style={styles.totalValue}>
+                  {formatCurrency(calculateTotal())}
+                </Animatable.Text>
+              </View>
+            </Card>
+          </Animatable.View>
         </View>
       </ScrollView>
 
       {/* Bottom Button */}
-      <View style={styles.footer}>
+      <Animatable.View animation="slideInUp" delay={500} duration={500} style={styles.footer}>
         <Button size="lg" fullWidth onPress={handleConfirmPayment}>
           {selectedMethod === 'property' ? 'Confirmar Reserva' : 'Pagar Agora'}
         </Button>
-      </View>
+      </Animatable.View>
     </SafeAreaView>
   );
 }

@@ -5,6 +5,7 @@ import {
   TouchableOpacity,
   Image,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import {
   User,
@@ -62,12 +63,15 @@ export default function ProfileScreen() {
         contentContainerStyle={{ paddingBottom: 100 }}
       >
         {/* Header */}
-        <View className="px-5 py-4 bg-white">
+        <Animatable.View animation="fadeIn" duration={400} className="px-5 py-4 bg-white">
           <Text className="text-2xl font-bold text-gray-900">Profile</Text>
-        </View>
+        </Animatable.View>
 
         {/* Profile Card */}
-        <View
+        <Animatable.View
+          animation="fadeInUp"
+          delay={100}
+          duration={500}
           className="bg-white mx-5 mt-4 rounded-2xl p-6 items-center"
           style={{
             shadowColor: '#000',
@@ -95,26 +99,32 @@ export default function ProfileScreen() {
           <Text className="text-sm text-gray-500 mb-5">john.smith@email.com</Text>
 
           <View className="flex-row items-center w-full pt-4 border-t border-gray-100">
-            <View className="flex-1 items-center">
+            <Animatable.View animation="fadeIn" delay={200} className="flex-1 items-center">
               <Text className="text-xl font-bold text-gray-900 mb-1">12</Text>
               <Text className="text-xs text-gray-500">Bookings</Text>
-            </View>
+            </Animatable.View>
             <View className="w-px h-8 bg-gray-200" />
-            <View className="flex-1 items-center">
+            <Animatable.View animation="fadeIn" delay={300} className="flex-1 items-center">
               <Text className="text-xl font-bold text-gray-900 mb-1">8</Text>
               <Text className="text-xs text-gray-500">Reviews</Text>
-            </View>
+            </Animatable.View>
             <View className="w-px h-8 bg-gray-200" />
-            <View className="flex-1 items-center">
+            <Animatable.View animation="fadeIn" delay={400} className="flex-1 items-center">
               <Text className="text-xl font-bold text-gray-900 mb-1">5</Text>
               <Text className="text-xs text-gray-500">Favorites</Text>
-            </View>
+            </Animatable.View>
           </View>
-        </View>
+        </Animatable.View>
 
         {/* Menu Sections */}
         {MENU_SECTIONS.map((section, sectionIndex) => (
-          <View key={sectionIndex} className="mt-6 px-5">
+          <Animatable.View
+            key={sectionIndex}
+            animation="fadeInUp"
+            delay={200 + sectionIndex * 150}
+            duration={500}
+            className="mt-6 px-5"
+          >
             <Text className="text-sm font-semibold text-gray-500 mb-3 uppercase tracking-wide">
               {section.title}
             </Text>
@@ -124,44 +134,51 @@ export default function ProfileScreen() {
                 const isLast = itemIndex === section.items.length - 1;
 
                 return (
-                  <TouchableOpacity
+                  <Animatable.View
                     key={itemIndex}
-                    className={`flex-row items-center justify-between py-4 px-4 ${
-                      !isLast ? 'border-b border-gray-100' : ''
-                    }`}
-                    onPress={() => handleMenuPress(item.route)}
-                    activeOpacity={0.7}
+                    animation="fadeIn"
+                    delay={300 + sectionIndex * 150 + itemIndex * 50}
                   >
-                    <View className="flex-row items-center gap-3">
-                      <View className="w-9 h-9 rounded-lg bg-secondary/10 items-center justify-center">
-                        <IconComponent size={20} color="#10B981" strokeWidth={2} />
+                    <TouchableOpacity
+                      className={`flex-row items-center justify-between py-4 px-4 ${
+                        !isLast ? 'border-b border-gray-100' : ''
+                      }`}
+                      onPress={() => handleMenuPress(item.route)}
+                      activeOpacity={0.7}
+                    >
+                      <View className="flex-row items-center gap-3">
+                        <View className="w-9 h-9 rounded-lg bg-secondary/10 items-center justify-center">
+                          <IconComponent size={20} color="#10B981" strokeWidth={2} />
+                        </View>
+                        <Text className="text-base text-gray-900 font-medium">
+                          {item.label}
+                        </Text>
                       </View>
-                      <Text className="text-base text-gray-900 font-medium">
-                        {item.label}
-                      </Text>
-                    </View>
-                    <ChevronRight size={20} color="#A3A3A3" strokeWidth={2} />
-                  </TouchableOpacity>
+                      <ChevronRight size={20} color="#A3A3A3" strokeWidth={2} />
+                    </TouchableOpacity>
+                  </Animatable.View>
                 );
               })}
             </View>
-          </View>
+          </Animatable.View>
         ))}
 
         {/* Logout Button */}
-        <TouchableOpacity
-          className="flex-row items-center justify-center gap-2 mx-5 mt-8 py-4 bg-white rounded-xl border border-error/20"
-          onPress={handleLogout}
-          activeOpacity={0.7}
-        >
-          <LogOut size={20} color="#EF4444" strokeWidth={2} />
-          <Text className="text-base font-semibold text-error">Log Out</Text>
-        </TouchableOpacity>
+        <Animatable.View animation="fadeInUp" delay={600} duration={500}>
+          <TouchableOpacity
+            className="flex-row items-center justify-center gap-2 mx-5 mt-8 py-4 bg-white rounded-xl border border-error/20"
+            onPress={handleLogout}
+            activeOpacity={0.7}
+          >
+            <LogOut size={20} color="#EF4444" strokeWidth={2} />
+            <Text className="text-base font-semibold text-error">Log Out</Text>
+          </TouchableOpacity>
+        </Animatable.View>
 
         {/* Version */}
-        <Text className="text-center text-xs text-gray-400 mt-6">
+        <Animatable.Text animation="fadeIn" delay={700} className="text-center text-xs text-gray-400 mt-6">
           Version 1.0.0
-        </Text>
+        </Animatable.Text>
       </ScrollView>
     </SafeAreaView>
   );

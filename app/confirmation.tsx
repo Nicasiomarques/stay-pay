@@ -1,4 +1,6 @@
+import { useEffect } from 'react';
 import { View, Text, StyleSheet, ScrollView } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Calendar, MapPin, Users, CreditCard, Download, CheckCircle } from 'lucide-react-native';
@@ -6,10 +8,18 @@ import { Button, Card } from '@/components/ui';
 import { useBooking } from '@context';
 import { formatCurrency, formatGuestCount } from '@/utils';
 import { colors } from '@theme';
+import { haptics } from '@/utils/haptics';
 
 export default function ConfirmationScreen() {
   const router = useRouter();
   const { booking, calculateTotal, getNights, resetBooking } = useBooking();
+
+  // Trigger success haptic on mount
+  useEffect(() => {
+    if (booking.hotel) {
+      haptics.success();
+    }
+  }, [booking.hotel]);
 
   if (!booking.hotel) {
     return (
@@ -46,129 +56,139 @@ export default function ConfirmationScreen() {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false} contentContainerStyle={styles.scrollContent}>
-        {/* Success Icon */}
-        <View style={styles.successIcon}>
+        {/* Success Icon - Animated */}
+        <Animatable.View animation="bounceIn" duration={600} style={styles.successIcon}>
           <CheckCircle size={80} color={colors.success} />
-        </View>
+        </Animatable.View>
 
-        {/* Title */}
-        <View style={styles.header}>
+        {/* Title - Animated */}
+        <Animatable.View animation="fadeInUp" delay={200} duration={400} style={styles.header}>
           <Text style={styles.title}>Reserva Confirmada!</Text>
           <Text style={styles.subtitle}>
             A sua reserva foi confirmada com sucesso
           </Text>
-        </View>
+        </Animatable.View>
 
         <View style={styles.content}>
-          {/* Booking Number */}
-          <Card style={styles.bookingNumberCard}>
-            <Text style={styles.bookingNumberLabel}>Número da Reserva</Text>
-            <Text style={styles.bookingNumber}>{bookingNumber}</Text>
-          </Card>
+          {/* Booking Number - Animated */}
+          <Animatable.View animation="fadeInUp" delay={300} duration={400}>
+            <Card style={styles.bookingNumberCard}>
+              <Text style={styles.bookingNumberLabel}>Número da Reserva</Text>
+              <Text style={styles.bookingNumber}>{bookingNumber}</Text>
+            </Card>
+          </Animatable.View>
 
-          {/* Hotel Info */}
-          <Card style={styles.infoCard}>
-            <Text style={styles.cardTitle}>Detalhes da Reserva</Text>
+          {/* Hotel Info - Animated */}
+          <Animatable.View animation="fadeInUp" delay={400} duration={400}>
+            <Card style={styles.infoCard}>
+              <Text style={styles.cardTitle}>Detalhes da Reserva</Text>
 
-            <View style={styles.hotelHeader}>
-              <Text style={styles.hotelName}>{booking.hotel.name}</Text>
-              <View style={styles.roomBadge}>
-                <Text style={styles.roomBadgeText}>{selectedRoom.type}</Text>
-              </View>
-            </View>
-
-            <View style={styles.detailsList}>
-              <View style={styles.detailItem}>
-                <MapPin size={20} color={colors.gray500} />
-                <Text style={styles.detailText}>{booking.hotel.location}</Text>
+              <View style={styles.hotelHeader}>
+                <Text style={styles.hotelName}>{booking.hotel.name}</Text>
+                <View style={styles.roomBadge}>
+                  <Text style={styles.roomBadgeText}>{selectedRoom.type}</Text>
+                </View>
               </View>
 
-              <View style={styles.detailItem}>
-                <Calendar size={20} color={colors.gray500} />
-                <View>
+              <View style={styles.detailsList}>
+                <View style={styles.detailItem}>
+                  <MapPin size={20} color={colors.gray500} />
+                  <Text style={styles.detailText}>{booking.hotel.location}</Text>
+                </View>
+
+                <View style={styles.detailItem}>
+                  <Calendar size={20} color={colors.gray500} />
+                  <View>
+                    <Text style={styles.detailText}>
+                      {formatDate(booking.checkIn)}
+                    </Text>
+                    <Text style={styles.detailSubtext}>
+                      até {formatDate(booking.checkOut)} ({getNights()} {getNights() === 1 ? 'noite' : 'noites'})
+                    </Text>
+                  </View>
+                </View>
+
+                <View style={styles.detailItem}>
+                  <Users size={20} color={colors.gray500} />
                   <Text style={styles.detailText}>
-                    {formatDate(booking.checkIn)}
-                  </Text>
-                  <Text style={styles.detailSubtext}>
-                    até {formatDate(booking.checkOut)} ({getNights()} {getNights() === 1 ? 'noite' : 'noites'})
+                    {formatGuestCount(booking.guests)}
                   </Text>
                 </View>
-              </View>
 
-              <View style={styles.detailItem}>
-                <Users size={20} color={colors.gray500} />
-                <Text style={styles.detailText}>
-                  {formatGuestCount(booking.guests)}
-                </Text>
-              </View>
-
-              <View style={styles.detailItem}>
-                <CreditCard size={20} color={colors.gray500} />
-                <Text style={styles.detailText}>
-                  {booking.paymentMethod === 'card' ? 'Cartão' :
-                   booking.paymentMethod === 'mobile' ? 'Mobile Money' :
-                   'Pagar na Propriedade'}
-                </Text>
-              </View>
-            </View>
-          </Card>
-
-          {/* Price Summary */}
-          <Card style={styles.priceCard}>
-            <Text style={styles.cardTitle}>Total Pago</Text>
-            <Text style={styles.totalAmount}>{formatCurrency(calculateTotal())}</Text>
-            {booking.paymentMethod === 'property' && (
-              <Text style={styles.paymentNote}>
-                * Pagamento será realizado no check-in
-              </Text>
-            )}
-          </Card>
-
-          {/* Next Steps */}
-          <Card style={styles.nextStepsCard}>
-            <Text style={styles.cardTitle}>Próximos Passos</Text>
-            <View style={styles.stepsList}>
-              <View style={styles.step}>
-                <View style={styles.stepNumber}>
-                  <Text style={styles.stepNumberText}>1</Text>
+                <View style={styles.detailItem}>
+                  <CreditCard size={20} color={colors.gray500} />
+                  <Text style={styles.detailText}>
+                    {booking.paymentMethod === 'card' ? 'Cartão' :
+                     booking.paymentMethod === 'mobile' ? 'Mobile Money' :
+                     'Pagar na Propriedade'}
+                  </Text>
                 </View>
-                <Text style={styles.stepText}>
-                  Recebera um email de confirmação
-                </Text>
               </View>
-              <View style={styles.step}>
-                <View style={styles.stepNumber}>
-                  <Text style={styles.stepNumberText}>2</Text>
-                </View>
-                <Text style={styles.stepText}>
-                  Chegue no hotel na data de check-in
-                </Text>
-              </View>
-              <View style={styles.step}>
-                <View style={styles.stepNumber}>
-                  <Text style={styles.stepNumberText}>3</Text>
-                </View>
-                <Text style={styles.stepText}>
-                  Apresente o número da reserva na recepção
-                </Text>
-              </View>
-            </View>
-          </Card>
+            </Card>
+          </Animatable.View>
 
-          {/* Download Button */}
-          <Button
-            variant="outline"
-            fullWidth
-            style={styles.downloadButton}
-          >
-            <Download size={20} color={colors.primary} />
-            <Text style={styles.downloadText}>Baixar Comprovante</Text>
-          </Button>
+          {/* Price Summary - Animated */}
+          <Animatable.View animation="fadeInUp" delay={500} duration={400}>
+            <Card style={styles.priceCard}>
+              <Text style={styles.cardTitle}>Total Pago</Text>
+              <Text style={styles.totalAmount}>{formatCurrency(calculateTotal())}</Text>
+              {booking.paymentMethod === 'property' && (
+                <Text style={styles.paymentNote}>
+                  * Pagamento será realizado no check-in
+                </Text>
+              )}
+            </Card>
+          </Animatable.View>
+
+          {/* Next Steps - Animated */}
+          <Animatable.View animation="fadeInUp" delay={600} duration={400}>
+            <Card style={styles.nextStepsCard}>
+              <Text style={styles.cardTitle}>Próximos Passos</Text>
+              <View style={styles.stepsList}>
+                <View style={styles.step}>
+                  <View style={styles.stepNumber}>
+                    <Text style={styles.stepNumberText}>1</Text>
+                  </View>
+                  <Text style={styles.stepText}>
+                    Recebera um email de confirmação
+                  </Text>
+                </View>
+                <View style={styles.step}>
+                  <View style={styles.stepNumber}>
+                    <Text style={styles.stepNumberText}>2</Text>
+                  </View>
+                  <Text style={styles.stepText}>
+                    Chegue no hotel na data de check-in
+                  </Text>
+                </View>
+                <View style={styles.step}>
+                  <View style={styles.stepNumber}>
+                    <Text style={styles.stepNumberText}>3</Text>
+                  </View>
+                  <Text style={styles.stepText}>
+                    Apresente o número da reserva na recepção
+                  </Text>
+                </View>
+              </View>
+            </Card>
+          </Animatable.View>
+
+          {/* Download Button - Animated */}
+          <Animatable.View animation="fadeInUp" delay={700} duration={400}>
+            <Button
+              variant="outline"
+              fullWidth
+              style={styles.downloadButton}
+            >
+              <Download size={20} color={colors.primary} />
+              <Text style={styles.downloadText}>Baixar Comprovante</Text>
+            </Button>
+          </Animatable.View>
         </View>
       </ScrollView>
 
       {/* Bottom Buttons */}
-      <View style={styles.footer}>
+      <Animatable.View animation="slideInUp" delay={800} duration={400} style={styles.footer}>
         <Button
           variant="outline"
           fullWidth
@@ -184,7 +204,7 @@ export default function ConfirmationScreen() {
         >
           Voltar ao Início
         </Button>
-      </View>
+      </Animatable.View>
     </SafeAreaView>
   );
 }

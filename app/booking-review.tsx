@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, ScrollView, Image } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Calendar, Users, CreditCard } from 'lucide-react-native';
@@ -45,109 +46,115 @@ export default function BookingReviewScreen() {
     <SafeAreaView style={styles.container}>
       <ScrollView showsVerticalScrollIndicator={false}>
         {/* Header */}
-        <View style={styles.header}>
+        <Animatable.View animation="fadeInDown" duration={500} style={styles.header}>
           <Text style={styles.title}>Reveja a Reserva</Text>
           <Text style={styles.subtitle}>
             Confirme os detalhes antes de prosseguir
           </Text>
-        </View>
+        </Animatable.View>
 
         <View style={styles.content}>
           {/* Hotel Card */}
-          <Card style={styles.hotelCard}>
-            <Image
-              source={{ uri: booking.hotel.image }}
-              style={styles.hotelImage}
-              resizeMode="cover"
-            />
-            <View style={styles.hotelInfo}>
-              <Text style={styles.hotelName}>{booking.hotel.name}</Text>
-              <Text style={styles.hotelLocation}>{booking.hotel.location}</Text>
-              <View style={styles.roomBadge}>
-                <Text style={styles.roomBadgeText}>{selectedRoom.type}</Text>
+          <Animatable.View animation="fadeInUp" delay={100} duration={500}>
+            <Card style={styles.hotelCard}>
+              <Image
+                source={{ uri: booking.hotel.image }}
+                style={styles.hotelImage}
+                resizeMode="cover"
+              />
+              <View style={styles.hotelInfo}>
+                <Text style={styles.hotelName}>{booking.hotel.name}</Text>
+                <Text style={styles.hotelLocation}>{booking.hotel.location}</Text>
+                <View style={styles.roomBadge}>
+                  <Text style={styles.roomBadgeText}>{selectedRoom.type}</Text>
+                </View>
               </View>
-            </View>
-          </Card>
+            </Card>
+          </Animatable.View>
 
           {/* Booking Details */}
-          <Card style={styles.detailsCard}>
-            <Text style={styles.sectionTitle}>Detalhes da Reserva</Text>
+          <Animatable.View animation="fadeInUp" delay={200} duration={500}>
+            <Card style={styles.detailsCard}>
+              <Text style={styles.sectionTitle}>Detalhes da Reserva</Text>
 
-            <View style={styles.detailRow}>
-              <View style={styles.detailIcon}>
-                <Calendar size={20} color={colors.primary} />
-              </View>
-              <View style={styles.detailContent}>
-                <Text style={styles.detailLabel}>Datas</Text>
-                <Text style={styles.detailValue}>
-                  {formatDate(booking.checkIn)} - {formatDate(booking.checkOut)}
-                </Text>
-                <Text style={styles.detailSubvalue}>
-                  {formatNightCount(nights)}
-                </Text>
-              </View>
-            </View>
+              <Animatable.View animation="fadeIn" delay={300} style={styles.detailRow}>
+                <View style={styles.detailIcon}>
+                  <Calendar size={20} color={colors.primary} />
+                </View>
+                <View style={styles.detailContent}>
+                  <Text style={styles.detailLabel}>Datas</Text>
+                  <Text style={styles.detailValue}>
+                    {formatDate(booking.checkIn)} - {formatDate(booking.checkOut)}
+                  </Text>
+                  <Text style={styles.detailSubvalue}>
+                    {formatNightCount(nights)}
+                  </Text>
+                </View>
+              </Animatable.View>
 
-            <View style={styles.detailRow}>
-              <View style={styles.detailIcon}>
-                <Users size={20} color={colors.primary} />
-              </View>
-              <View style={styles.detailContent}>
-                <Text style={styles.detailLabel}>Hóspedes</Text>
-                <Text style={styles.detailValue}>
-                  {formatGuestCount(booking.guests)}
-                </Text>
-              </View>
-            </View>
+              <Animatable.View animation="fadeIn" delay={400} style={styles.detailRow}>
+                <View style={styles.detailIcon}>
+                  <Users size={20} color={colors.primary} />
+                </View>
+                <View style={styles.detailContent}>
+                  <Text style={styles.detailLabel}>Hóspedes</Text>
+                  <Text style={styles.detailValue}>
+                    {formatGuestCount(booking.guests)}
+                  </Text>
+                </View>
+              </Animatable.View>
 
-            <View style={styles.detailRow}>
-              <View style={styles.detailIcon}>
-                <CreditCard size={20} color={colors.primary} />
-              </View>
-              <View style={styles.detailContent}>
-                <Text style={styles.detailLabel}>Pagamento</Text>
-                <Text style={styles.detailValue}>
-                  {booking.paymentMethod === 'card' ? 'Cartão' :
-                   booking.paymentMethod === 'mobile' ? 'Mobile Money' :
-                   'Na Propriedade'}
-                </Text>
-              </View>
-            </View>
-          </Card>
+              <Animatable.View animation="fadeIn" delay={500} style={styles.detailRow}>
+                <View style={styles.detailIcon}>
+                  <CreditCard size={20} color={colors.primary} />
+                </View>
+                <View style={styles.detailContent}>
+                  <Text style={styles.detailLabel}>Pagamento</Text>
+                  <Text style={styles.detailValue}>
+                    {booking.paymentMethod === 'card' ? 'Cartão' :
+                     booking.paymentMethod === 'mobile' ? 'Mobile Money' :
+                     'Na Propriedade'}
+                  </Text>
+                </View>
+              </Animatable.View>
+            </Card>
+          </Animatable.View>
 
           {/* Price Breakdown */}
-          <Card style={styles.priceCard}>
-            <Text style={styles.sectionTitle}>Resumo de Preços</Text>
+          <Animatable.View animation="fadeInUp" delay={300} duration={500}>
+            <Card style={styles.priceCard}>
+              <Text style={styles.sectionTitle}>Resumo de Preços</Text>
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>
-                {formatCurrency(selectedRoom.price)} × {nights} {nights === 1 ? 'noite' : 'noites'}
-              </Text>
-              <Text style={styles.priceValue}>{formatCurrency(subtotal)}</Text>
-            </View>
+              <Animatable.View animation="fadeIn" delay={400} style={styles.priceRow}>
+                <Text style={styles.priceLabel}>
+                  {formatCurrency(selectedRoom.price)} × {nights} {nights === 1 ? 'noite' : 'noites'}
+                </Text>
+                <Text style={styles.priceValue}>{formatCurrency(subtotal)}</Text>
+              </Animatable.View>
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Taxa de serviço</Text>
-              <Text style={styles.priceValue}>{formatCurrency(serviceFee)}</Text>
-            </View>
+              <Animatable.View animation="fadeIn" delay={450} style={styles.priceRow}>
+                <Text style={styles.priceLabel}>Taxa de serviço</Text>
+                <Text style={styles.priceValue}>{formatCurrency(serviceFee)}</Text>
+              </Animatable.View>
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceLabel}>Impostos (8%)</Text>
-              <Text style={styles.priceValue}>{formatCurrency(tax)}</Text>
-            </View>
+              <Animatable.View animation="fadeIn" delay={500} style={styles.priceRow}>
+                <Text style={styles.priceLabel}>Impostos (8%)</Text>
+                <Text style={styles.priceValue}>{formatCurrency(tax)}</Text>
+              </Animatable.View>
 
-            <View style={styles.priceDivider} />
+              <Animatable.View animation="fadeIn" delay={550} style={styles.priceDivider} />
 
-            <View style={styles.priceRow}>
-              <Text style={styles.priceTotalLabel}>Total</Text>
-              <Text style={styles.priceTotalValue}>{formatCurrency(total)}</Text>
-            </View>
-          </Card>
+              <Animatable.View animation="pulse" delay={600} style={styles.priceRow}>
+                <Text style={styles.priceTotalLabel}>Total</Text>
+                <Text style={styles.priceTotalValue}>{formatCurrency(total)}</Text>
+              </Animatable.View>
+            </Card>
+          </Animatable.View>
         </View>
       </ScrollView>
 
       {/* Bottom Button */}
-      <View style={styles.footer}>
+      <Animatable.View animation="slideInUp" delay={500} duration={500} style={styles.footer}>
         <View style={styles.footerSummary}>
           <Text style={styles.footerLabel}>Total</Text>
           <Text style={styles.footerTotal}>{formatCurrency(total)}</Text>
@@ -155,7 +162,7 @@ export default function BookingReviewScreen() {
         <Button size="lg" fullWidth onPress={handleContinue}>
           Prosseguir para Pagamento
         </Button>
-      </View>
+      </Animatable.View>
     </SafeAreaView>
   );
 }

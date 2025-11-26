@@ -1,4 +1,5 @@
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HotelCard } from '@components';
 import { useFavorites } from '@/hooks/queries';
@@ -35,36 +36,42 @@ export default function FavoritesScreen() {
 
   return (
     <SafeAreaView style={styles.container}>
-      <View style={styles.header}>
+      <Animatable.View animation="fadeInDown" duration={500} style={styles.header}>
         <Text style={styles.title}>Favoritos</Text>
         <Text style={styles.subtitle}>
           {favoritesList.length} hotel{favoritesList.length !== 1 ? 's' : ''}
         </Text>
-      </View>
+      </Animatable.View>
 
       {favoritesList.length === 0 ? (
-        <View style={styles.empty}>
+        <Animatable.View animation="fadeIn" delay={200} style={styles.empty}>
           <Text style={styles.emptyText}>Nenhum hotel favorito ainda</Text>
           <Text style={styles.emptySubtext}>
             Adicione hotéis aos favoritos para vê-los aqui
           </Text>
-        </View>
+        </Animatable.View>
       ) : (
         <FlatList
           data={favoritesList}
           keyExtractor={(item) => item.id.toString()}
-          renderItem={({ item }) => (
-            <HotelCard
-              id={item.hotel.id}
-              image={item.hotel.image}
-              name={item.hotel.name}
-              location={item.hotel.location}
-              rating={item.hotel.rating}
-              reviews={item.hotel.reviews}
-              price={item.hotel.price}
-              distance={item.hotel.distance}
-              hotelData={item.hotel}
-            />
+          renderItem={({ item, index }) => (
+            <Animatable.View
+              animation="fadeInUp"
+              delay={index * 100}
+              duration={500}
+            >
+              <HotelCard
+                id={item.hotel.id}
+                image={item.hotel.image}
+                name={item.hotel.name}
+                location={item.hotel.location}
+                rating={item.hotel.rating}
+                reviews={item.hotel.reviews}
+                price={item.hotel.price}
+                distance={item.hotel.distance}
+                hotelData={item.hotel}
+              />
+            </Animatable.View>
           )}
           contentContainerStyle={styles.list}
           showsVerticalScrollIndicator={false}

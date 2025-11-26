@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useRef } from 'react';
 import {
   View,
   Text,
@@ -6,8 +6,10 @@ import {
   ImageBackground,
   Dimensions,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { BlurView } from 'expo-blur';
 import { Search, MapPin } from 'lucide-react-native';
+import { haptics } from '@/utils/haptics';
 
 const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
@@ -23,6 +25,21 @@ export function SearchHeader({
   userName = 'Martin',
   location = 'Norway',
 }: SearchHeaderProps) {
+  const searchBarRef = useRef<any>(null);
+
+  const handlePressIn = () => {
+    searchBarRef.current?.animate?.({ 0: { scale: 1 }, 1: { scale: 0.98 } }, 100);
+  };
+
+  const handlePressOut = () => {
+    searchBarRef.current?.animate?.({ 0: { scale: 0.98 }, 1: { scale: 1 } }, 100);
+  };
+
+  const handlePress = () => {
+    haptics.light();
+    onSearchPress();
+  };
+
   return (
     <View
       style={{
@@ -43,22 +60,32 @@ export function SearchHeader({
 
         {/* Content */}
         <View className="flex-1 px-5 pt-12 pb-4 justify-between">
-          {/* Location Badge */}
-          <View className="flex-row items-center">
+          {/* Location Badge - Animated */}
+          <Animatable.View
+            animation="fadeInDown"
+            duration={400}
+            className="flex-row items-center"
+          >
             <MapPin size={16} color="#fff" strokeWidth={2} />
             <Text className="text-white text-sm font-medium ml-1">{location}</Text>
-          </View>
+          </Animatable.View>
 
-          {/* Greeting Text */}
-          <View className="mb-4">
+          {/* Greeting Text - Animated */}
+          <Animatable.View animation="fadeInUp" delay={100} duration={400} className="mb-4">
             <Text className="text-white text-2xl font-bold">
               Hey, {userName}! Tell us where you
             </Text>
             <Text className="text-white text-2xl font-bold">want to go</Text>
-          </View>
+          </Animatable.View>
 
-          {/* Glass Search Bar with Blur */}
-          <View style={{ borderRadius: 9999, overflow: 'hidden' }}>
+          {/* Glass Search Bar with Blur - Animated */}
+          <Animatable.View
+            ref={searchBarRef}
+            animation="fadeIn"
+            delay={200}
+            duration={400}
+            style={{ borderRadius: 9999, overflow: 'hidden' }}
+          >
             <BlurView
               intensity={30}
               tint="light"
@@ -70,8 +97,10 @@ export function SearchHeader({
               }}
             >
               <TouchableOpacity
-                onPress={onSearchPress}
-                activeOpacity={0.9}
+                onPressIn={handlePressIn}
+                onPressOut={handlePressOut}
+                onPress={handlePress}
+                activeOpacity={1}
                 className="flex-row items-center py-3.5 px-4"
               >
                 <Search size={20} color="#fff" strokeWidth={2} />
@@ -83,7 +112,7 @@ export function SearchHeader({
                 </View>
               </TouchableOpacity>
             </BlurView>
-          </View>
+          </Animatable.View>
         </View>
       </ImageBackground>
     </View>

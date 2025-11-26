@@ -1,12 +1,14 @@
 /**
  * LocationSuggestionItem Component
- * Individual suggestion row in autocomplete dropdown
+ * Individual suggestion row in autocomplete dropdown with press animation
  */
 
-import React from 'react';
+import React, { useRef } from 'react';
 import { View, Text, StyleSheet, Pressable } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { MapPin } from 'lucide-react-native';
 import { colors } from '@theme';
+import { haptics } from '@/utils/haptics';
 
 interface LocationSuggestionItemProps {
   name: string;
@@ -15,26 +17,45 @@ interface LocationSuggestionItemProps {
 }
 
 export function LocationSuggestionItem({ name, hotelCount, onPress }: LocationSuggestionItemProps) {
+  const itemRef = useRef<any>(null);
+
+  const handlePressIn = () => {
+    itemRef.current?.animate?.({ 0: { scale: 1 }, 1: { scale: 0.98 } }, 100);
+  };
+
+  const handlePressOut = () => {
+    itemRef.current?.animate?.({ 0: { scale: 0.98 }, 1: { scale: 1 } }, 100);
+  };
+
+  const handlePress = () => {
+    haptics.light();
+    onPress();
+  };
+
   return (
-    <Pressable
-      style={({ pressed }) => [
-        styles.container,
-        pressed && styles.containerPressed,
-      ]}
-      onPress={onPress}
-    >
-      <View style={styles.iconContainer}>
-        <MapPin size={20} color={colors.text.secondary} />
-      </View>
-      <View style={styles.textContainer}>
-        <Text style={styles.locationName} numberOfLines={1}>
-          {name}
-        </Text>
-        <Text style={styles.hotelCount}>
-          {hotelCount} {hotelCount === 1 ? 'hotel' : 'hotéis'}
-        </Text>
-      </View>
-    </Pressable>
+    <Animatable.View ref={itemRef}>
+      <Pressable
+        style={({ pressed }) => [
+          styles.container,
+          pressed && styles.containerPressed,
+        ]}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={handlePress}
+      >
+        <View style={styles.iconContainer}>
+          <MapPin size={20} color={colors.text.secondary} />
+        </View>
+        <View style={styles.textContainer}>
+          <Text style={styles.locationName} numberOfLines={1}>
+            {name}
+          </Text>
+          <Text style={styles.hotelCount}>
+            {hotelCount} {hotelCount === 1 ? 'hotel' : 'hotéis'}
+          </Text>
+        </View>
+      </Pressable>
+    </Animatable.View>
   );
 }
 

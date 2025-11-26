@@ -1,10 +1,11 @@
-import { useState, useMemo } from 'react';
+import { useState, useMemo, useRef } from 'react';
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react-native';
@@ -23,6 +24,9 @@ export default function CalendarScreen() {
   const [checkIn, setCheckIn] = useState<Date | null>(booking.checkIn);
   const [checkOut, setCheckOut] = useState<Date | null>(booking.checkOut);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+
+  const nightsRef = useRef<any>(null);
+  const buttonRef = useRef<any>(null);
 
   const handleBack = () => {
     haptics.light();
@@ -51,6 +55,11 @@ export default function CalendarScreen() {
     } else if (checkIn && !checkOut) {
       if (date > checkIn) {
         setCheckOut(date);
+        // Animate nights info and button
+        setTimeout(() => {
+          nightsRef.current?.bounceIn?.(500);
+          buttonRef.current?.pulse?.(400);
+        }, 100);
       } else {
         setCheckIn(date);
         setCheckOut(null);
@@ -126,7 +135,11 @@ export default function CalendarScreen() {
   return (
     <SafeAreaView className="flex-1 bg-white" edges={['top']}>
       {/* Header */}
-      <View className="flex-row items-center justify-between px-5 py-4 border-b border-gray-200">
+      <Animatable.View
+        animation="fadeIn"
+        duration={400}
+        className="flex-row items-center justify-between px-5 py-4 border-b border-gray-200"
+      >
         <TouchableOpacity
           className="w-10 h-10 items-center justify-center"
           onPress={handleBack}
@@ -136,7 +149,7 @@ export default function CalendarScreen() {
         </TouchableOpacity>
         <Text className="text-lg font-semibold text-gray-900">Select Dates</Text>
         <View className="w-10" />
-      </View>
+      </Animatable.View>
 
       <ScrollView
         showsVerticalScrollIndicator={false}
@@ -144,27 +157,42 @@ export default function CalendarScreen() {
       >
         {/* Date Summary */}
         <View className="flex-row items-center px-5 py-6 gap-4">
-          <View className="flex-1 bg-gray-100 rounded-xl p-4 items-center">
+          <Animatable.View
+            animation="fadeInLeft"
+            delay={100}
+            duration={500}
+            className="flex-1 bg-gray-100 rounded-xl p-4 items-center"
+          >
             <Text className="text-xs font-medium text-gray-500 mb-1">Check-in</Text>
             <Text className={`text-base font-semibold ${checkIn ? 'text-gray-900' : 'text-gray-400'}`}>
               {formatDate(checkIn)}
             </Text>
-          </View>
+          </Animatable.View>
 
-          <View className="w-6 items-center">
+          <Animatable.View animation="fadeIn" delay={200} className="w-6 items-center">
             <View className="w-6 h-0.5 bg-gray-200 rounded-sm" />
-          </View>
+          </Animatable.View>
 
-          <View className="flex-1 bg-gray-100 rounded-xl p-4 items-center">
+          <Animatable.View
+            animation="fadeInRight"
+            delay={100}
+            duration={500}
+            className="flex-1 bg-gray-100 rounded-xl p-4 items-center"
+          >
             <Text className="text-xs font-medium text-gray-500 mb-1">Check-out</Text>
             <Text className={`text-base font-semibold ${checkOut ? 'text-gray-900' : 'text-gray-400'}`}>
               {formatDate(checkOut)}
             </Text>
-          </View>
+          </Animatable.View>
         </View>
 
         {/* Month Navigator */}
-        <View className="flex-row items-center justify-between px-5 py-4">
+        <Animatable.View
+          animation="fadeIn"
+          delay={200}
+          duration={400}
+          className="flex-row items-center justify-between px-5 py-4"
+        >
           <TouchableOpacity
             onPress={handlePrevMonth}
             className="w-10 h-10 items-center justify-center bg-gray-100 rounded-xl"
@@ -184,19 +212,19 @@ export default function CalendarScreen() {
           >
             <ChevronRight size={24} color="#171717" strokeWidth={2} />
           </TouchableOpacity>
-        </View>
+        </Animatable.View>
 
         {/* Weekday Headers */}
-        <View className="flex-row px-4 pb-2">
+        <Animatable.View animation="fadeIn" delay={250} duration={400} className="flex-row px-4 pb-2">
           {WEEKDAYS.map((day) => (
             <Text key={day} className="flex-1 text-center text-xs font-semibold text-gray-500 uppercase">
               {day}
             </Text>
           ))}
-        </View>
+        </Animatable.View>
 
         {/* Calendar Grid */}
-        <View className="flex-row flex-wrap px-3">
+        <Animatable.View animation="fadeInUp" delay={300} duration={500} className="flex-row flex-wrap px-3">
           {calendarDays.map((date, index) => {
             if (!date) {
               return <View key={`empty-${index}`} className="w-[14.28%] aspect-square items-center justify-center my-0.5" />;
@@ -227,20 +255,24 @@ export default function CalendarScreen() {
               </TouchableOpacity>
             );
           })}
-        </View>
+        </Animatable.View>
 
         {/* Nights Info */}
         {checkIn && checkOut && (
-          <View className="items-center py-5">
+          <Animatable.View ref={nightsRef} animation="bounceIn" duration={500} className="items-center py-5">
             <Text className="text-sm font-semibold text-secondary">
               {getNights()} {getNights() === 1 ? 'night' : 'nights'} selected
             </Text>
-          </View>
+          </Animatable.View>
         )}
       </ScrollView>
 
       {/* Bottom Button */}
-      <View
+      <Animatable.View
+        ref={buttonRef}
+        animation="slideInUp"
+        delay={400}
+        duration={500}
         className="absolute bottom-0 left-0 right-0 p-5 pb-8 bg-white border-t border-gray-200"
       >
         <TouchableOpacity
@@ -264,7 +296,7 @@ export default function CalendarScreen() {
               : 'Select dates'}
           </Text>
         </TouchableOpacity>
-      </View>
+      </Animatable.View>
     </SafeAreaView>
   );
 }

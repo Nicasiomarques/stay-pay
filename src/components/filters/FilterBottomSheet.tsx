@@ -1,9 +1,9 @@
 /**
  * FilterBottomSheet Component
- * Redesigned to match Figma design
+ * Redesigned to match Figma design with micro-interactions
  */
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import {
   View,
   Text,
@@ -16,6 +16,7 @@ import {
   TouchableOpacity,
   StyleSheet,
 } from 'react-native';
+import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { X, Minus, Plus, Star } from 'lucide-react-native';
 import { haptics } from '@/utils/haptics';
@@ -74,6 +75,237 @@ const DEFAULT_FILTERS: FilterState = {
   amenities: [],
 };
 
+// Animated Chip Component
+interface AnimatedChipProps {
+  label: string;
+  isActive: boolean;
+  onPress: () => void;
+}
+
+function AnimatedChip({ label, isActive, onPress }: AnimatedChipProps) {
+  const chipRef = useRef<any>(null);
+
+  const handlePressIn = () => {
+    chipRef.current?.animate?.({ 0: { scale: 1 }, 1: { scale: 0.95 } }, 100);
+  };
+
+  const handlePressOut = () => {
+    chipRef.current?.animate?.({ 0: { scale: 0.95 }, 1: { scale: 1 } }, 100);
+  };
+
+  const handlePress = () => {
+    haptics.light();
+    onPress();
+  };
+
+  return (
+    <Animatable.View ref={chipRef}>
+      <TouchableOpacity
+        className={`px-4 py-2.5 rounded-full border ${
+          isActive
+            ? 'bg-secondary border-secondary'
+            : 'bg-gray-100 border-gray-200'
+        }`}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={handlePress}
+        activeOpacity={1}
+      >
+        <Text
+          className={`text-sm font-medium ${
+            isActive ? 'text-white' : 'text-gray-600'
+          }`}
+        >
+          {label}
+        </Text>
+      </TouchableOpacity>
+    </Animatable.View>
+  );
+}
+
+// Animated Counter Button Component
+interface AnimatedCounterButtonProps {
+  type: 'increment' | 'decrement';
+  onPress: () => void;
+  disabled?: boolean;
+}
+
+function AnimatedCounterButton({ type, onPress, disabled }: AnimatedCounterButtonProps) {
+  const btnRef = useRef<any>(null);
+
+  const handlePressIn = () => {
+    if (!disabled) {
+      btnRef.current?.animate?.({ 0: { scale: 1 }, 1: { scale: 0.9 } }, 100);
+    }
+  };
+
+  const handlePressOut = () => {
+    if (!disabled) {
+      btnRef.current?.animate?.({ 0: { scale: 0.9 }, 1: { scale: 1 } }, 100);
+    }
+  };
+
+  const handlePress = () => {
+    if (!disabled) {
+      haptics.light();
+      onPress();
+    }
+  };
+
+  const Icon = type === 'increment' ? Plus : Minus;
+
+  return (
+    <Animatable.View ref={btnRef}>
+      <TouchableOpacity
+        className={`w-9 h-9 rounded-full bg-gray-100 items-center justify-center border border-gray-200 ${
+          disabled ? 'opacity-50' : ''
+        }`}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={handlePress}
+        disabled={disabled}
+        activeOpacity={1}
+      >
+        <Icon
+          size={18}
+          color={disabled ? '#D4D4D4' : '#171717'}
+          strokeWidth={2}
+        />
+      </TouchableOpacity>
+    </Animatable.View>
+  );
+}
+
+// Animated Counter Value Component
+interface AnimatedCounterValueProps {
+  value: number;
+  valueRef: React.RefObject<any>;
+}
+
+function AnimatedCounterValue({ value, valueRef }: AnimatedCounterValueProps) {
+  return (
+    <Animatable.View ref={valueRef}>
+      <Text className="text-lg font-semibold text-gray-900 min-w-[24px] text-center">
+        {value}
+      </Text>
+    </Animatable.View>
+  );
+}
+
+// Animated Rating Option Component
+interface AnimatedRatingOptionProps {
+  option: { value: number; label: string };
+  isActive: boolean;
+  onPress: () => void;
+}
+
+function AnimatedRatingOption({ option, isActive, onPress }: AnimatedRatingOptionProps) {
+  const optionRef = useRef<any>(null);
+
+  const handlePressIn = () => {
+    optionRef.current?.animate?.({ 0: { scale: 1 }, 1: { scale: 0.95 } }, 100);
+  };
+
+  const handlePressOut = () => {
+    optionRef.current?.animate?.({ 0: { scale: 0.95 }, 1: { scale: 1 } }, 100);
+  };
+
+  const handlePress = () => {
+    haptics.light();
+    onPress();
+  };
+
+  return (
+    <Animatable.View ref={optionRef} style={{ flex: 1 }}>
+      <TouchableOpacity
+        className={`flex-1 flex-row items-center justify-center gap-1 py-3 rounded-xl border ${
+          isActive
+            ? 'bg-secondary border-secondary'
+            : 'bg-gray-100 border-gray-200'
+        }`}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={handlePress}
+        activeOpacity={1}
+      >
+        {option.value > 0 && (
+          <Star
+            size={14}
+            color={isActive ? '#FFFFFF' : '#F59E0B'}
+            fill="#F59E0B"
+            strokeWidth={0}
+          />
+        )}
+        <Text
+          className={`text-sm font-semibold ${
+            isActive ? 'text-white' : 'text-gray-600'
+          }`}
+        >
+          {option.label}
+        </Text>
+      </TouchableOpacity>
+    </Animatable.View>
+  );
+}
+
+// Animated Action Button Component
+interface AnimatedActionButtonProps {
+  label: string;
+  variant: 'primary' | 'secondary';
+  onPress: () => void;
+}
+
+function AnimatedActionButton({ label, variant, onPress }: AnimatedActionButtonProps) {
+  const btnRef = useRef<any>(null);
+  const isPrimary = variant === 'primary';
+
+  const handlePressIn = () => {
+    btnRef.current?.animate?.({ 0: { scale: 1 }, 1: { scale: 0.96 } }, 100);
+  };
+
+  const handlePressOut = () => {
+    btnRef.current?.animate?.({ 0: { scale: 0.96 }, 1: { scale: 1 } }, 100);
+  };
+
+  const handlePress = () => {
+    haptics[isPrimary ? 'medium' : 'light']();
+    onPress();
+  };
+
+  return (
+    <Animatable.View ref={btnRef} style={{ flex: 1 }}>
+      <TouchableOpacity
+        className={`flex-1 py-4 rounded-xl items-center ${
+          isPrimary ? 'bg-secondary' : 'border border-gray-200'
+        }`}
+        onPressIn={handlePressIn}
+        onPressOut={handlePressOut}
+        onPress={handlePress}
+        activeOpacity={1}
+        style={
+          isPrimary
+            ? {
+                shadowColor: '#10B981',
+                shadowOffset: { width: 0, height: 4 },
+                shadowOpacity: 0.3,
+                shadowRadius: 8,
+                elevation: 5,
+              }
+            : undefined
+        }
+      >
+        <Text
+          className={`text-base font-semibold ${
+            isPrimary ? 'text-white' : 'text-gray-600'
+          }`}
+        >
+          {label}
+        </Text>
+      </TouchableOpacity>
+    </Animatable.View>
+  );
+}
+
 export function FilterBottomSheet({
   visible,
   onClose,
@@ -89,6 +321,10 @@ export function FilterBottomSheet({
   const slideAnim = useRef(new Animated.Value(SCREEN_HEIGHT)).current;
   const fadeAnim = useRef(new Animated.Value(0)).current;
   const [showContent, setShowContent] = useState(false);
+
+  // Refs for counter value animations
+  const roomsValueRef = useRef<any>(null);
+  const bedsValueRef = useRef<any>(null);
 
   // Animate on visibility change
   useEffect(() => {
@@ -133,7 +369,6 @@ export function FilterBottomSheet({
   };
 
   const handleSearch = () => {
-    haptics.medium();
     onApplyFilters(filters);
     onClose();
   };
@@ -148,15 +383,23 @@ export function FilterBottomSheet({
     onClose();
   };
 
-  const incrementCounter = (key: 'rooms' | 'beds') => {
-    haptics.light();
+  const incrementCounter = useCallback((key: 'rooms' | 'beds') => {
     updateFilter(key, Math.min(filters[key] + 1, 10));
-  };
+    if (key === 'rooms') {
+      roomsValueRef.current?.pulse?.(200);
+    } else {
+      bedsValueRef.current?.pulse?.(200);
+    }
+  }, [filters]);
 
-  const decrementCounter = (key: 'rooms' | 'beds') => {
-    haptics.light();
+  const decrementCounter = useCallback((key: 'rooms' | 'beds') => {
     updateFilter(key, Math.max(filters[key] - 1, 1));
-  };
+    if (key === 'rooms') {
+      roomsValueRef.current?.pulse?.(200);
+    } else {
+      bedsValueRef.current?.pulse?.(200);
+    }
+  }, [filters]);
 
   if (!showContent) return null;
 
@@ -221,30 +464,17 @@ export function FilterBottomSheet({
                 {DESTINATION_TYPES.map((type) => {
                   const isActive = filters.destinationType === type.id;
                   return (
-                    <TouchableOpacity
+                    <AnimatedChip
                       key={type.id}
-                      className={`px-4 py-2.5 rounded-full border ${
-                        isActive
-                          ? 'bg-secondary border-secondary'
-                          : 'bg-gray-100 border-gray-200'
-                      }`}
+                      label={type.label}
+                      isActive={isActive}
                       onPress={() => {
-                        haptics.light();
                         updateFilter(
                           'destinationType',
                           isActive ? null : type.id
                         );
                       }}
-                      activeOpacity={0.7}
-                    >
-                      <Text
-                        className={`text-sm font-medium ${
-                          isActive ? 'text-white' : 'text-gray-600'
-                        }`}
-                      >
-                        {type.label}
-                      </Text>
-                    </TouchableOpacity>
+                    />
                   );
                 })}
               </ScrollView>
@@ -337,35 +567,12 @@ export function FilterBottomSheet({
                 {RATING_OPTIONS.map((option) => {
                   const isActive = filters.minRating === option.value;
                   return (
-                    <TouchableOpacity
+                    <AnimatedRatingOption
                       key={option.value}
-                      className={`flex-1 flex-row items-center justify-center gap-1 py-3 rounded-xl border ${
-                        isActive
-                          ? 'bg-secondary border-secondary'
-                          : 'bg-gray-100 border-gray-200'
-                      }`}
-                      onPress={() => {
-                        haptics.light();
-                        updateFilter('minRating', option.value);
-                      }}
-                      activeOpacity={0.7}
-                    >
-                      {option.value > 0 && (
-                        <Star
-                          size={14}
-                          color={isActive ? '#FFFFFF' : '#F59E0B'}
-                          fill="#F59E0B"
-                          strokeWidth={0}
-                        />
-                      )}
-                      <Text
-                        className={`text-sm font-semibold ${
-                          isActive ? 'text-white' : 'text-gray-600'
-                        }`}
-                      >
-                        {option.label}
-                      </Text>
-                    </TouchableOpacity>
+                      option={option}
+                      isActive={isActive}
+                      onPress={() => updateFilter('minRating', option.value)}
+                    />
                   );
                 })}
               </View>
@@ -381,30 +588,16 @@ export function FilterBottomSheet({
               <View className="flex-row items-center justify-between py-4 border-b border-gray-100">
                 <Text className="text-base font-medium text-gray-900">Rooms</Text>
                 <View className="flex-row items-center gap-4">
-                  <TouchableOpacity
-                    className={`w-9 h-9 rounded-full bg-gray-100 items-center justify-center border border-gray-200 ${
-                      filters.rooms <= 1 ? 'opacity-50' : ''
-                    }`}
+                  <AnimatedCounterButton
+                    type="decrement"
                     onPress={() => decrementCounter('rooms')}
                     disabled={filters.rooms <= 1}
-                    activeOpacity={0.7}
-                  >
-                    <Minus
-                      size={18}
-                      color={filters.rooms <= 1 ? '#D4D4D4' : '#171717'}
-                      strokeWidth={2}
-                    />
-                  </TouchableOpacity>
-                  <Text className="text-lg font-semibold text-gray-900 min-w-[24px] text-center">
-                    {filters.rooms}
-                  </Text>
-                  <TouchableOpacity
-                    className="w-9 h-9 rounded-full bg-gray-100 items-center justify-center border border-gray-200"
+                  />
+                  <AnimatedCounterValue value={filters.rooms} valueRef={roomsValueRef} />
+                  <AnimatedCounterButton
+                    type="increment"
                     onPress={() => incrementCounter('rooms')}
-                    activeOpacity={0.7}
-                  >
-                    <Plus size={18} color="#171717" strokeWidth={2} />
-                  </TouchableOpacity>
+                  />
                 </View>
               </View>
 
@@ -412,30 +605,16 @@ export function FilterBottomSheet({
               <View className="flex-row items-center justify-between py-4 border-b border-gray-100">
                 <Text className="text-base font-medium text-gray-900">Beds</Text>
                 <View className="flex-row items-center gap-4">
-                  <TouchableOpacity
-                    className={`w-9 h-9 rounded-full bg-gray-100 items-center justify-center border border-gray-200 ${
-                      filters.beds <= 1 ? 'opacity-50' : ''
-                    }`}
+                  <AnimatedCounterButton
+                    type="decrement"
                     onPress={() => decrementCounter('beds')}
                     disabled={filters.beds <= 1}
-                    activeOpacity={0.7}
-                  >
-                    <Minus
-                      size={18}
-                      color={filters.beds <= 1 ? '#D4D4D4' : '#171717'}
-                      strokeWidth={2}
-                    />
-                  </TouchableOpacity>
-                  <Text className="text-lg font-semibold text-gray-900 min-w-[24px] text-center">
-                    {filters.beds}
-                  </Text>
-                  <TouchableOpacity
-                    className="w-9 h-9 rounded-full bg-gray-100 items-center justify-center border border-gray-200"
+                  />
+                  <AnimatedCounterValue value={filters.beds} valueRef={bedsValueRef} />
+                  <AnimatedCounterButton
+                    type="increment"
                     onPress={() => incrementCounter('beds')}
-                    activeOpacity={0.7}
-                  >
-                    <Plus size={18} color="#171717" strokeWidth={2} />
-                  </TouchableOpacity>
+                  />
                 </View>
               </View>
             </View>
@@ -446,30 +625,16 @@ export function FilterBottomSheet({
 
           {/* Bottom Buttons */}
           <View className="flex-row items-center gap-3 px-5 py-4 pb-6 border-t border-gray-200 bg-white">
-            <TouchableOpacity
-              className="flex-1 py-4 rounded-xl border border-gray-200 items-center"
+            <AnimatedActionButton
+              label="Clear All"
+              variant="secondary"
               onPress={handleClearAll}
-              activeOpacity={0.7}
-            >
-              <Text className="text-base font-semibold text-gray-600">
-                Clear All
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              className="flex-1 py-4 rounded-xl bg-secondary items-center"
+            />
+            <AnimatedActionButton
+              label="Search"
+              variant="primary"
               onPress={handleSearch}
-              activeOpacity={0.9}
-              style={{
-                shadowColor: '#10B981',
-                shadowOffset: { width: 0, height: 4 },
-                shadowOpacity: 0.3,
-                shadowRadius: 8,
-                elevation: 5,
-              }}
-            >
-              <Text className="text-base font-semibold text-white">Search</Text>
-            </TouchableOpacity>
+            />
           </View>
         </SafeAreaView>
       </Animated.View>
