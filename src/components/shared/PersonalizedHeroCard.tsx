@@ -1,13 +1,7 @@
-/**
- * PersonalizedHeroCard Component
- * Dynamic hero card with context-aware variants
- */
-
 import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Animated,
   ImageBackground,
@@ -30,6 +24,22 @@ interface PersonalizedHeroCardProps {
   recommendedDestination?: string;
   onCTAPress?: () => void;
 }
+
+const containerShadow = {
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 8 },
+  shadowOpacity: 0.2,
+  shadowRadius: 16,
+  elevation: 8,
+};
+
+const ctaButtonShadow = {
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.2,
+  shadowRadius: 8,
+  elevation: 4,
+};
 
 export function PersonalizedHeroCard({
   variant,
@@ -104,45 +114,58 @@ export function PersonalizedHeroCard({
 
   return (
     <Animated.View
+      className="mx-6 my-4 rounded-3xl overflow-hidden"
       style={[
-        styles.container,
         {
+          width: width - 48,
+          height: 220,
           opacity: fadeAnim,
           transform: [{ translateY: slideAnim }],
         },
+        containerShadow,
       ]}
     >
       <TouchableOpacity
         onPress={handleCTAPress}
         activeOpacity={0.9}
-        style={styles.touchable}
+        className="w-full h-full"
       >
         <ImageBackground
           source={{ uri: content.image }}
-          style={styles.imageBackground}
-          imageStyle={styles.image}
+          className="w-full h-full"
+          imageStyle={{ borderRadius: 24 }}
         >
           <LinearGradient
             colors={['rgba(0,0,0,0.4)', 'rgba(0,0,0,0.7)']}
-            style={styles.gradient}
+            className="flex-1 p-6 justify-between"
           >
             {/* Icon Badge */}
-            <View style={[styles.iconBadge, glass.light, { borderRadius: glassRadius.full }]}>
+            <View
+              className="self-start w-12 h-12 items-center justify-center"
+              style={[glass.light, { borderRadius: glassRadius.full }]}
+            >
               <Icon size={20} color={colors.white} />
             </View>
 
             {/* Content */}
-            <View style={styles.content}>
-              <Text style={styles.title}>{content.title}</Text>
-              <Text style={styles.subtitle}>{content.subtitle}</Text>
+            <View className="gap-3">
+              <Text className="text-[26px] font-bold text-white leading-8">
+                {content.title}
+              </Text>
+              <Text className="text-[15px] text-white opacity-95 leading-[22px]">
+                {content.subtitle}
+              </Text>
 
               {/* CTA Button */}
               <TouchableOpacity
-                style={styles.ctaButton}
+                className="self-start bg-white px-6 py-3.5 rounded-[28px] mt-2"
+                style={ctaButtonShadow}
                 onPress={handleCTAPress}
                 activeOpacity={0.8}
               >
-                <Text style={styles.ctaText}>{content.ctaText}</Text>
+                <Text className="text-base font-semibold text-primary">
+                  {content.ctaText}
+                </Text>
               </TouchableOpacity>
             </View>
           </LinearGradient>
@@ -151,76 +174,3 @@ export function PersonalizedHeroCard({
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: width - 48,
-    height: 220,
-    marginHorizontal: 24,
-    marginVertical: 16,
-    borderRadius: 24,
-    overflow: 'hidden',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 8 },
-    shadowOpacity: 0.2,
-    shadowRadius: 16,
-    elevation: 8,
-  },
-  touchable: {
-    width: '100%',
-    height: '100%',
-  },
-  imageBackground: {
-    width: '100%',
-    height: '100%',
-  },
-  image: {
-    borderRadius: 24,
-  },
-  gradient: {
-    flex: 1,
-    padding: 24,
-    justifyContent: 'space-between',
-  },
-  iconBadge: {
-    alignSelf: 'flex-start',
-    width: 48,
-    height: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  content: {
-    gap: 12,
-  },
-  title: {
-    fontSize: 26,
-    fontWeight: '700',
-    color: colors.white,
-    lineHeight: 32,
-  },
-  subtitle: {
-    fontSize: 15,
-    fontWeight: '400',
-    color: colors.white,
-    opacity: 0.95,
-    lineHeight: 22,
-  },
-  ctaButton: {
-    alignSelf: 'flex-start',
-    backgroundColor: colors.white,
-    paddingHorizontal: 24,
-    paddingVertical: 14,
-    borderRadius: 28,
-    marginTop: 8,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.2,
-    shadowRadius: 8,
-    elevation: 4,
-  },
-  ctaText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.primary,
-  },
-});

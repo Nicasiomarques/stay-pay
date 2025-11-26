@@ -1,6 +1,5 @@
 import { useState } from 'react';
-import { View, ScrollView, Image, Dimensions, StyleSheet, Text } from 'react-native';
-import { colors } from '@theme';
+import { View, ScrollView, Image, Dimensions, Text } from 'react-native';
 
 const { width } = Dimensions.get('window');
 
@@ -19,7 +18,7 @@ export function ImageCarousel({ images, height = 300 }: ImageCarouselProps) {
   };
 
   return (
-    <View style={[styles.container, { height }]}>
+    <View className="relative" style={{ height }}>
       <ScrollView
         horizontal
         pagingEnabled
@@ -31,74 +30,33 @@ export function ImageCarousel({ images, height = 300 }: ImageCarouselProps) {
           <Image
             key={index}
             source={{ uri: image }}
-            style={[styles.image, { width, height }]}
+            className="bg-gray-200"
+            style={{ width, height }}
             resizeMode="cover"
           />
         ))}
       </ScrollView>
 
       {/* Pagination Dots */}
-      <View style={styles.pagination}>
+      <View className="absolute bottom-4 left-0 right-0 flex-row justify-center items-center gap-2">
         {images.map((_, index) => (
           <View
             key={index}
-            style={[
-              styles.dot,
-              index === activeIndex && styles.activeDot,
-            ]}
+            className={`h-2 rounded-full ${
+              index === activeIndex
+                ? 'w-6 bg-white'
+                : 'w-2 bg-white/50'
+            }`}
           />
         ))}
       </View>
 
       {/* Counter */}
-      <View style={styles.counter}>
-        <Text style={styles.counterText}>
+      <View className="absolute top-4 right-4 bg-black/60 px-3 py-1.5 rounded-2xl">
+        <Text className="text-white text-xs font-semibold">
           {activeIndex + 1} / {images.length}
         </Text>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    position: 'relative',
-  },
-  image: {
-    backgroundColor: colors.gray200,
-  },
-  pagination: {
-    position: 'absolute',
-    bottom: 16,
-    left: 0,
-    right: 0,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
-    gap: 8,
-  },
-  dot: {
-    width: 8,
-    height: 8,
-    borderRadius: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.5)',
-  },
-  activeDot: {
-    backgroundColor: colors.white,
-    width: 24,
-  },
-  counter: {
-    position: 'absolute',
-    top: 16,
-    right: 16,
-    backgroundColor: 'rgba(0, 0, 0, 0.6)',
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    borderRadius: 16,
-  },
-  counterText: {
-    color: colors.white,
-    fontSize: 12,
-    fontWeight: '600',
-  },
-});

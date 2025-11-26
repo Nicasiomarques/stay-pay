@@ -1,14 +1,7 @@
-/**
- * TrendingDestinationCard Component
- * Displays trending destination with image, stats, and glassmorphism overlay
- */
-
 import React, { useState } from 'react';
 import {
   View,
   Text,
-  Image,
-  StyleSheet,
   TouchableOpacity,
   Animated,
   ImageBackground,
@@ -25,9 +18,17 @@ interface TrendingDestinationCardProps {
   country: string;
   hotelCount: number;
   image: string;
-  trendPercentage: number; // % increase in searches
+  trendPercentage: number;
   averagePrice: number;
 }
+
+const shadowStyle = {
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.15,
+  shadowRadius: 12,
+  elevation: 6,
+};
 
 export function TrendingDestinationCard({
   destination,
@@ -60,7 +61,6 @@ export function TrendingDestinationCard({
 
   const handlePress = () => {
     haptics.medium();
-    // Navigate to search with destination pre-filled
     router.push(`/search?location=${encodeURIComponent(destination)}`);
   };
 
@@ -75,36 +75,49 @@ export function TrendingDestinationCard({
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         activeOpacity={1}
-        style={styles.container}
+        className="w-[280px] h-[200px] rounded-[20px] overflow-hidden mr-4"
+        style={shadowStyle}
       >
         <ImageBackground
           source={{ uri: image }}
-          style={styles.imageBackground}
-          imageStyle={styles.image}
+          className="w-full h-full"
+          imageStyle={{ borderRadius: 20 }}
         >
-          {/* Dark gradient overlay */}
           <LinearGradient
             colors={['transparent', 'rgba(0,0,0,0.7)']}
-            style={styles.gradient}
+            className="flex-1 justify-between p-4"
           >
             {/* Trending Badge */}
-            <View style={[styles.trendingBadge, glass.success, { borderRadius: glassRadius.md }]}>
+            <View
+              className="self-start flex-row items-center px-2.5 py-1.5 gap-1 bg-white/95"
+              style={[glass.success, { borderRadius: glassRadius.md }]}
+            >
               <TrendingUp size={14} color="#10B981" />
-              <Text style={styles.trendingText}>+{trendPercentage}%</Text>
+              <Text className="text-xs font-bold text-emerald-500">
+                +{trendPercentage}%
+              </Text>
             </View>
 
             {/* Content */}
-            <View style={styles.content}>
-              <View style={styles.locationRow}>
+            <View className="gap-1.5">
+              <View className="flex-row items-center gap-1.5">
                 <MapPin size={18} color={colors.white} />
-                <Text style={styles.country}>{country}</Text>
+                <Text className="text-[13px] font-medium text-white opacity-90">
+                  {country}
+                </Text>
               </View>
-              <Text style={styles.destination}>{destination}</Text>
+              <Text className="text-2xl font-bold text-white leading-[30px]">
+                {destination}
+              </Text>
 
-              <View style={styles.stats}>
-                <Text style={styles.statText}>{hotelCount} hotéis</Text>
-                <Text style={styles.dot}>•</Text>
-                <Text style={styles.statText}>A partir de {formatPrice(averagePrice)}</Text>
+              <View className="flex-row items-center gap-2 mt-1">
+                <Text className="text-[13px] font-medium text-white opacity-90">
+                  {hotelCount} hotéis
+                </Text>
+                <Text className="text-[13px] text-white opacity-60">•</Text>
+                <Text className="text-[13px] font-medium text-white opacity-90">
+                  A partir de {formatPrice(averagePrice)}
+                </Text>
               </View>
             </View>
           </LinearGradient>
@@ -113,81 +126,3 @@ export function TrendingDestinationCard({
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: 280,
-    height: 200,
-    borderRadius: 20,
-    overflow: 'hidden',
-    marginRight: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  imageBackground: {
-    width: '100%',
-    height: '100%',
-  },
-  image: {
-    borderRadius: 20,
-  },
-  gradient: {
-    flex: 1,
-    justifyContent: 'space-between',
-    padding: 16,
-  },
-  trendingBadge: {
-    alignSelf: 'flex-start',
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    gap: 4,
-    backgroundColor: 'rgba(255, 255, 255, 0.95)',
-  },
-  trendingText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#10B981',
-  },
-  content: {
-    gap: 6,
-  },
-  locationRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 6,
-  },
-  country: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: colors.white,
-    opacity: 0.9,
-  },
-  destination: {
-    fontSize: 24,
-    fontWeight: '700',
-    color: colors.white,
-    lineHeight: 30,
-  },
-  stats: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-    marginTop: 4,
-  },
-  statText: {
-    fontSize: 13,
-    fontWeight: '500',
-    color: colors.white,
-    opacity: 0.9,
-  },
-  dot: {
-    fontSize: 13,
-    color: colors.white,
-    opacity: 0.6,
-  },
-});

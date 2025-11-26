@@ -1,10 +1,5 @@
-/**
- * TrustSignalItem Component
- * Displays trust signals and social proof indicators
- */
-
 import React from 'react';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, Text } from 'react-native';
 import { LucideIcon } from 'lucide-react-native';
 import { colors } from '@theme';
 
@@ -22,45 +17,21 @@ export function TrustSignalItem({
   description,
 }: TrustSignalItemProps) {
   return (
-    <View style={styles.container}>
-      <View style={[styles.iconContainer, { backgroundColor: `${iconColor}15` }]}>
+    <View className="flex-row items-center gap-4 py-4">
+      <View
+        className="w-14 h-14 rounded-full items-center justify-center"
+        style={{ backgroundColor: `${iconColor}15` }}
+      >
         <Icon size={24} color={iconColor} />
       </View>
-      <View style={styles.content}>
-        <Text style={styles.title}>{title}</Text>
-        <Text style={styles.description}>{description}</Text>
+      <View className="flex-1 gap-1">
+        <Text className="text-base font-semibold text-gray-900 leading-[22px]">
+          {title}
+        </Text>
+        <Text className="text-sm text-gray-500 leading-5">
+          {description}
+        </Text>
       </View>
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 16,
-    paddingVertical: 16,
-  },
-  iconContainer: {
-    width: 56,
-    height: 56,
-    borderRadius: 28,
-    alignItems: 'center',
-    justifyContent: 'center',
-  },
-  content: {
-    flex: 1,
-    gap: 4,
-  },
-  title: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: colors.text.primary,
-    lineHeight: 22,
-  },
-  description: {
-    fontSize: 14,
-    color: colors.text.secondary,
-    lineHeight: 20,
-  },
-});

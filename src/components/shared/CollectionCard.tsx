@@ -1,13 +1,7 @@
-/**
- * CollectionCard Component
- * Displays themed hotel collections (e.g., Romantic Getaways, Beach Resorts)
- */
-
 import React, { useState } from 'react';
 import {
   View,
   Text,
-  StyleSheet,
   TouchableOpacity,
   Animated,
   ImageBackground,
@@ -15,7 +9,6 @@ import {
 import { LinearGradient } from 'expo-linear-gradient';
 import { useRouter } from 'expo-router';
 import { haptics } from '@/utils/haptics';
-import { colors } from '@theme';
 
 interface CollectionCardProps {
   id: string;
@@ -26,13 +19,21 @@ interface CollectionCardProps {
   emoji?: string;
 }
 
+const shadowStyle = {
+  shadowColor: '#000',
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.15,
+  shadowRadius: 12,
+  elevation: 6,
+};
+
 export function CollectionCard({
   id,
   title,
   description,
   hotelCount,
   image,
-  emoji = '✨',
+  emoji = '',
 }: CollectionCardProps) {
   const router = useRouter();
   const [scaleAnim] = useState(new Animated.Value(1));
@@ -57,7 +58,6 @@ export function CollectionCard({
 
   const handlePress = () => {
     haptics.medium();
-    // Navigate to collection view
     router.push(`/collection/${id}`);
   };
 
@@ -68,25 +68,30 @@ export function CollectionCard({
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         activeOpacity={1}
-        style={styles.container}
+        className="w-80 h-[180px] rounded-[20px] overflow-hidden mr-4"
+        style={shadowStyle}
       >
         <ImageBackground
           source={{ uri: image }}
-          style={styles.imageBackground}
-          imageStyle={styles.image}
+          className="w-full h-full"
+          imageStyle={{ borderRadius: 20 }}
         >
-          {/* Gradient overlay for better text readability */}
           <LinearGradient
             colors={['rgba(0,0,0,0.3)', 'rgba(0,0,0,0.7)']}
-            style={styles.gradient}
+            className="flex-1 justify-end p-5"
           >
-            <View style={styles.content}>
-              <Text style={styles.emoji}>{emoji}</Text>
-              <Text style={styles.title}>{title}</Text>
-              <Text style={styles.description} numberOfLines={2}>
+            <View className="gap-1">
+              <Text className="text-[28px] mb-1">{emoji}</Text>
+              <Text className="text-[22px] font-bold text-white leading-7">
+                {title}
+              </Text>
+              <Text
+                className="text-sm text-white opacity-90 leading-5 mt-1"
+                numberOfLines={2}
+              >
                 {description}
               </Text>
-              <Text style={styles.hotelCount}>
+              <Text className="text-[13px] font-semibold text-white opacity-85 mt-2">
                 {hotelCount} {hotelCount === 1 ? 'hotel' : 'hotéis'}
               </Text>
             </View>
@@ -96,58 +101,3 @@ export function CollectionCard({
     </Animated.View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: 320,
-    height: 180,
-    borderRadius: 20,
-    overflow: 'hidden',
-    marginRight: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 4 },
-    shadowOpacity: 0.15,
-    shadowRadius: 12,
-    elevation: 6,
-  },
-  imageBackground: {
-    width: '100%',
-    height: '100%',
-  },
-  image: {
-    borderRadius: 20,
-  },
-  gradient: {
-    flex: 1,
-    justifyContent: 'flex-end',
-    padding: 20,
-  },
-  content: {
-    gap: 4,
-  },
-  emoji: {
-    fontSize: 28,
-    marginBottom: 4,
-  },
-  title: {
-    fontSize: 22,
-    fontWeight: '700',
-    color: colors.white,
-    lineHeight: 28,
-  },
-  description: {
-    fontSize: 14,
-    fontWeight: '400',
-    color: colors.white,
-    opacity: 0.9,
-    lineHeight: 20,
-    marginTop: 4,
-  },
-  hotelCount: {
-    fontSize: 13,
-    fontWeight: '600',
-    color: colors.white,
-    opacity: 0.85,
-    marginTop: 8,
-  },
-});
