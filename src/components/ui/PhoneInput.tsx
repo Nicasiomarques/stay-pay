@@ -1,6 +1,7 @@
 import React, { useState, useRef } from 'react';
-import { View, TextInput, StyleSheet } from 'react-native';
+import { View } from 'react-native';
 import PhoneNumberInput from 'react-native-phone-number-input';
+import { colors } from '@theme';
 
 interface PhoneInputProps {
   value: string;
@@ -10,12 +11,49 @@ interface PhoneInputProps {
   defaultCode?: string;
 }
 
+// PhoneNumberInput requires inline styles for its internal components
+// These cannot be converted to NativeWind className props
+const phoneInputStyles = {
+  container: {
+    width: '100%' as const,
+    height: 56,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: colors.border,
+    backgroundColor: colors.white,
+    paddingHorizontal: 0,
+  },
+  textContainer: {
+    backgroundColor: 'transparent',
+    paddingVertical: 0,
+    paddingHorizontal: 12,
+    borderRadius: 0,
+  },
+  textInput: {
+    fontSize: 16,
+    color: colors.text.primary,
+    padding: 0,
+    height: 54,
+  },
+  codeText: {
+    fontSize: 16,
+    color: colors.text.primary,
+    fontWeight: '500' as const,
+  },
+  flagButton: {
+    marginLeft: 12,
+  },
+  countryPickerButton: {
+    paddingHorizontal: 8,
+  },
+};
+
 export function PhoneInput({
   value,
   onChangeText,
   onChangeFormattedText,
   placeholder = 'Número de telefone',
-  defaultCode = 'AO', // Angola
+  defaultCode = 'AO',
 }: PhoneInputProps) {
   const phoneInput = useRef<PhoneNumberInput>(null);
   const [formattedValue, setFormattedValue] = useState('');
@@ -34,52 +72,17 @@ export function PhoneInput({
           setFormattedValue(text);
           onChangeFormattedText?.(text);
         }}
-        containerStyle={styles.container}
-        textContainerStyle={styles.textContainer}
-        textInputStyle={styles.textInput}
-        codeTextStyle={styles.codeText}
-        flagButtonStyle={styles.flagButton}
-        countryPickerButtonStyle={styles.countryPickerButton}
+        containerStyle={phoneInputStyles.container}
+        textContainerStyle={phoneInputStyles.textContainer}
+        textInputStyle={phoneInputStyles.textInput}
+        codeTextStyle={phoneInputStyles.codeText}
+        flagButtonStyle={phoneInputStyles.flagButton}
+        countryPickerButtonStyle={phoneInputStyles.countryPickerButton}
         placeholder={placeholder}
         textInputProps={{
-          placeholderTextColor: '#A3A3A3',
+          placeholderTextColor: colors.gray400,
         }}
       />
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    width: '100%',
-    height: 56,
-    borderRadius: 12,
-    borderWidth: 1,
-    borderColor: '#E5E5E5',
-    backgroundColor: '#FFFFFF',
-    paddingHorizontal: 0,
-  },
-  textContainer: {
-    backgroundColor: 'transparent',
-    paddingVertical: 0,
-    paddingHorizontal: 12,
-    borderRadius: 0,
-  },
-  textInput: {
-    fontSize: 16,
-    color: '#171717',
-    padding: 0,
-    height: 54,
-  },
-  codeText: {
-    fontSize: 16,
-    color: '#171717',
-    fontWeight: '500',
-  },
-  flagButton: {
-    marginLeft: 12,
-  },
-  countryPickerButton: {
-    paddingHorizontal: 8,
-  },
-});

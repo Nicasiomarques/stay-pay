@@ -1,7 +1,7 @@
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { HotelCard } from '@components';
+import { HotelCardLarge } from '@/components/home';
 import { useFavorites } from '@/hooks/queries';
 import { colors } from '@theme';
 
@@ -60,7 +60,7 @@ export default function FavoritesScreen() {
               delay={index * 100}
               duration={500}
             >
-              <HotelCard
+              <HotelCardLarge
                 id={item.hotel.id}
                 image={item.hotel.image}
                 name={item.hotel.name}
@@ -68,8 +68,7 @@ export default function FavoritesScreen() {
                 rating={item.hotel.rating}
                 reviews={item.hotel.reviews}
                 price={item.hotel.price}
-                distance={item.hotel.distance}
-                hotelData={item.hotel}
+                isFavorite={true}
               />
             </Animatable.View>
           )}

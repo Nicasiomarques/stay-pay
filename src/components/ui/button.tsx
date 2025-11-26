@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { TouchableOpacity, Text, StyleSheet, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
+import { TouchableOpacity, Text, ActivityIndicator, ViewStyle, TextStyle } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { colors } from '@theme';
 import { haptics } from '@/utils/haptics';
@@ -15,6 +15,32 @@ interface ButtonProps {
   style?: ViewStyle;
   textStyle?: TextStyle;
 }
+
+const variantClasses = {
+  primary: 'bg-primary',
+  secondary: 'bg-gray-100',
+  outline: 'bg-transparent border border-gray-200',
+  ghost: 'bg-transparent',
+};
+
+const sizeClasses = {
+  sm: 'h-10 px-4',
+  md: 'h-12 px-5',
+  lg: 'h-14 px-6',
+};
+
+const textVariantClasses = {
+  primary: 'text-white',
+  secondary: 'text-gray-900',
+  outline: 'text-gray-900',
+  ghost: 'text-primary',
+};
+
+const textSizeClasses = {
+  sm: 'text-sm',
+  md: 'text-base',
+  lg: 'text-lg',
+};
 
 export function Button({
   children,
@@ -54,16 +80,16 @@ export function Button({
   };
 
   return (
-    <Animatable.View ref={buttonRef} style={fullWidth && styles.fullWidth}>
+    <Animatable.View ref={buttonRef} className={fullWidth ? 'w-full' : undefined}>
       <TouchableOpacity
-        style={[
-          styles.base,
-          styles[variant],
-          styles[`size_${size}`],
-          fullWidth && styles.fullWidth,
-          isDisabled && styles.disabled,
-          style,
-        ]}
+        className={`
+          rounded-xl items-center justify-center flex-row
+          ${variantClasses[variant]}
+          ${sizeClasses[size]}
+          ${fullWidth ? 'w-full' : ''}
+          ${isDisabled ? 'opacity-50' : ''}
+        `}
+        style={style}
         onPressIn={handlePressIn}
         onPressOut={handlePressOut}
         onPress={handlePress}
@@ -76,7 +102,14 @@ export function Button({
             size="small"
           />
         ) : (
-          <Text style={[styles.text, styles[`text_${variant}`], styles[`text_${size}`], textStyle]}>
+          <Text
+            className={`
+              font-semibold
+              ${textVariantClasses[variant]}
+              ${textSizeClasses[size]}
+            `}
+            style={textStyle}
+          >
             {children}
           </Text>
         )}
@@ -84,76 +117,3 @@ export function Button({
     </Animatable.View>
   );
 }
-
-const styles = StyleSheet.create({
-  base: {
-    borderRadius: 12,
-    alignItems: 'center',
-    justifyContent: 'center',
-    flexDirection: 'row',
-  },
-
-  // Variants
-  primary: {
-    backgroundColor: colors.primary,
-  },
-  secondary: {
-    backgroundColor: colors.gray100,
-  },
-  outline: {
-    backgroundColor: 'transparent',
-    borderWidth: 1,
-    borderColor: colors.border,
-  },
-  ghost: {
-    backgroundColor: 'transparent',
-  },
-
-  // Sizes
-  size_sm: {
-    height: 40,
-    paddingHorizontal: 16,
-  },
-  size_md: {
-    height: 48,
-    paddingHorizontal: 20,
-  },
-  size_lg: {
-    height: 56,
-    paddingHorizontal: 24,
-  },
-
-  // States
-  fullWidth: {
-    width: '100%',
-  },
-  disabled: {
-    opacity: 0.5,
-  },
-
-  // Text styles
-  text: {
-    fontWeight: '600',
-  },
-  text_primary: {
-    color: colors.white,
-  },
-  text_secondary: {
-    color: colors.text.primary,
-  },
-  text_outline: {
-    color: colors.text.primary,
-  },
-  text_ghost: {
-    color: colors.primary,
-  },
-  text_sm: {
-    fontSize: 14,
-  },
-  text_md: {
-    fontSize: 16,
-  },
-  text_lg: {
-    fontSize: 18,
-  },
-});
