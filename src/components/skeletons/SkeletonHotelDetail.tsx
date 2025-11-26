@@ -4,7 +4,7 @@
  */
 
 import React, { useEffect, useRef } from 'react';
-import { View, Animated, StyleSheet } from 'react-native';
+import { View, Animated, ViewStyle } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 
 export function SkeletonHotelDetail() {
@@ -32,13 +32,10 @@ export function SkeletonHotelDetail() {
     outputRange: [0.3, 0.7],
   });
 
-  const SkeletonBox = ({ width, height, style }: any) => (
+  const SkeletonBox = ({ width, height, style }: { width: number | string; height: number; style?: ViewStyle }) => (
     <Animated.View
-      style={[
-        styles.skeletonBox,
-        { width, height, opacity: shimmerOpacity },
-        style,
-      ]}
+      className="bg-gray-200 rounded-lg"
+      style={[{ width, height, opacity: shimmerOpacity }, style]}
     />
   );
 
@@ -94,11 +91,3 @@ export function SkeletonHotelDetail() {
     </SafeAreaView>
   );
 }
-
-// Keep StyleSheet only for animated skeleton box base style
-const styles = StyleSheet.create({
-  skeletonBox: {
-    backgroundColor: '#E5E5E5',
-    borderRadius: 8,
-  },
-});
