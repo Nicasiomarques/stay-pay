@@ -8,7 +8,7 @@ import { View, Text } from 'react-native';
 import Slider from '@react-native-community/slider';
 import { DollarSign } from 'lucide-react-native';
 import { formatCurrency } from '@/utils';
-import { PRICE_RANGE_CONFIG } from '@/constants/filters';
+import { PRICE_RANGE_CONFIG } from '@/config/constants/filters';
 
 interface PriceRangeSliderProps {
   value: [number, number];

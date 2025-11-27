@@ -5,7 +5,7 @@ import { Stack } from 'expo-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import Toast from 'react-native-toast-message';
-import { BookingProvider } from '@context';
+import { BookingProvider } from '@/contexts';
 import { queryClient } from '@/config/queryClient';
 import { makeServer } from '@/mocks';
 import { initializeAuth } from '@/hooks/queries';

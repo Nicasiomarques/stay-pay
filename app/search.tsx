@@ -11,7 +11,7 @@ import { useRouter } from 'expo-router';
 import { ArrowLeft, SlidersHorizontal, MapPin } from 'lucide-react-native';
 
 import { useHotels, useSearchHotels } from '@/hooks/queries';
-import { useBooking } from '@context';
+import { useBooking } from '@/contexts';
 import { FilterBottomSheet, FilterState } from '@/components/filters/FilterBottomSheet';
 import { HotelCardLarge } from '@/components/home';
 import { haptics } from '@/utils/haptics';

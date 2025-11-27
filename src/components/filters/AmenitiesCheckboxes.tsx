@@ -22,7 +22,7 @@ import {
   ChevronDown,
   ChevronRight,
 } from 'lucide-react-native';
-import { AMENITY_CATEGORIES } from '@/constants/filters';
+import { AMENITY_CATEGORIES } from '@/config/constants/filters';
 import { haptics } from '@/utils/haptics';
 
 interface AmenitiesCheckboxesProps {

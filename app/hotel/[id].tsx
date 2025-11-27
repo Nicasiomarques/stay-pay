@@ -25,7 +25,7 @@ import {
   Car,
   ChevronRight,
 } from 'lucide-react-native';
-import { useBooking } from '@context';
+import { useBooking } from '@/contexts';
 import { useHotel, useFavorites, useToggleFavorite, useHotelReviews } from '@/hooks/queries';
 import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { haptics } from '@/utils/haptics';

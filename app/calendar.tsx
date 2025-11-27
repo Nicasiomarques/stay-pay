@@ -9,7 +9,7 @@ import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { ArrowLeft, ChevronLeft, ChevronRight, Plus, Minus, Users } from 'lucide-react-native';
-import { useBooking } from '@context';
+import { useBooking } from '@/contexts';
 import { haptics } from '@/utils/haptics';
 
 const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];

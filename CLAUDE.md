@@ -31,18 +31,29 @@ StayGo is a React Native Expo hotel booking application. The project is based on
 ├── app/                    # Expo Router screens (file-based routing)
 │   ├── _layout.tsx        # Root layout with providers
 │   ├── (tabs)/            # Tab navigator screens
-│   └── hotel/[id].tsx     # Hotel detail screen
+│   │   ├── index.tsx      # Home screen
+│   │   ├── favorites.tsx  # Favorites screen
+│   │   ├── bookings.tsx   # Bookings screen
+│   │   └── profile.tsx    # Profile screen
+│   ├── onboarding/        # Onboarding screen
+│   │   └── index.tsx
+│   ├── hotel/[id].tsx     # Hotel detail screen
+│   ├── search.tsx         # Search results
+│   ├── calendar.tsx       # Date selection
+│   ├── payment.tsx        # Payment screen
+│   └── confirmation.tsx   # Booking confirmation
 ├── src/
-│   ├── components/        # Reusable components
+│   ├── components/        # Componentes organizados por tela/feature
 │   │   ├── ui/           # UI primitives (Button, Input, etc.)
-│   │   ├── home/         # Home screen components
+│   │   ├── shared/       # Shared components across screens
+│   │   ├── home-screen/  # Componentes específicos da Home
+│   │   ├── onboarding/   # Componentes específicos do Onboarding
 │   │   ├── filters/      # Filter components
 │   │   └── illustrations/ # SVG illustrations
 │   ├── context/          # React Context providers
 │   │   └── BookingContext.tsx
-│   ├── hooks/            # Custom React hooks
+│   ├── hooks/            # Custom React hooks (generic)
 │   │   └── queries/      # React Query hooks
-│   ├── screens/          # Screen components
 │   ├── theme/            # Theme configuration
 │   │   └── colors.ts     # Color palette
 │   ├── types/            # TypeScript definitions
@@ -105,3 +116,22 @@ The application uses a clean architecture with:
 - Functional components with hooks
 - Lucide icons used throughout
 - Date handling via native Date objects
+
+### Organização de Componentes e Hooks
+
+**Componentes específicos de uma tela:**
+- Ficam em `src/components/` com nome da tela: `src/components/screen-name/`
+- Exemplo: Componentes da Home → `src/components/home-screen/`
+- Exemplo: Componentes do Onboarding → `src/components/onboarding/`
+
+**Componentes genéricos/reutilizáveis:**
+- `src/components/ui/` - Primitivos de UI (Button, Input, Card)
+- `src/components/shared/` - Componentes compartilhados entre telas
+
+**Hooks específicos de uma tela:**
+- Ficam em `src/hooks/` com nome descritivo
+- Exemplo: `src/hooks/useHomeFilters.ts`
+
+**Hooks genéricos:**
+- Ficam em `src/hooks/`
+- Hooks de React Query em `src/hooks/queries/`

@@ -4,7 +4,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
 import { Calendar, Users, CreditCard } from 'lucide-react-native';
 import { Button, Card } from '@/components/ui';
-import { useBooking } from '@context';
+import { useBooking } from '@/contexts';
 import { formatCurrency, formatGuestCount, formatNightCount } from '@/utils';
 import { colors } from '@theme';
 

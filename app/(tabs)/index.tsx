@@ -1,8 +1,8 @@
 import { useState } from 'react';
-import { View, Text, ScrollView, TouchableOpacity, Dimensions } from 'react-native';
+import { View, Text, ScrollView, Dimensions } from 'react-native';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { useBooking } from '@context';
+import { useBooking } from '@/contexts';
 import {
   usePopularHotels,
   useDeals,
@@ -10,7 +10,6 @@ import {
   useLastMinuteDeals,
   useUserProfile,
 } from '@/hooks/queries';
-import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import {
   SearchHeader,
   HotelCardCompact,
@@ -18,7 +17,9 @@ import {
   DestinationCard,
   RecentlyViewedCard,
   LastMinuteCard,
-} from '@/components/home';
+  SectionHeader,
+} from '@/components/home-screen';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { FilterBottomSheet } from '@/components/filters/FilterBottomSheet';
 import { SearchModal } from '@/components/search';
 import { FilterState } from '@/components/filters/FilterBottomSheet';
@@ -27,28 +28,6 @@ import { haptics } from '@/utils/haptics';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_GAP = 16;
 const CARD_WIDTH = SCREEN_WIDTH * 0.45;
-
-// Section Header Component
-function SectionHeader({
-  title,
-  onSeeAll,
-  showSeeAll = true,
-}: {
-  title: string;
-  onSeeAll?: () => void;
-  showSeeAll?: boolean;
-}) {
-  return (
-    <View className="flex-row justify-between items-center px-5 mb-4">
-      <Text className="text-lg font-bold text-gray-900">{title}</Text>
-      {showSeeAll && onSeeAll && (
-        <TouchableOpacity onPress={onSeeAll} activeOpacity={0.7}>
-          <Text className="text-sm font-semibold text-primary">Ver todos</Text>
-        </TouchableOpacity>
-      )}
-    </View>
-  );
-}
 
 export default function HomeScreen() {
   const router = useRouter();

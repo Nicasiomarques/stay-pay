@@ -6,7 +6,7 @@
 import React from 'react';
 import { View, Text, Pressable } from 'react-native';
 import { Crown, Waves, Building2, DollarSign, Sparkles } from 'lucide-react-native';
-import { PROPERTY_TYPES } from '@/constants/filters';
+import { PROPERTY_TYPES } from '@/config/constants/filters';
 import { haptics } from '@/utils/haptics';
 
 interface PropertyTypeGridProps {

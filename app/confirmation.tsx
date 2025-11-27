@@ -5,7 +5,7 @@ import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Calendar, MapPin, Users, CreditCard, Download, CheckCircle } from 'lucide-react-native';
 import { Button, Card } from '@/components/ui';
-import { useBooking } from '@context';
+import { useBooking } from '@/contexts';
 import { useBooking as useBookingQuery } from '@/hooks/queries';
 import { formatCurrency, formatGuestCount } from '@/utils';
 import { colors } from '@theme';

@@ -9,9 +9,6 @@ const STORAGE_KEY = '@staygo:recent_searches';
 const MAX_RECENT_SEARCHES = 5;
 
 export const RecentSearchesService = {
-  /**
-   * Get recent searches from storage
-   */
   get: async (): Promise<string[]> => {
     try {
       const value = await AsyncStorage.getItem(STORAGE_KEY);
@@ -22,10 +19,6 @@ export const RecentSearchesService = {
     }
   },
 
-  /**
-   * Add a new search to recent searches
-   * Removes duplicates and limits to MAX_RECENT_SEARCHES
-   */
   add: async (search: string): Promise<void> => {
     try {
       if (!search.trim()) return;
@@ -44,9 +37,6 @@ export const RecentSearchesService = {
     }
   },
 
-  /**
-   * Clear all recent searches
-   */
   clear: async (): Promise<void> => {
     try {
       await AsyncStorage.removeItem(STORAGE_KEY);
@@ -55,9 +45,6 @@ export const RecentSearchesService = {
     }
   },
 
-  /**
-   * Remove a specific search from history
-   */
   remove: async (search: string): Promise<void> => {
     try {
       const searches = await RecentSearchesService.get();

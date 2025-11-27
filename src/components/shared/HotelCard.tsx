@@ -3,7 +3,7 @@ import { View, Text, Image, TouchableOpacity, Animated } from 'react-native';
 import { useRouter } from 'expo-router';
 import { MapPin, Flame } from 'lucide-react-native';
 import { Card, StarRating, FavoriteButton, PriceDisplay } from '@/components/ui';
-import { useBooking } from '@context';
+import { useBooking } from '@/contexts';
 import { Hotel } from '@types';
 import { formatCurrency } from '@/utils/formatters';
 import { haptics } from '@/utils/haptics';
