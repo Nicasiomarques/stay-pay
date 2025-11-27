@@ -5,12 +5,17 @@ import { PRICING } from '@/utils/pricing';
 export type PaymentMethod = 'card' | 'mobile' | 'property';
 export type BookingStatus = 'Confirmed' | 'Completed' | 'Cancelled';
 
+export interface GuestsCount {
+  adults: number;
+  children: number;
+}
+
 interface BookingState {
   hotel: Hotel | null;
   selectedRoom: number;
   checkIn: Date | null;
   checkOut: Date | null;
-  guests: number;
+  guests: GuestsCount;
   searchLocation: string;
   paymentMethod: PaymentMethod;
   quickFilter: string;
@@ -21,13 +26,14 @@ interface BookingContextType {
   setHotel: (hotel: Hotel) => void;
   setSelectedRoom: (roomIndex: number) => void;
   setDates: (checkIn: Date | null, checkOut: Date | null) => void;
-  setGuests: (guests: number) => void;
+  setGuests: (guests: GuestsCount) => void;
   setSearchLocation: (location: string) => void;
   setPaymentMethod: (method: PaymentMethod) => void;
   setQuickFilter: (filter: string) => void;
   resetBooking: () => void;
   calculateTotal: () => number;
   getNights: () => number;
+  getTotalGuests: () => number;
 }
 
 const BookingContext = createContext<BookingContextType | undefined>(undefined);
@@ -37,7 +43,7 @@ const initialState: BookingState = {
   selectedRoom: 0,
   checkIn: null,
   checkOut: null,
-  guests: 2,
+  guests: { adults: 2, children: 0 },
   searchLocation: '',
   paymentMethod: 'card',
   quickFilter: '',
@@ -58,9 +64,13 @@ export function BookingProvider({ children }: { children: ReactNode }) {
     setBooking(prev => ({ ...prev, checkIn, checkOut }));
   }, []);
 
-  const setGuests = useCallback((guests: number) => {
+  const setGuests = useCallback((guests: GuestsCount) => {
     setBooking(prev => ({ ...prev, guests }));
   }, []);
+
+  const getTotalGuests = useCallback(() => {
+    return booking.guests.adults + booking.guests.children;
+  }, [booking.guests]);
 
   const setSearchLocation = useCallback((location: string) => {
     setBooking(prev => ({ ...prev, searchLocation: location }));
@@ -107,6 +117,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       resetBooking,
       calculateTotal,
       getNights,
+      getTotalGuests,
     }),
     [
       booking,
@@ -120,6 +131,7 @@ export function BookingProvider({ children }: { children: ReactNode }) {
       resetBooking,
       calculateTotal,
       getNights,
+      getTotalGuests,
     ]
   );
 

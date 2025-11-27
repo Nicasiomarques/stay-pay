@@ -21,8 +21,18 @@ export const formatReviewCount = (count: number): string => {
   return `(${count})`;
 };
 
-export const formatGuestCount = (count: number): string => {
-  return `${count} ${count === 1 ? 'hóspede' : 'hóspedes'}`;
+export const formatGuestCount = (guests: { adults: number; children: number }): string => {
+  const parts: string[] = [];
+
+  if (guests.adults > 0) {
+    parts.push(`${guests.adults} ${guests.adults === 1 ? 'adulto' : 'adultos'}`);
+  }
+
+  if (guests.children > 0) {
+    parts.push(`${guests.children} ${guests.children === 1 ? 'criança' : 'crianças'}`);
+  }
+
+  return parts.join(', ') || '0 hóspedes';
 };
 
 export const formatNightCount = (count: number): string => {

@@ -8,7 +8,7 @@ import {
 import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { useRouter } from 'expo-router';
-import { ArrowLeft, ChevronLeft, ChevronRight } from 'lucide-react-native';
+import { ArrowLeft, ChevronLeft, ChevronRight, Plus, Minus, Users } from 'lucide-react-native';
 import { useBooking } from '@context';
 import { haptics } from '@/utils/haptics';
 
@@ -20,13 +20,16 @@ const MONTHS = [
 
 export default function CalendarScreen() {
   const router = useRouter();
-  const { booking, setDates } = useBooking();
+  const { booking, setDates, setGuests } = useBooking();
   const [checkIn, setCheckIn] = useState<Date | null>(booking.checkIn);
   const [checkOut, setCheckOut] = useState<Date | null>(booking.checkOut);
   const [currentMonth, setCurrentMonth] = useState(new Date());
+  const [adults, setAdults] = useState(booking.guests.adults);
+  const [children, setChildren] = useState(booking.guests.children);
 
   const nightsRef = useRef<any>(null);
   const buttonRef = useRef<any>(null);
+  const guestsRef = useRef<any>(null);
 
   const handleBack = () => {
     haptics.light();
@@ -105,9 +108,32 @@ export default function CalendarScreen() {
     haptics.medium();
     if (checkIn && checkOut) {
       setDates(checkIn, checkOut);
+      setGuests({ adults, children });
       router.push('/booking-review');
     }
   };
+
+  const handleAdultsChange = (increment: boolean) => {
+    haptics.light();
+    if (increment) {
+      setAdults(prev => Math.min(prev + 1, 10));
+    } else {
+      setAdults(prev => Math.max(prev - 1, 1));
+    }
+    guestsRef.current?.pulse?.(200);
+  };
+
+  const handleChildrenChange = (increment: boolean) => {
+    haptics.light();
+    if (increment) {
+      setChildren(prev => Math.min(prev + 1, 6));
+    } else {
+      setChildren(prev => Math.max(prev - 1, 0));
+    }
+    guestsRef.current?.pulse?.(200);
+  };
+
+  const getTotalGuests = () => adults + children;
 
   // Generate calendar days for current month
   const calendarDays = useMemo(() => {
@@ -265,6 +291,85 @@ export default function CalendarScreen() {
             </Text>
           </Animatable.View>
         )}
+
+        {/* Guests Section */}
+        <Animatable.View
+          ref={guestsRef}
+          animation="fadeInUp"
+          delay={350}
+          duration={500}
+          className="mx-5 mt-4 mb-6 bg-gray-50 rounded-2xl p-5"
+        >
+          <View className="flex-row items-center mb-4">
+            <Users size={20} color="#171717" strokeWidth={2} />
+            <Text className="text-base font-semibold text-gray-900 ml-2">Guests</Text>
+            <Text className="text-sm text-gray-500 ml-auto">
+              {getTotalGuests()} {getTotalGuests() === 1 ? 'guest' : 'guests'}
+            </Text>
+          </View>
+
+          {/* Adults Counter */}
+          <View className="flex-row items-center justify-between py-3 border-b border-gray-200">
+            <View>
+              <Text className="text-base font-medium text-gray-900">Adults</Text>
+              <Text className="text-xs text-gray-500">Ages 13 or above</Text>
+            </View>
+            <View className="flex-row items-center gap-3">
+              <TouchableOpacity
+                onPress={() => handleAdultsChange(false)}
+                disabled={adults <= 1}
+                className={`w-9 h-9 rounded-full items-center justify-center ${
+                  adults <= 1 ? 'bg-gray-100' : 'bg-white border border-gray-300'
+                }`}
+                activeOpacity={0.7}
+              >
+                <Minus size={18} color={adults <= 1 ? '#A3A3A3' : '#171717'} strokeWidth={2} />
+              </TouchableOpacity>
+              <Text className="text-base font-semibold text-gray-900 w-6 text-center">{adults}</Text>
+              <TouchableOpacity
+                onPress={() => handleAdultsChange(true)}
+                disabled={adults >= 10}
+                className={`w-9 h-9 rounded-full items-center justify-center ${
+                  adults >= 10 ? 'bg-gray-100' : 'bg-white border border-gray-300'
+                }`}
+                activeOpacity={0.7}
+              >
+                <Plus size={18} color={adults >= 10 ? '#A3A3A3' : '#171717'} strokeWidth={2} />
+              </TouchableOpacity>
+            </View>
+          </View>
+
+          {/* Children Counter */}
+          <View className="flex-row items-center justify-between py-3">
+            <View>
+              <Text className="text-base font-medium text-gray-900">Children</Text>
+              <Text className="text-xs text-gray-500">Ages 2-12</Text>
+            </View>
+            <View className="flex-row items-center gap-3">
+              <TouchableOpacity
+                onPress={() => handleChildrenChange(false)}
+                disabled={children <= 0}
+                className={`w-9 h-9 rounded-full items-center justify-center ${
+                  children <= 0 ? 'bg-gray-100' : 'bg-white border border-gray-300'
+                }`}
+                activeOpacity={0.7}
+              >
+                <Minus size={18} color={children <= 0 ? '#A3A3A3' : '#171717'} strokeWidth={2} />
+              </TouchableOpacity>
+              <Text className="text-base font-semibold text-gray-900 w-6 text-center">{children}</Text>
+              <TouchableOpacity
+                onPress={() => handleChildrenChange(true)}
+                disabled={children >= 6}
+                className={`w-9 h-9 rounded-full items-center justify-center ${
+                  children >= 6 ? 'bg-gray-100' : 'bg-white border border-gray-300'
+                }`}
+                activeOpacity={0.7}
+              >
+                <Plus size={18} color={children >= 6 ? '#A3A3A3' : '#171717'} strokeWidth={2} />
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Animatable.View>
       </ScrollView>
 
       {/* Bottom Button */}

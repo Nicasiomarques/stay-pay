@@ -6,7 +6,6 @@ import { useBooking } from '@context';
 import { usePopularHotels } from '@/hooks/queries';
 import {
   SearchHeader,
-  CategoryCard,
   HotelCardCompact,
   DealCard,
   DestinationCard,
@@ -21,35 +20,6 @@ import { haptics } from '@/utils/haptics';
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const CARD_GAP = 16;
 const CARD_WIDTH = SCREEN_WIDTH * 0.45;
-
-// Categorias adaptadas para Angola
-const CATEGORIES = [
-  {
-    id: '1',
-    name: 'Praia',
-    image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400',
-  },
-  {
-    id: '2',
-    name: 'Cidade',
-    image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400',
-  },
-  {
-    id: '3',
-    name: 'Natureza',
-    image: 'https://images.unsplash.com/photo-1518173946687-a4c036bc6c9a?w=400',
-  },
-  {
-    id: '4',
-    name: 'Luxo',
-    image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400',
-  },
-  {
-    id: '5',
-    name: 'Negócios',
-    image: 'https://images.unsplash.com/photo-1497366216548-37526070297c?w=400',
-  },
-];
 
 // Ofertas especiais
 const DEALS = [
@@ -213,12 +183,6 @@ export default function HomeScreen() {
     haptics.medium();
   };
 
-  const handleCategoryPress = (category: string) => {
-    haptics.light();
-    setSearchLocation(category);
-    router.push('/search');
-  };
-
   const handleDestinationPress = (destination: string) => {
     haptics.light();
     setSearchLocation(destination);
@@ -260,25 +224,6 @@ export default function HomeScreen() {
                 image={deal.image}
                 backgroundColor={deal.backgroundColor}
                 onPress={handleSeeAll}
-              />
-            ))}
-          </ScrollView>
-        </View>
-
-        {/* Categorias */}
-        <View className="mt-6">
-          <SectionHeader title="Categorias" onSeeAll={handleSeeAll} />
-          <ScrollView
-            horizontal
-            showsHorizontalScrollIndicator={false}
-            contentContainerStyle={{ paddingHorizontal: 20 }}
-          >
-            {CATEGORIES.map((category) => (
-              <CategoryCard
-                key={category.id}
-                name={category.name}
-                image={category.image}
-                onPress={() => handleCategoryPress(category.name)}
               />
             ))}
           </ScrollView>
