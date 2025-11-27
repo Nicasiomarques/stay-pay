@@ -7,12 +7,13 @@ import { CreditCard, Smartphone, Building2, Check } from 'lucide-react-native';
 import { Button, Input, Card } from '@/components/ui';
 import { useBooking } from '@context';
 import { PaymentMethod } from '@context';
+import { useCreateBooking, useUserProfile } from '@/hooks/queries';
 import { formatCurrency, showToast } from '@/utils';
 import { colors } from '@theme';
 
 export default function PaymentScreen() {
   const router = useRouter();
-  const { booking, setPaymentMethod, calculateTotal } = useBooking();
+  const { booking, setPaymentMethod, calculateTotal, getTotalGuests } = useBooking();
   const [selectedMethod, setSelectedMethod] = useState<PaymentMethod>(booking.paymentMethod);
   const [cardNumber, setCardNumber] = useState('');
   const [cardName, setCardName] = useState('');
@@ -20,6 +21,20 @@ export default function PaymentScreen() {
   const [cvv, setCvv] = useState('');
 
   const checkRefs = useRef<Record<string, any>>({});
+
+  // Get user profile for guest details
+  const { data: userProfile } = useUserProfile();
+
+  // Create booking mutation
+  const createBookingMutation = useCreateBooking({
+    onSuccess: (data) => {
+      // Navigate to confirmation with booking ID
+      router.push(`/confirmation?bookingId=${data.booking.id}`);
+    },
+    onError: () => {
+      showToast.error('Erro ao criar reserva. Tente novamente.');
+    },
+  });
 
   const paymentMethods = [
     {
@@ -58,8 +73,27 @@ export default function PaymentScreen() {
       }
     }
 
-    // Simular processamento
-    router.push('/confirmation');
+    if (!booking.hotel || !booking.checkIn || !booking.checkOut) {
+      showToast.error('Dados da reserva incompletos');
+      return;
+    }
+
+    const selectedRoom = booking.hotel.rooms[booking.selectedRoom];
+
+    // Create booking via API
+    createBookingMutation.mutate({
+      hotelId: booking.hotel.id,
+      roomId: selectedRoom.id,
+      checkIn: booking.checkIn.toISOString(),
+      checkOut: booking.checkOut.toISOString(),
+      guests: getTotalGuests(),
+      guestName: userProfile?.name || 'Hóspede',
+      guestEmail: userProfile?.email || 'guest@example.com',
+      guestPhone: userProfile?.phone || '',
+      paymentMethod: selectedMethod === 'mobile' ? 'mobile-money' : 'card',
+      cardNumber: selectedMethod === 'card' ? cardNumber : undefined,
+      cardHolder: selectedMethod === 'card' ? cardName : undefined,
+    });
   };
 
   return (
@@ -238,8 +272,17 @@ export default function PaymentScreen() {
         duration={500}
         className="p-6 bg-white border-t border-gray-200"
       >
-        <Button size="lg" fullWidth onPress={handleConfirmPayment}>
-          {selectedMethod === 'property' ? 'Confirmar Reserva' : 'Pagar Agora'}
+        <Button
+          size="lg"
+          fullWidth
+          onPress={handleConfirmPayment}
+          disabled={createBookingMutation.isPending}
+        >
+          {createBookingMutation.isPending
+            ? 'A processar...'
+            : selectedMethod === 'property'
+            ? 'Confirmar Reserva'
+            : 'Pagar Agora'}
         </Button>
       </Animatable.View>
     </SafeAreaView>

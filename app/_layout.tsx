@@ -1,5 +1,6 @@
 import '../global.css';
 
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
@@ -7,6 +8,7 @@ import Toast from 'react-native-toast-message';
 import { BookingProvider } from '@context';
 import { queryClient } from '@/config/queryClient';
 import { makeServer } from '@/mocks';
+import { initializeAuth } from '@/hooks/queries';
 
 // Initialize MirageJS server for development
 if (__DEV__) {
@@ -14,6 +16,11 @@ if (__DEV__) {
 }
 
 export default function RootLayout() {
+  // Initialize auth from AsyncStorage on app start
+  useEffect(() => {
+    initializeAuth();
+  }, []);
+
   return (
     <GestureHandlerRootView className="flex-1">
       <QueryClientProvider client={queryClient}>

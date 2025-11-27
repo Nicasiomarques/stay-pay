@@ -9,10 +9,20 @@ import {
   createBookingGateway,
   createFavoriteGateway,
   createAuthGateway,
+  createPromotionGateway,
+  createProfileGateway,
+  createNotificationGateway,
+  createReviewGateway,
+  createPaymentGateway,
   HotelGateway,
   BookingGateway,
   FavoriteGateway,
   AuthGateway,
+  PromotionGateway,
+  ProfileGateway,
+  NotificationGateway,
+  ReviewGateway,
+  PaymentGateway,
 } from '@/repositories';
 
 /**
@@ -26,6 +36,11 @@ class DependencyContainer {
   private _bookingGateway: BookingGateway | null = null;
   private _favoriteGateway: FavoriteGateway | null = null;
   private _authGateway: AuthGateway | null = null;
+  private _promotionGateway: PromotionGateway | null = null;
+  private _profileGateway: ProfileGateway | null = null;
+  private _notificationGateway: NotificationGateway | null = null;
+  private _reviewGateway: ReviewGateway | null = null;
+  private _paymentGateway: PaymentGateway | null = null;
 
   private constructor() {}
 
@@ -67,6 +82,11 @@ class DependencyContainer {
     this._bookingGateway = null;
     this._favoriteGateway = null;
     this._authGateway = null;
+    this._promotionGateway = null;
+    this._profileGateway = null;
+    this._notificationGateway = null;
+    this._reviewGateway = null;
+    this._paymentGateway = null;
   }
 
   /**
@@ -110,6 +130,56 @@ class DependencyContainer {
   }
 
   /**
+   * Get or create Promotion Gateway
+   */
+  get promotionGateway(): PromotionGateway {
+    if (!this._promotionGateway) {
+      this._promotionGateway = createPromotionGateway(this.httpClient);
+    }
+    return this._promotionGateway;
+  }
+
+  /**
+   * Get or create Profile Gateway
+   */
+  get profileGateway(): ProfileGateway {
+    if (!this._profileGateway) {
+      this._profileGateway = createProfileGateway(this.httpClient);
+    }
+    return this._profileGateway;
+  }
+
+  /**
+   * Get or create Notification Gateway
+   */
+  get notificationGateway(): NotificationGateway {
+    if (!this._notificationGateway) {
+      this._notificationGateway = createNotificationGateway(this.httpClient);
+    }
+    return this._notificationGateway;
+  }
+
+  /**
+   * Get or create Review Gateway
+   */
+  get reviewGateway(): ReviewGateway {
+    if (!this._reviewGateway) {
+      this._reviewGateway = createReviewGateway(this.httpClient);
+    }
+    return this._reviewGateway;
+  }
+
+  /**
+   * Get or create Payment Gateway
+   */
+  get paymentGateway(): PaymentGateway {
+    if (!this._paymentGateway) {
+      this._paymentGateway = createPaymentGateway(this.httpClient);
+    }
+    return this._paymentGateway;
+  }
+
+  /**
    * Reset all gateways (useful for testing or logout)
    */
   reset(): void {
@@ -118,6 +188,11 @@ class DependencyContainer {
     this._bookingGateway = null;
     this._favoriteGateway = null;
     this._authGateway = null;
+    this._promotionGateway = null;
+    this._profileGateway = null;
+    this._notificationGateway = null;
+    this._reviewGateway = null;
+    this._paymentGateway = null;
   }
 }
 
@@ -129,4 +204,9 @@ export const getHotelGateway = () => dependencies.hotelGateway;
 export const getBookingGateway = () => dependencies.bookingGateway;
 export const getFavoriteGateway = () => dependencies.favoriteGateway;
 export const getAuthGateway = () => dependencies.authGateway;
+export const getPromotionGateway = () => dependencies.promotionGateway;
+export const getProfileGateway = () => dependencies.profileGateway;
+export const getNotificationGateway = () => dependencies.notificationGateway;
+export const getReviewGateway = () => dependencies.reviewGateway;
+export const getPaymentGateway = () => dependencies.paymentGateway;
 export const getHttpClient = () => dependencies.httpClient;

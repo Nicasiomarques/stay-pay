@@ -22,7 +22,7 @@ interface SearchHeaderProps {
 
 export function SearchHeader({
   onSearchPress,
-  userName = 'Martin',
+  userName = 'Nicasio Silva',
   location = 'Norway',
 }: SearchHeaderProps) {
   const searchBarRef = useRef<any>(null);
@@ -73,7 +73,7 @@ export function SearchHeader({
           {/* Greeting Text - Animated */}
           <Animatable.View animation="fadeInUp" delay={100} duration={400} className="mb-4">
             <Text className="text-white text-2xl font-bold">
-              Olá, {userName}! Diz-nos para onde
+              Oie, {userName}! Diz-nos para onde
             </Text>
             <Text className="text-white text-2xl font-bold">queres ir</Text>
           </Animatable.View>

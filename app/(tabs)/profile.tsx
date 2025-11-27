@@ -4,9 +4,12 @@ import {
   ScrollView,
   TouchableOpacity,
   Image,
+  ActivityIndicator,
+  Alert,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
+import { useRouter } from 'expo-router';
 import {
   User,
   Settings,
@@ -18,6 +21,8 @@ import {
   ChevronRight,
   Edit3,
 } from 'lucide-react-native';
+import { useUserProfile, useUploadAvatar, useUnreadNotificationsCount, useLogout } from '@/hooks/queries';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { haptics } from '@/utils/haptics';
 import { shadows } from '@/utils/shadows';
 
@@ -41,6 +46,13 @@ const MENU_SECTIONS = [
 ];
 
 export default function ProfileScreen() {
+  const router = useRouter();
+  const { data: profile, isLoading } = useUserProfile();
+  const uploadAvatarMutation = useUploadAvatar();
+  const { data: unreadNotifications = 0 } = useUnreadNotificationsCount();
+  const logoutMutation = useLogout();
+  const { clearRecentlyViewed } = useRecentlyViewed();
+
   const handleMenuPress = (route: string) => {
     haptics.light();
     // Navigation will be implemented
@@ -49,13 +61,40 @@ export default function ProfileScreen() {
 
   const handleEditProfile = () => {
     haptics.light();
-    console.log('Edit profile');
+    uploadAvatarMutation.mutate();
   };
 
   const handleLogout = () => {
     haptics.medium();
-    console.log('Logout');
+    Alert.alert(
+      'Sair',
+      'Tem certeza que deseja encerrar a sessão?',
+      [
+        {
+          text: 'Cancelar',
+          style: 'cancel',
+        },
+        {
+          text: 'Sair',
+          style: 'destructive',
+          onPress: async () => {
+            // Clear recently viewed hotels
+            await clearRecentlyViewed();
+            // Perform logout
+            logoutMutation.mutate(undefined, {
+              onSuccess: () => {
+                router.replace('/');
+              },
+            });
+          },
+        },
+      ],
+      { cancelable: true }
+    );
   };
+
+  // Default avatar URL
+  const defaultAvatar = 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200';
 
   return (
     <SafeAreaView className="flex-1 bg-gray-100" edges={['top']}>
@@ -76,39 +115,62 @@ export default function ProfileScreen() {
           className="bg-white mx-5 mt-4 rounded-2xl p-6 items-center"
           style={shadows.elevation2}
         >
-          <View className="relative mb-4">
-            <Image
-              source={{ uri: 'https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=200' }}
-              className="w-20 h-20 rounded-full bg-gray-200"
-            />
-            <TouchableOpacity
-              className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-secondary items-center justify-center border-2 border-white"
-              onPress={handleEditProfile}
-              activeOpacity={0.8}
-            >
-              <Edit3 size={14} color="#FFFFFF" strokeWidth={2} />
-            </TouchableOpacity>
-          </View>
+          {isLoading ? (
+            <View className="py-8">
+              <ActivityIndicator size="large" color="#0E64D2" />
+            </View>
+          ) : (
+            <>
+              <View className="relative mb-4">
+                <Image
+                  source={{ uri: profile?.avatar || defaultAvatar }}
+                  className="w-20 h-20 rounded-full bg-gray-200"
+                />
+                <TouchableOpacity
+                  className="absolute bottom-0 right-0 w-7 h-7 rounded-full bg-secondary items-center justify-center border-2 border-white"
+                  onPress={handleEditProfile}
+                  activeOpacity={0.8}
+                  disabled={uploadAvatarMutation.isPending}
+                >
+                  {uploadAvatarMutation.isPending ? (
+                    <ActivityIndicator size="small" color="#FFFFFF" />
+                  ) : (
+                    <Edit3 size={14} color="#FFFFFF" strokeWidth={2} />
+                  )}
+                </TouchableOpacity>
+              </View>
 
-          <Text className="text-xl font-semibold text-gray-900 mb-1">John Smith</Text>
-          <Text className="text-sm text-gray-500 mb-5">john.smith@email.com</Text>
+              <Text className="text-xl font-semibold text-gray-900 mb-1">
+                {profile?.name || 'Utilizador'}
+              </Text>
+              <Text className="text-sm text-gray-500 mb-5">
+                {profile?.email || 'email@exemplo.com'}
+              </Text>
 
-          <View className="flex-row items-center w-full pt-4 border-t border-gray-100">
-            <Animatable.View animation="fadeIn" delay={200} className="flex-1 items-center">
-              <Text className="text-xl font-bold text-gray-900 mb-1">12</Text>
-              <Text className="text-xs text-gray-500">Reservas</Text>
-            </Animatable.View>
-            <View className="w-px h-8 bg-gray-200" />
-            <Animatable.View animation="fadeIn" delay={300} className="flex-1 items-center">
-              <Text className="text-xl font-bold text-gray-900 mb-1">8</Text>
-              <Text className="text-xs text-gray-500">Avaliações</Text>
-            </Animatable.View>
-            <View className="w-px h-8 bg-gray-200" />
-            <Animatable.View animation="fadeIn" delay={400} className="flex-1 items-center">
-              <Text className="text-xl font-bold text-gray-900 mb-1">5</Text>
-              <Text className="text-xs text-gray-500">Favoritos</Text>
-            </Animatable.View>
-          </View>
+              <View className="flex-row items-center w-full pt-4 border-t border-gray-100">
+                <Animatable.View animation="fadeIn" delay={200} className="flex-1 items-center">
+                  <Text className="text-xl font-bold text-gray-900 mb-1">
+                    {profile?.statistics?.bookings ?? 0}
+                  </Text>
+                  <Text className="text-xs text-gray-500">Reservas</Text>
+                </Animatable.View>
+                <View className="w-px h-8 bg-gray-200" />
+                <Animatable.View animation="fadeIn" delay={300} className="flex-1 items-center">
+                  <Text className="text-xl font-bold text-gray-900 mb-1">
+                    {profile?.statistics?.reviews ?? 0}
+                  </Text>
+                  <Text className="text-xs text-gray-500">Avaliações</Text>
+                </Animatable.View>
+                <View className="w-px h-8 bg-gray-200" />
+                <Animatable.View animation="fadeIn" delay={400} className="flex-1 items-center">
+                  <Text className="text-xl font-bold text-gray-900 mb-1">
+                    {profile?.statistics?.favorites ?? 0}
+                  </Text>
+                  <Text className="text-xs text-gray-500">Favoritos</Text>
+                </Animatable.View>
+              </View>
+            </>
+          )}
         </Animatable.View>
 
         {/* Menu Sections */}
@@ -142,8 +204,15 @@ export default function ProfileScreen() {
                       activeOpacity={0.7}
                     >
                       <View className="flex-row items-center gap-3">
-                        <View className="w-9 h-9 rounded-lg bg-secondary/10 items-center justify-center">
+                        <View className="w-9 h-9 rounded-lg bg-secondary/10 items-center justify-center relative">
                           <IconComponent size={20} color="#10B981" strokeWidth={2} />
+                          {item.route === '/profile/notifications' && unreadNotifications > 0 && (
+                            <View className="absolute -top-1 -right-1 min-w-[18px] h-[18px] rounded-full bg-red-500 items-center justify-center px-1">
+                              <Text className="text-[10px] font-bold text-white">
+                                {unreadNotifications > 9 ? '9+' : unreadNotifications}
+                              </Text>
+                            </View>
+                          )}
                         </View>
                         <Text className="text-base text-gray-900 font-medium">
                           {item.label}

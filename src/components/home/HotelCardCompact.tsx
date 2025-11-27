@@ -5,6 +5,7 @@ import { haptics } from '@/utils/haptics';
 import { useRouter } from 'expo-router';
 import { StarRating, FavoriteButton } from '@/components/ui';
 import { formatCurrency } from '@/utils/formatters';
+import { useFavorites, useToggleFavorite } from '@/hooks/queries';
 
 interface HotelCardCompactProps {
   id: number;
@@ -16,6 +17,8 @@ interface HotelCardCompactProps {
   isFavorite?: boolean;
   onFavoritePress?: () => void;
   style?: StyleProp<ViewStyle>;
+  /** Use internal favorite state from API instead of props */
+  useInternalFavorite?: boolean;
 }
 
 export function HotelCardCompact({
@@ -25,12 +28,21 @@ export function HotelCardCompact({
   image,
   rating,
   price,
-  isFavorite = false,
+  isFavorite: isFavoriteProp = false,
   onFavoritePress,
   style,
+  useInternalFavorite = true,
 }: HotelCardCompactProps) {
   const router = useRouter();
   const cardRef = useRef<any>(null);
+
+  // Get favorites from API
+  const { data: favorites } = useFavorites();
+  const toggleFavoriteMutation = useToggleFavorite();
+
+  // Check if hotel is in favorites list
+  const isInFavorites = favorites?.some((fav) => fav.hotelId === id) ?? false;
+  const isFavorite = useInternalFavorite ? isInFavorites : isFavoriteProp;
 
   const handlePress = () => {
     haptics.light();
@@ -38,7 +50,12 @@ export function HotelCardCompact({
   };
 
   const handleFavorite = () => {
-    onFavoritePress?.();
+    if (onFavoritePress) {
+      onFavoritePress();
+    } else {
+      haptics.medium();
+      toggleFavoriteMutation.mutate({ hotelId: id, isFavorite });
+    }
   };
 
   return (

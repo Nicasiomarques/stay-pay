@@ -10,6 +10,7 @@ import { favoritesRoutes } from './routes/favorites';
 import { reviewsRoutes } from './routes/reviews';
 import { paymentsRoutes } from './routes/payments';
 import { notificationsRoutes } from './routes/notifications';
+import { promotionsRoutes } from './routes/promotions';
 
 export type AppRegistry = Registry<AppModels, {}>;
 
@@ -48,6 +49,7 @@ export function makeServer({ environment = 'development' } = {}) {
       reviewsRoutes(this);
       paymentsRoutes(this);
       notificationsRoutes(this);
+      promotionsRoutes(this);
 
       // Catch-all for unhandled routes
       this.post('/*', (schema, request) => {

@@ -109,4 +109,33 @@ export const queryKeys = {
     all: ['auth'] as const,
     user: () => [...queryKeys.auth.all, 'user'] as const,
   },
+
+  // Promotions
+  promotions: {
+    all: ['promotions'] as const,
+    deals: (limit?: number) => [...queryKeys.promotions.all, 'deals', limit] as const,
+    trendingDestinations: (params?: unknown) =>
+      [...queryKeys.promotions.all, 'trending-destinations', params] as const,
+    lastMinuteDeals: (limit?: number) =>
+      [...queryKeys.promotions.all, 'last-minute-deals', limit] as const,
+  },
+
+  // Profile
+  profile: {
+    all: ['profile'] as const,
+    current: () => [...queryKeys.profile.all, 'current'] as const,
+  },
+
+  // Notifications
+  notifications: {
+    all: ['notifications'] as const,
+    list: (params?: unknown) => [...queryKeys.notifications.all, 'list', params] as const,
+    unreadCount: () => [...queryKeys.notifications.all, 'unread-count'] as const,
+  },
+
+  // Reviews
+  reviews: {
+    all: ['reviews'] as const,
+    hotel: (hotelId: number, params?: unknown) => [...queryKeys.reviews.all, 'hotel', hotelId, params] as const,
+  },
 } as const;

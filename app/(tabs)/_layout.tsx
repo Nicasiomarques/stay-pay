@@ -4,6 +4,7 @@ import { BlurView } from 'expo-blur';
 import { Compass, Heart, Calendar, User } from 'lucide-react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { shadows } from '@/utils/shadows';
+import { useUnreadNotificationsCount } from '@/hooks/queries';
 
 const { width: SCREEN_WIDTH } = Dimensions.get('window');
 const TAB_BAR_WIDTH = SCREEN_WIDTH * 0.9;
@@ -23,6 +24,8 @@ const labels = {
 };
 
 function CustomTabBar({ state, navigation }: BottomTabBarProps) {
+  const { data: unreadCount = 0 } = useUnreadNotificationsCount();
+
   return (
     <View
       className="absolute overflow-hidden"
@@ -68,17 +71,30 @@ function CustomTabBar({ state, navigation }: BottomTabBarProps) {
           }
         };
 
+        const showBadge = route.name === 'profile' && unreadCount > 0;
+
         return (
           <Pressable
             key={route.key}
             onPress={onPress}
             className="flex-1 items-center justify-center py-2"
           >
-            <Icon
-              size={22}
-              color={isFocused ? '#FFFFFF' : '#A3A3A3'}
-              strokeWidth={isFocused ? 2 : 1.5}
-            />
+            <View className="relative">
+              <Icon
+                size={22}
+                color={isFocused ? '#FFFFFF' : '#A3A3A3'}
+                strokeWidth={isFocused ? 2 : 1.5}
+              />
+              {showBadge && (
+                <View
+                  className="absolute -top-1 -right-1 min-w-[16px] h-[16px] rounded-full bg-red-500 items-center justify-center px-1"
+                >
+                  <Text className="text-[10px] font-bold text-white">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </Text>
+                </View>
+              )}
+            </View>
             <Text
               className={`text-[11px] font-medium mt-1 ${
                 isFocused ? 'text-white' : 'text-gray-400'

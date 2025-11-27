@@ -17,6 +17,11 @@ export function profileRoutes(server: Server<AppRegistry>) {
       return new Response(401, {}, { error: { code: 'UNAUTHORIZED', message: 'Autenticação necessária' } });
     }
 
+    // Get user statistics
+    const bookingsCount = schema.where('booking', { userId: user.id }).models.length;
+    const reviewsCount = schema.where('review', { userId: user.id }).models.length;
+    const favoritesCount = schema.where('favorite', { userId: user.id }).models.length;
+
     return {
       id: user.id,
       name: user.name,
@@ -25,6 +30,11 @@ export function profileRoutes(server: Server<AppRegistry>) {
       avatar: user.avatar,
       createdAt: user.createdAt,
       preferences: user.preferences,
+      statistics: {
+        bookings: bookingsCount,
+        reviews: reviewsCount,
+        favorites: favoritesCount,
+      },
     };
   });
 

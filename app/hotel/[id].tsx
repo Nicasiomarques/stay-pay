@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useRef, useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -26,9 +26,11 @@ import {
   ChevronRight,
 } from 'lucide-react-native';
 import { useBooking } from '@context';
-import { useHotel } from '@/hooks/queries';
+import { useHotel, useFavorites, useToggleFavorite, useHotelReviews } from '@/hooks/queries';
+import { useRecentlyViewed } from '@/hooks/useRecentlyViewed';
 import { haptics } from '@/utils/haptics';
 import { shadows } from '@/utils/shadows';
+import { colors } from '@theme';
 
 export default function HotelDetailScreen() {
   const router = useRouter();
@@ -37,8 +39,21 @@ export default function HotelDetailScreen() {
 
   const hotelId = Number(id);
   const { data: hotel, isLoading, error } = useHotel(hotelId);
+  const { data: favorites } = useFavorites();
+  const toggleFavoriteMutation = useToggleFavorite();
+  const { data: reviewsData } = useHotelReviews(hotelId, { limit: 3 });
+  const { addRecentlyViewed } = useRecentlyViewed();
 
-  const [isFavorite, setIsFavorite] = useState(false);
+  // Check if hotel is in favorites
+  const isFavorite = favorites?.some((fav) => fav.hotelId === hotelId) ?? false;
+
+  // Add to recently viewed when hotel data loads
+  useEffect(() => {
+    if (hotel) {
+      addRecentlyViewed(hotel);
+    }
+  }, [hotel, addRecentlyViewed]);
+
   const [currentImageIndex] = useState(0);
   const [showFullDescription, setShowFullDescription] = useState(false);
 
@@ -51,8 +66,8 @@ export default function HotelDetailScreen() {
 
   const handleFavorite = () => {
     haptics.medium();
-    setIsFavorite(!isFavorite);
     heartRef.current?.pulse?.(400);
+    toggleFavoriteMutation.mutate({ hotelId, isFavorite });
   };
 
   const handleShare = async () => {
@@ -277,6 +292,77 @@ export default function HotelDetailScreen() {
               </Text>
             </TouchableOpacity>
           </Animatable.View>
+
+          {/* Reviews Section */}
+          {reviewsData && reviewsData.reviews.length > 0 && (
+            <Animatable.View animation="fadeInUp" delay={700} duration={500} className="mb-6">
+              <View className="flex-row items-center justify-between mb-4">
+                <Text className="text-lg font-semibold text-gray-900">Avaliações</Text>
+                <View className="flex-row items-center gap-1">
+                  <Star size={16} color="#F59E0B" fill="#F59E0B" strokeWidth={0} />
+                  <Text className="text-sm font-semibold text-gray-900">
+                    {reviewsData.averageRating.toFixed(1)}
+                  </Text>
+                  <Text className="text-sm text-gray-500">
+                    ({reviewsData.total} avaliações)
+                  </Text>
+                </View>
+              </View>
+
+              {/* Reviews List */}
+              <View className="gap-4">
+                {reviewsData.reviews.map((review, index) => (
+                  <Animatable.View
+                    key={review.id}
+                    animation="fadeIn"
+                    delay={800 + index * 100}
+                    className="bg-gray-50 p-4 rounded-xl"
+                  >
+                    <View className="flex-row items-center gap-3 mb-3">
+                      <View className="w-10 h-10 rounded-full bg-gray-200 items-center justify-center">
+                        <Text className="text-lg font-semibold text-gray-600">
+                          {review.author.name.charAt(0).toUpperCase()}
+                        </Text>
+                      </View>
+                      <View className="flex-1">
+                        <Text className="text-sm font-semibold text-gray-900">
+                          {review.author.name}
+                        </Text>
+                        <Text className="text-xs text-gray-500">
+                          {new Date(review.date).toLocaleDateString('pt-PT', {
+                            day: 'numeric',
+                            month: 'short',
+                            year: 'numeric',
+                          })}
+                        </Text>
+                      </View>
+                      <View className="flex-row items-center gap-1 bg-amber-100 px-2 py-1 rounded-lg">
+                        <Star size={12} color="#F59E0B" fill="#F59E0B" strokeWidth={0} />
+                        <Text className="text-xs font-semibold text-amber-700">
+                          {review.rating}
+                        </Text>
+                      </View>
+                    </View>
+                    <Text className="text-sm text-gray-600 leading-5" numberOfLines={3}>
+                      {review.comment}
+                    </Text>
+                  </Animatable.View>
+                ))}
+              </View>
+
+              {/* View All Reviews Button */}
+              {reviewsData.total > 3 && (
+                <TouchableOpacity
+                  className="mt-4 py-3 items-center border border-gray-200 rounded-xl"
+                  activeOpacity={0.7}
+                >
+                  <Text className="text-sm font-semibold" style={{ color: colors.primary }}>
+                    Ver todas as {reviewsData.total} avaliações
+                  </Text>
+                </TouchableOpacity>
+              )}
+            </Animatable.View>
+          )}
         </View>
       </ScrollView>
 

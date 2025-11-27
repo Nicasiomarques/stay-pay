@@ -129,6 +129,7 @@ export default function SearchScreen() {
             rating={item.rating}
             reviews={item.reviews}
             price={item.price}
+            useInternalFavorite
           />
         )}
         contentContainerStyle={{ padding: 20, paddingBottom: 40 }}

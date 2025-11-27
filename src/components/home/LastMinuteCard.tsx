@@ -3,8 +3,9 @@ import { View, Text, Image, TouchableOpacity } from 'react-native';
 import { Clock } from 'lucide-react-native';
 import { haptics } from '@/utils/haptics';
 import { useRouter } from 'expo-router';
-import { StarRating } from '@/components/ui';
+import { StarRating, FavoriteButton } from '@/components/ui';
 import { formatCurrency } from '@/utils/formatters';
+import { useFavorites, useToggleFavorite } from '@/hooks/queries';
 
 interface LastMinuteCardProps {
   id: number;
@@ -29,9 +30,21 @@ export function LastMinuteCard({
 }: LastMinuteCardProps) {
   const router = useRouter();
 
+  // Get favorites from API
+  const { data: favorites } = useFavorites();
+  const toggleFavoriteMutation = useToggleFavorite();
+
+  // Check if hotel is in favorites list
+  const isFavorite = favorites?.some((fav) => fav.hotelId === id) ?? false;
+
   const handlePress = () => {
     haptics.light();
     router.push(`/hotel/${id}`);
+  };
+
+  const handleFavorite = () => {
+    haptics.medium();
+    toggleFavoriteMutation.mutate({ hotelId: id, isFavorite });
   };
 
   const discountPercent = Math.round(
@@ -55,6 +68,14 @@ export function LastMinuteCard({
         <View className="absolute top-2 left-2 bg-red-500 px-2 py-1 rounded-full">
           <Text className="text-white text-[10px] font-bold">-{discountPercent}%</Text>
         </View>
+        {/* Favorite Button */}
+        <FavoriteButton
+          isFavorite={isFavorite}
+          onPress={handleFavorite}
+          variant="airbnb"
+          size="sm"
+          style={{ position: 'absolute', top: 8, right: 8 }}
+        />
         {/* Timer Badge */}
         <View className="absolute bottom-2 right-2 flex-row items-center gap-1 bg-black/70 px-2 py-1 rounded-full">
           <Clock size={10} color="#FFFFFF" strokeWidth={2} />

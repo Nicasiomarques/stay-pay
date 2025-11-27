@@ -1,26 +1,44 @@
 import { useEffect } from 'react';
-import { View, Text, ScrollView } from 'react-native';
+import { View, Text, ScrollView, ActivityIndicator } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
-import { useRouter } from 'expo-router';
+import { useRouter, useLocalSearchParams } from 'expo-router';
 import { Calendar, MapPin, Users, CreditCard, Download, CheckCircle } from 'lucide-react-native';
 import { Button, Card } from '@/components/ui';
 import { useBooking } from '@context';
+import { useBooking as useBookingQuery } from '@/hooks/queries';
 import { formatCurrency, formatGuestCount } from '@/utils';
 import { colors } from '@theme';
 import { haptics } from '@/utils/haptics';
 
 export default function ConfirmationScreen() {
   const router = useRouter();
-  const { booking, calculateTotal, getNights, resetBooking } = useBooking();
+  const { bookingId } = useLocalSearchParams<{ bookingId: string }>();
+  const { booking, calculateTotal, getNights, resetBooking, getTotalGuests } = useBooking();
+
+  // Fetch booking details from API if we have a bookingId
+  const { data: bookingData, isLoading } = useBookingQuery(bookingId || '', {
+    enabled: !!bookingId,
+  });
 
   useEffect(() => {
-    if (booking.hotel) {
+    if (booking.hotel || bookingData) {
       haptics.success();
     }
-  }, [booking.hotel]);
+  }, [booking.hotel, bookingData]);
 
-  if (!booking.hotel) {
+  if (isLoading) {
+    return (
+      <SafeAreaView className="flex-1 bg-white">
+        <View className="flex-1 justify-center items-center">
+          <ActivityIndicator size="large" color={colors.primary} />
+          <Text className="mt-4 text-base text-gray-500">A carregar confirmação...</Text>
+        </View>
+      </SafeAreaView>
+    );
+  }
+
+  if (!booking.hotel && !bookingData) {
     return (
       <SafeAreaView className="flex-1 bg-white">
         <View className="flex-1 justify-center items-center">
@@ -30,12 +48,25 @@ export default function ConfirmationScreen() {
     );
   }
 
-  const bookingNumber = `BK-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
-  const selectedRoom = booking.hotel.rooms[booking.selectedRoom];
+  // Use API data if available, otherwise fall back to context
+  const bookingNumber = bookingData?.confirmationCode || `BK-${Math.random().toString(36).substr(2, 6).toUpperCase()}`;
+  const selectedRoom = booking.hotel?.rooms[booking.selectedRoom];
+
+  // Helper to get total from API or context
+  const totalAmount = bookingData?.pricing?.total || calculateTotal();
+  const guestsCount = bookingData?.guests || getTotalGuests();
 
   const formatDate = (date: Date | null) => {
     if (!date) return '-';
     return date.toLocaleDateString('pt-PT', {
+      day: '2-digit',
+      month: 'long',
+      year: 'numeric',
+    });
+  };
+
+  const formatApiDate = (dateStr: string) => {
+    return new Date(dateStr).toLocaleDateString('pt-PT', {
       day: '2-digit',
       month: 'long',
       year: 'numeric',
@@ -97,20 +128,22 @@ export default function ConfirmationScreen() {
 
               <View className="mb-4">
                 <Text className="text-xl font-semibold text-gray-900 mb-2">
-                  {booking.hotel.name}
+                  {booking.hotel?.name || 'Hotel'}
                 </Text>
-                <View className="self-start bg-gray-100 px-3 py-1.5 rounded-lg">
-                  <Text className="text-xs font-semibold text-gray-700">
-                    {selectedRoom.type}
-                  </Text>
-                </View>
+                {selectedRoom && (
+                  <View className="self-start bg-gray-100 px-3 py-1.5 rounded-lg">
+                    <Text className="text-xs font-semibold text-gray-700">
+                      {selectedRoom.type}
+                    </Text>
+                  </View>
+                )}
               </View>
 
               <View className="gap-4">
                 <View className="flex-row items-start gap-3">
                   <MapPin size={20} color={colors.gray500} />
                   <Text className="text-base text-gray-900 flex-1">
-                    {booking.hotel.location}
+                    {booking.hotel?.location || 'Localização'}
                   </Text>
                 </View>
 
@@ -118,10 +151,10 @@ export default function ConfirmationScreen() {
                   <Calendar size={20} color={colors.gray500} />
                   <View>
                     <Text className="text-base text-gray-900">
-                      {formatDate(booking.checkIn)}
+                      {bookingData ? formatApiDate(bookingData.checkIn) : formatDate(booking.checkIn)}
                     </Text>
                     <Text className="text-sm text-gray-500 mt-0.5">
-                      até {formatDate(booking.checkOut)} ({getNights()} {getNights() === 1 ? 'noite' : 'noites'})
+                      até {bookingData ? formatApiDate(bookingData.checkOut) : formatDate(booking.checkOut)} ({getNights()} {getNights() === 1 ? 'noite' : 'noites'})
                     </Text>
                   </View>
                 </View>
@@ -129,7 +162,9 @@ export default function ConfirmationScreen() {
                 <View className="flex-row items-start gap-3">
                   <Users size={20} color={colors.gray500} />
                   <Text className="text-base text-gray-900">
-                    {formatGuestCount(booking.guests)}
+                    {bookingData
+                      ? `${guestsCount} ${guestsCount === 1 ? 'hóspede' : 'hóspedes'}`
+                      : formatGuestCount(booking.guests)}
                   </Text>
                 </View>
 
@@ -152,7 +187,7 @@ export default function ConfirmationScreen() {
                 Total Pago
               </Text>
               <Text className="text-[32px] font-bold text-success my-2">
-                {formatCurrency(calculateTotal())}
+                {formatCurrency(totalAmount)}
               </Text>
               {booking.paymentMethod === 'property' && (
                 <Text className="text-xs text-gray-500 italic">

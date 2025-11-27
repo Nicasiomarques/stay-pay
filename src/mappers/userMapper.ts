@@ -3,7 +3,7 @@
  * Transforms API DTOs to domain models used in components
  */
 
-import { UserDTO, LoginRequestDTO, RegisterRequestDTO } from '@/types/dto';
+import { UserDTO, LoginRequestDTO, RegisterRequestDTO, UserProfileDTO } from '@/types/dto';
 
 /**
  * User model for components
@@ -20,6 +20,22 @@ export interface User {
     currency: string;
     notifications: boolean;
   };
+}
+
+/**
+ * User statistics
+ */
+export interface UserStatistics {
+  bookings: number;
+  reviews: number;
+  favorites: number;
+}
+
+/**
+ * User profile with statistics
+ */
+export interface UserProfile extends User {
+  statistics: UserStatistics;
 }
 
 /**
@@ -83,5 +99,25 @@ export const mapRegistrationDataToDTO = (data: RegistrationData): RegisterReques
     email: data.email,
     password: data.password,
     phone: data.phone,
+  };
+};
+
+/**
+ * Maps UserProfileDTO from API to UserProfile model
+ */
+export const mapUserProfileDTOToUserProfile = (profileDTO: UserProfileDTO): UserProfile => {
+  return {
+    id: profileDTO.id,
+    name: profileDTO.name,
+    email: profileDTO.email,
+    phone: profileDTO.phone,
+    avatar: profileDTO.avatar,
+    createdAt: profileDTO.createdAt,
+    preferences: profileDTO.preferences,
+    statistics: {
+      bookings: profileDTO.statistics.bookings,
+      reviews: profileDTO.statistics.reviews,
+      favorites: profileDTO.statistics.favorites,
+    },
   };
 };

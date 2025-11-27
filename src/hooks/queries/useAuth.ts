@@ -8,6 +8,7 @@ import {
   useQueryClient,
   UseMutationOptions,
 } from "@tanstack/react-query";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import { getAuthGateway, dependencies } from "@/config/dependencies";
 import { queryKeys } from "@/config/queryClient";
 import {
@@ -18,6 +19,9 @@ import {
   mapRegistrationDataToDTO,
 } from "@/mappers";
 import { showToast } from "@/utils";
+
+const AUTH_TOKEN_KEY = "@staygo:auth_token";
+const REFRESH_TOKEN_KEY = "@staygo:refresh_token";
 
 /**
  * Hook to login
@@ -32,16 +36,20 @@ export const useLogin = (
       const dto = mapLoginCredentialsToDTO(credentials);
       return getAuthGateway().login(dto);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // Store auth token in HTTP client
       dependencies.httpClient.setAuthToken(data.token);
 
       // Cache user data
       queryClient.setQueryData(queryKeys.auth.user(), data.user);
 
-      // Store token in localStorage for persistence
-      localStorage.setItem("authToken", data.token);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      // Store token in AsyncStorage for persistence
+      try {
+        await AsyncStorage.setItem(AUTH_TOKEN_KEY, data.token);
+        await AsyncStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+      } catch (error) {
+        console.error("Error storing auth tokens:", error);
+      }
 
       showToast.success('Bem-vindo de volta!');
     },
@@ -65,16 +73,20 @@ export const useRegister = (
       const dto = mapRegistrationDataToDTO(userData);
       return getAuthGateway().register(dto);
     },
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // Store auth token in HTTP client
       dependencies.httpClient.setAuthToken(data.token);
 
       // Cache user data
       queryClient.setQueryData(queryKeys.auth.user(), data.user);
 
-      // Store token in localStorage for persistence
-      localStorage.setItem("authToken", data.token);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      // Store token in AsyncStorage for persistence
+      try {
+        await AsyncStorage.setItem(AUTH_TOKEN_KEY, data.token);
+        await AsyncStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+      } catch (error) {
+        console.error("Error storing auth tokens:", error);
+      }
 
       showToast.success('Conta criada com sucesso!');
     },
@@ -95,16 +107,19 @@ export const useLogout = (
 
   return useMutation({
     mutationFn: () => getAuthGateway().logout(),
-    onSuccess: () => {
+    onSuccess: async () => {
       // Clear auth token from HTTP client
       dependencies.httpClient.setAuthToken(null);
 
       // Clear all cached data
       queryClient.clear();
 
-      // Remove token from localStorage
-      localStorage.removeItem("authToken");
-      localStorage.removeItem("refreshToken");
+      // Remove tokens from AsyncStorage
+      try {
+        await AsyncStorage.multiRemove([AUTH_TOKEN_KEY, REFRESH_TOKEN_KEY]);
+      } catch (error) {
+        console.error("Error removing auth tokens:", error);
+      }
 
       showToast.info('Sessão encerrada');
     },
@@ -125,13 +140,17 @@ export const useRefreshToken = (
   return useMutation({
     mutationFn: (refreshToken: string) =>
       getAuthGateway().refreshToken(refreshToken),
-    onSuccess: (data) => {
+    onSuccess: async (data) => {
       // Update auth token in HTTP client
       dependencies.httpClient.setAuthToken(data.token);
 
-      // Update tokens in localStorage
-      localStorage.setItem("authToken", data.token);
-      localStorage.setItem("refreshToken", data.refreshToken);
+      // Update tokens in AsyncStorage
+      try {
+        await AsyncStorage.setItem(AUTH_TOKEN_KEY, data.token);
+        await AsyncStorage.setItem(REFRESH_TOKEN_KEY, data.refreshToken);
+      } catch (error) {
+        console.error("Error updating auth tokens:", error);
+      }
     },
     ...options,
   });
@@ -183,11 +202,27 @@ export const useResetPassword = (
 };
 
 /**
- * Initialize auth from localStorage on app load
+ * Initialize auth from AsyncStorage on app load
  */
-export const initializeAuth = () => {
-  const token = localStorage.getItem("authToken");
-  if (token) {
-    dependencies.httpClient.setAuthToken(token);
+export const initializeAuth = async () => {
+  try {
+    const token = await AsyncStorage.getItem(AUTH_TOKEN_KEY);
+    if (token) {
+      dependencies.httpClient.setAuthToken(token);
+    }
+  } catch (error) {
+    console.error("Error initializing auth:", error);
+  }
+};
+
+/**
+ * Get stored refresh token
+ */
+export const getStoredRefreshToken = async (): Promise<string | null> => {
+  try {
+    return await AsyncStorage.getItem(REFRESH_TOKEN_KEY);
+  } catch (error) {
+    console.error("Error getting refresh token:", error);
+    return null;
   }
 };

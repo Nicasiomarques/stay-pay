@@ -53,8 +53,8 @@ export const factories = {
     },
     guestDetails() {
       return {
-        name: "João Silva",
-        email: "joao@exemplo.com",
+        name: "Nicasio Silva",
+        email: "nicasio@email.com",
         phone: "+244 900 000 000",
       };
     },

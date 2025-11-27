@@ -2,11 +2,18 @@ import { View, Text, FlatList, ActivityIndicator } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
 import { HotelCardLarge } from '@/components/home';
-import { useFavorites } from '@/hooks/queries';
+import { useFavorites, useToggleFavorite } from '@/hooks/queries';
 import { colors } from '@theme';
+import { haptics } from '@/utils/haptics';
 
 export default function FavoritesScreen() {
   const { data: favorites, isLoading, error } = useFavorites();
+  const toggleFavoriteMutation = useToggleFavorite();
+
+  const handleRemoveFavorite = (hotelId: number) => {
+    haptics.medium();
+    toggleFavoriteMutation.mutate({ hotelId, isFavorite: true });
+  };
 
   if (isLoading) {
     return (
@@ -85,6 +92,8 @@ export default function FavoritesScreen() {
                 reviews={item.hotel.reviews}
                 price={item.hotel.price}
                 isFavorite={true}
+                useInternalFavorite={false}
+                onFavoritePress={() => handleRemoveFavorite(item.hotel.id)}
               />
             </Animatable.View>
           )}

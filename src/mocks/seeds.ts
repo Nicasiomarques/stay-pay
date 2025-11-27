@@ -255,8 +255,8 @@ export function seedData(server: Server<AppRegistry>) {
   // Create demo user
   const demoUser = server.create('user', {
     id: 'user_demo',
-    name: 'João Silva',
-    email: 'joao@exemplo.com',
+    name: 'Nicasio Silva',
+    email: 'nicasio@email.com',
     phone: '+244 900 000 000',
     password: 'demo123',
     avatar: null,
@@ -375,4 +375,122 @@ export function seedData(server: Server<AppRegistry>) {
       });
     }
   });
+
+  // Create special deals (Ofertas Especiais)
+  const deals = [
+    {
+      id: '1',
+      title: 'Fim de Semana em Luanda',
+      subtitle: 'Hotéis selecionados',
+      discount: 25,
+      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=600',
+      backgroundColor: '#0E64D2',
+      validUntil: new Date(Date.now() + 14 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: '2',
+      title: 'Escapada ao Mussulo',
+      subtitle: 'Resorts à beira-mar',
+      discount: 30,
+      image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=600',
+      backgroundColor: '#10B981',
+      validUntil: new Date(Date.now() + 21 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: '3',
+      title: 'Aventura na Kalandula',
+      subtitle: 'Lodges e pousadas',
+      discount: 20,
+      image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=600',
+      backgroundColor: '#F59E0B',
+      validUntil: new Date(Date.now() + 30 * 24 * 60 * 60 * 1000).toISOString(),
+    },
+  ];
+
+  deals.forEach(deal => server.create('deal', deal));
+
+  // Create trending destinations (Destinos em Alta)
+  const trendingDestinations = [
+    {
+      id: '1',
+      name: 'Luanda',
+      province: 'Luanda',
+      image: 'https://images.unsplash.com/photo-1449824913935-59a10b8d2000?w=400',
+      hotelsCount: 156,
+      trending: true,
+    },
+    {
+      id: '2',
+      name: 'Ilha do Mussulo',
+      province: 'Luanda',
+      image: 'https://images.unsplash.com/photo-1507525428034-b723cf961d3e?w=400',
+      hotelsCount: 24,
+      trending: true,
+    },
+    {
+      id: '3',
+      name: 'Benguela',
+      province: 'Benguela',
+      image: 'https://images.unsplash.com/photo-1519046904884-53103b34b206?w=400',
+      hotelsCount: 45,
+      trending: false,
+    },
+    {
+      id: '4',
+      name: 'Lubango',
+      province: 'Huíla',
+      image: 'https://images.unsplash.com/photo-1506905925346-21bda4d32df4?w=400',
+      hotelsCount: 32,
+      trending: true,
+    },
+    {
+      id: '5',
+      name: 'Namibe',
+      province: 'Namibe',
+      image: 'https://images.unsplash.com/photo-1682687220742-aba13b6e50ba?w=400',
+      hotelsCount: 18,
+      trending: false,
+    },
+  ];
+
+  trendingDestinations.forEach(dest => server.create('trendingDestination', dest));
+
+  // Create last minute deals (Ofertas de Última Hora)
+  const lastMinuteDeals = [
+    {
+      id: 1,
+      hotelId: 1,
+      name: 'Hotel Presidente Luanda',
+      location: 'Luanda, Ingombota',
+      image: 'https://images.unsplash.com/photo-1566073771259-6a8506099945?w=400',
+      rating: 4.8,
+      originalPrice: 85000,
+      discountedPrice: 59500,
+      expiresAt: new Date(Date.now() + 2.5 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 2,
+      hotelId: 2,
+      name: 'Tropico Hotel',
+      location: 'Luanda, Maianga',
+      image: 'https://images.unsplash.com/photo-1520250497591-112f2f40a3f4?w=400',
+      rating: 4.5,
+      originalPrice: 65000,
+      discountedPrice: 48750,
+      expiresAt: new Date(Date.now() + 5.25 * 60 * 60 * 1000).toISOString(),
+    },
+    {
+      id: 3,
+      hotelId: 11,
+      name: 'Epic Sana Luanda',
+      location: 'Luanda, Talatona',
+      image: 'https://images.unsplash.com/photo-1571896349842-33c89424de2d?w=400',
+      rating: 4.9,
+      originalPrice: 120000,
+      discountedPrice: 84000,
+      expiresAt: new Date(Date.now() + 1.75 * 60 * 60 * 1000).toISOString(),
+    },
+  ];
+
+  lastMinuteDeals.forEach(deal => server.create('lastMinuteDeal', deal as any));
 }
