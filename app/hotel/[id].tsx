@@ -6,6 +6,9 @@ import {
   TouchableOpacity,
   Image,
   Share,
+  Dimensions,
+  NativeScrollEvent,
+  NativeSyntheticEvent,
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { SafeAreaView } from 'react-native-safe-area-context';
@@ -54,7 +57,16 @@ export default function HotelDetailScreen() {
     }
   }, [hotel, addRecentlyViewed]);
 
-  const [currentImageIndex] = useState(0);
+  const [currentImageIndex, setCurrentImageIndex] = useState(0);
+  const screenWidth = Dimensions.get('window').width;
+
+  const handleImageScroll = (event: NativeSyntheticEvent<NativeScrollEvent>) => {
+    const contentOffsetX = event.nativeEvent.contentOffset.x;
+    const newIndex = Math.round(contentOffsetX / screenWidth);
+    if (newIndex !== currentImageIndex && newIndex >= 0 && newIndex < images.length) {
+      setCurrentImageIndex(newIndex);
+    }
+  };
   const [showFullDescription, setShowFullDescription] = useState(false);
 
   const heartRef = useRef<Animatable.View & View>(null);
@@ -133,13 +145,24 @@ export default function HotelDetailScreen() {
   return (
     <View className="flex-1 bg-white">
       <ScrollView showsVerticalScrollIndicator={false}>
-        {/* Hero Image */}
+        {/* Hero Image Carousel */}
         <Animatable.View animation="fadeIn" duration={400} className="h-96 w-full relative overflow-hidden rounded-b-3xl">
-          <Image
-            source={{ uri: images[currentImageIndex] }}
-            className="w-full h-full"
-            resizeMode="cover"
-          />
+          <ScrollView
+            horizontal
+            pagingEnabled
+            showsHorizontalScrollIndicator={false}
+            onScroll={handleImageScroll}
+            scrollEventThrottle={16}
+          >
+            {images.map((imageUri, index) => (
+              <Image
+                key={index}
+                source={{ uri: imageUri }}
+                style={{ width: screenWidth, height: '100%' }}
+                resizeMode="cover"
+              />
+            ))}
+          </ScrollView>
 
           {/* Image Counter */}
           <Animatable.View
