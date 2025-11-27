@@ -1,4 +1,9 @@
-import { useState, useRef } from 'react';
+/**
+ * OnboardingScreen
+ * Orquestrador do fluxo de onboarding multi-step
+ */
+
+import { useRef } from 'react';
 import {
   View,
   Text,
@@ -9,34 +14,101 @@ import {
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import { useRouter } from 'expo-router';
-import { ArrowRight } from 'lucide-react-native';
-import { IsometricHotel } from '@/components/illustrations';
-import { PhoneInput } from '@/components/ui/PhoneInput';
+import { ArrowRight, ArrowLeft } from 'lucide-react-native';
+import { useOnboarding } from '@/contexts';
+import {
+  StepIndicator,
+  StepWelcome,
+  StepTravelStyle,
+  StepBudget,
+  StepAmenities,
+} from '@/components/onboarding';
+import { haptics } from '@/utils/haptics';
 
 export default function OnboardingScreen() {
-  const [phone, setPhone] = useState('');
   const router = useRouter();
+  const {
+    state,
+    nextStep,
+    previousStep,
+    canGoBack,
+    currentStepIndex,
+    totalSteps,
+    completeOnboarding,
+    skipOnboarding,
+  } = useOnboarding();
+
   const buttonRef = useRef<Animatable.View & View>(null);
 
-  const handlePhoneChange = (value: string) => {
-    const wasEmpty = !phone;
-    setPhone(value);
-
-    // Pop animation when phone becomes valid for the first time
-    if (wasEmpty && value && buttonRef.current) {
-      buttonRef.current.pulse?.(300);
+  // Verifica se pode avançar com base no step atual
+  const canContinue = () => {
+    switch (state.currentStep) {
+      case 'welcome':
+        return state.preferences.phoneNumber.length > 0;
+      case 'travelStyle':
+        return state.preferences.travelStyle !== null;
+      case 'budget':
+        return state.preferences.budgetRange !== null;
+      case 'amenities':
+        return state.preferences.priorityAmenities.length > 0;
+      default:
+        return true;
     }
   };
 
-  const handleContinue = () => {
-    if (phone) {
+  const handleContinue = async () => {
+    if (!canContinue()) return;
+
+    haptics.medium();
+
+    // Se é o último step, completa o onboarding
+    if (currentStepIndex === totalSteps - 1) {
+      await completeOnboarding();
       router.replace('/(tabs)');
+    } else {
+      nextStep();
     }
   };
 
-  const handleSkip = () => {
+  const handleBack = () => {
+    if (canGoBack) {
+      haptics.light();
+      previousStep();
+    }
+  };
+
+  const handleSkip = async () => {
+    haptics.light();
+    await skipOnboarding();
     router.replace('/(tabs)');
   };
+
+  // Renderiza o step atual
+  const renderCurrentStep = () => {
+    switch (state.currentStep) {
+      case 'welcome':
+        return <StepWelcome />;
+      case 'travelStyle':
+        return <StepTravelStyle />;
+      case 'budget':
+        return <StepBudget />;
+      case 'amenities':
+        return <StepAmenities />;
+      default:
+        return <StepWelcome />;
+    }
+  };
+
+  // Texto do botão baseado no step
+  const getButtonText = () => {
+    if (currentStepIndex === totalSteps - 1) {
+      return 'Começar';
+    }
+    return 'Continuar';
+  };
+
+  const isLastStep = currentStepIndex === totalSteps - 1;
+  const showContinueEnabled = canContinue();
 
   return (
     <KeyboardAvoidingView
@@ -49,90 +121,53 @@ export default function OnboardingScreen() {
         keyboardShouldPersistTaps="handled"
       >
         <View className="flex-1 px-6 pt-[60px] pb-10 justify-between">
-          {/* Top Section: Illustration + Text */}
-          <View className="items-center">
-            {/* 3D Hotel Illustration - SVG with Animation */}
-            <Animatable.View
-              animation="bounceIn"
-              duration={1000}
-              className="w-[280px] h-[280px] mb-6"
-            >
-              <IsometricHotel width={280} height={280} />
-            </Animatable.View>
+          {/* Conteúdo do Step */}
+          <Animatable.View
+            key={state.currentStep}
+            animation="fadeIn"
+            duration={300}
+          >
+            {renderCurrentStep()}
+          </Animatable.View>
 
-            {/* Headline */}
-            <Animatable.Text
-              animation="fadeInUp"
-              delay={200}
-              duration={600}
-              className="text-4xl font-bold text-gray-900 text-center leading-10 mb-3"
-            >
-              Stay In Style!{'\n'}Book With A Smile!
-            </Animatable.Text>
-
-            {/* Subtitle */}
-            <Animatable.Text
-              animation="fadeInUp"
-              delay={400}
-              duration={600}
-              className="text-base text-gray-500 text-center leading-6 mb-10 px-4"
-            >
-              Your perfect stay is just a reservation away, book now and make
-              moments that matter.
-            </Animatable.Text>
-
-            {/* Phone Input */}
-            <Animatable.View
-              animation="fadeInUp"
-              delay={600}
-              duration={600}
-              className="w-full mb-6"
-            >
-              <PhoneInput
-                value={phone}
-                onChangeText={handlePhoneChange}
-                placeholder="Número de telefone"
-                defaultCode="AO"
-              />
-            </Animatable.View>
-          </View>
-
-          {/* Bottom Section: Buttons */}
+          {/* Navegação inferior */}
           <Animatable.View
             animation="fadeInUp"
             delay={800}
             duration={600}
-            className="flex-row items-center justify-between w-full"
+            className="flex-row items-center justify-between w-full mt-6"
           >
-            {/* Skip Button */}
-            <TouchableOpacity
-              onPress={handleSkip}
-              activeOpacity={0.7}
-              className="py-4"
-            >
-              <Text className="text-base font-medium text-gray-500">Skip</Text>
-            </TouchableOpacity>
+            {/* Botão Voltar / Pular */}
+            {canGoBack ? (
+              <TouchableOpacity
+                onPress={handleBack}
+                activeOpacity={0.7}
+                className="flex-row items-center py-4"
+              >
+                <ArrowLeft size={18} color="#737373" strokeWidth={2} />
+                <Text className="text-base font-medium text-gray-500 ml-1">
+                  Voltar
+                </Text>
+              </TouchableOpacity>
+            ) : (
+              <TouchableOpacity
+                onPress={handleSkip}
+                activeOpacity={0.7}
+                className="py-4"
+              >
+                <Text className="text-base font-medium text-gray-500">
+                  Pular
+                </Text>
+              </TouchableOpacity>
+            )}
 
-            {/* Progress Indicator */}
-            <View className="flex-row gap-2">
-              <Animatable.View
-                animation="fadeIn"
-                delay={900}
-                className="w-8 h-1 bg-gray-900 rounded-sm"
-              />
-              <Animatable.View
-                animation="fadeIn"
-                delay={1000}
-                className="w-8 h-1 bg-gray-200 rounded-sm"
-              />
-              <Animatable.View
-                animation="fadeIn"
-                delay={1100}
-                className="w-8 h-1 bg-gray-200 rounded-sm"
-              />
-            </View>
+            {/* Indicador de Progresso */}
+            <StepIndicator
+              currentStep={currentStepIndex}
+              totalSteps={totalSteps}
+            />
 
-            {/* Continue Button - Circular Green */}
+            {/* Botão Continuar */}
             <Animatable.View
               ref={buttonRef}
               animation="bounceIn"
@@ -141,24 +176,28 @@ export default function OnboardingScreen() {
             >
               <TouchableOpacity
                 onPress={handleContinue}
-                disabled={!phone}
+                disabled={!showContinueEnabled}
                 activeOpacity={0.8}
                 className={`w-14 h-14 rounded-full items-center justify-center ${
-                  phone ? 'bg-secondary' : 'bg-gray-300'
+                  showContinueEnabled ? 'bg-secondary' : 'bg-gray-300'
                 }`}
-                style={phone ? {
-                  shadowColor: '#10B981',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.3,
-                  shadowRadius: 8,
-                  elevation: 5,
-                } : {
-                  shadowColor: '#000',
-                  shadowOffset: { width: 0, height: 4 },
-                  shadowOpacity: 0.1,
-                  shadowRadius: 8,
-                  elevation: 5,
-                }}
+                style={
+                  showContinueEnabled
+                    ? {
+                        shadowColor: '#10B981',
+                        shadowOffset: { width: 0, height: 4 },
+                        shadowOpacity: 0.3,
+                        shadowRadius: 8,
+                        elevation: 5,
+                      }
+                    : {
+                        shadowColor: '#000',
+                        shadowOffset: { width: 0, height: 4 },
+                        shadowOpacity: 0.1,
+                        shadowRadius: 8,
+                        elevation: 5,
+                      }
+                }
               >
                 <ArrowRight size={24} color="#FFFFFF" strokeWidth={2.5} />
               </TouchableOpacity>
