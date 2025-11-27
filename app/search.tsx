@@ -57,7 +57,7 @@ export default function SearchScreen() {
       <SafeAreaView className="flex-1 bg-gray-100" edges={['top']}>
         <View className="flex-1 justify-center items-center bg-white">
           <ActivityIndicator size="large" color="#10B981" />
-          <Text className="mt-4 text-base text-gray-500">Searching hotels...</Text>
+          <Text className="mt-4 text-base text-gray-500">A procurar hotéis...</Text>
         </View>
       </SafeAreaView>
     );
@@ -67,9 +67,9 @@ export default function SearchScreen() {
     return (
       <SafeAreaView className="flex-1 bg-gray-100" edges={['top']}>
         <View className="flex-1 justify-center items-center gap-4">
-          <Text className="text-lg font-semibold text-gray-900">Error loading hotels</Text>
+          <Text className="text-lg font-semibold text-gray-900">Erro ao carregar hotéis</Text>
           <TouchableOpacity onPress={handleBack}>
-            <Text className="text-base font-semibold text-secondary">Go Back</Text>
+            <Text className="text-base font-semibold text-secondary">Voltar</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -90,12 +90,12 @@ export default function SearchScreen() {
 
         <View className="flex-1">
           <Text className="text-lg font-semibold text-gray-900 mb-1">
-            {booking.searchLocation || 'All Hotels'}
+            {booking.searchLocation || 'Todos os Hotéis'}
           </Text>
           <View className="flex-row items-center gap-1">
             <MapPin size={14} color="#737373" strokeWidth={2} />
             <Text className="text-sm text-gray-500">
-              {hotels.length} {hotels.length === 1 ? 'place' : 'places'} found
+              {hotels.length} {hotels.length === 1 ? 'hotel encontrado' : 'hotéis encontrados'}
             </Text>
           </View>
         </View>
@@ -136,10 +136,10 @@ export default function SearchScreen() {
         ListEmptyComponent={
           <View className="items-center py-[60px]">
             <Text className="text-lg font-semibold text-gray-900 mb-2">
-              No hotels found
+              Nenhum hotel encontrado
             </Text>
             <Text className="text-sm text-gray-500">
-              Try adjusting your search or filters
+              Tente ajustar a sua pesquisa ou filtros
             </Text>
           </View>
         }

@@ -25,16 +25,16 @@ const { height: SCREEN_HEIGHT } = Dimensions.get('window');
 
 // Destination types based on Figma
 const DESTINATION_TYPES = [
-  { id: 'city', label: 'City' },
-  { id: 'beach-front', label: 'Beach Front' },
-  { id: 'lake', label: 'Lake' },
-  { id: 'mountain', label: 'Mountain' },
-  { id: 'countryside', label: 'Countryside' },
+  { id: 'city', label: 'Cidade' },
+  { id: 'beach-front', label: 'Praia' },
+  { id: 'lake', label: 'Lago' },
+  { id: 'mountain', label: 'Montanha' },
+  { id: 'countryside', label: 'Campo' },
 ];
 
 // Rating options based on Figma
 const RATING_OPTIONS = [
-  { value: 0, label: 'Any' },
+  { value: 0, label: 'Qualquer' },
   { value: 5, label: '5.0' },
   { value: 4, label: '4.0' },
   { value: 3, label: '3.0' },
@@ -441,7 +441,7 @@ export function FilterBottomSheet({
             >
               <X size={24} color="#171717" strokeWidth={2} />
             </TouchableOpacity>
-            <Text className="text-lg font-semibold text-gray-900">Filters</Text>
+            <Text className="text-lg font-semibold text-gray-900">Filtros</Text>
             <View className="w-10" />
           </View>
 
@@ -454,7 +454,7 @@ export function FilterBottomSheet({
             {/* Destination Type */}
             <View className="mb-8">
               <Text className="text-base font-semibold text-gray-900 mb-4">
-                Destination Type
+                Tipo de Destino
               </Text>
               <ScrollView
                 horizontal
@@ -483,7 +483,7 @@ export function FilterBottomSheet({
             {/* Price Section */}
             <View className="mb-8">
               <Text className="text-base font-semibold text-gray-900 mb-4">
-                Price
+                Preço
               </Text>
 
               {/* Bar Chart */}
@@ -510,7 +510,7 @@ export function FilterBottomSheet({
               <View className="flex-row items-center gap-4">
                 <View className="flex-1">
                   <Text className="text-xs font-medium text-gray-500 mb-2">
-                    Min
+                    Mín
                   </Text>
                   <View className="flex-row items-center bg-gray-100 rounded-xl px-4 py-3 border border-gray-200">
                     <Text className="text-base font-semibold text-gray-900 mr-1">
@@ -535,7 +535,7 @@ export function FilterBottomSheet({
 
                 <View className="flex-1">
                   <Text className="text-xs font-medium text-gray-500 mb-2">
-                    Max
+                    Máx
                   </Text>
                   <View className="flex-row items-center bg-gray-100 rounded-xl px-4 py-3 border border-gray-200">
                     <Text className="text-base font-semibold text-gray-900 mr-1">
@@ -561,7 +561,7 @@ export function FilterBottomSheet({
             {/* Rating Section */}
             <View className="mb-8">
               <Text className="text-base font-semibold text-gray-900 mb-4">
-                Rating
+                Avaliação
               </Text>
               <View className="flex-row gap-2">
                 {RATING_OPTIONS.map((option) => {
@@ -581,12 +581,12 @@ export function FilterBottomSheet({
             {/* Rooms and Beds Section */}
             <View className="mb-8">
               <Text className="text-base font-semibold text-gray-900 mb-4">
-                Rooms and Beds
+                Quartos e Camas
               </Text>
 
               {/* Rooms Counter */}
               <View className="flex-row items-center justify-between py-4 border-b border-gray-100">
-                <Text className="text-base font-medium text-gray-900">Rooms</Text>
+                <Text className="text-base font-medium text-gray-900">Quartos</Text>
                 <View className="flex-row items-center gap-4">
                   <AnimatedCounterButton
                     type="decrement"
@@ -603,7 +603,7 @@ export function FilterBottomSheet({
 
               {/* Beds Counter */}
               <View className="flex-row items-center justify-between py-4 border-b border-gray-100">
-                <Text className="text-base font-medium text-gray-900">Beds</Text>
+                <Text className="text-base font-medium text-gray-900">Camas</Text>
                 <View className="flex-row items-center gap-4">
                   <AnimatedCounterButton
                     type="decrement"
@@ -626,12 +626,12 @@ export function FilterBottomSheet({
           {/* Bottom Buttons */}
           <View className="flex-row items-center gap-3 px-5 py-4 pb-6 border-t border-gray-200 bg-white">
             <AnimatedActionButton
-              label="Clear All"
+              label="Limpar Tudo"
               variant="secondary"
               onPress={handleClearAll}
             />
             <AnimatedActionButton
-              label="Search"
+              label="Pesquisar"
               variant="primary"
               onPress={handleSearch}
             />

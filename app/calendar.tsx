@@ -12,10 +12,10 @@ import { ArrowLeft, ChevronLeft, ChevronRight, Plus, Minus, Users } from 'lucide
 import { useBooking } from '@context';
 import { haptics } from '@/utils/haptics';
 
-const WEEKDAYS = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+const WEEKDAYS = ['Dom', 'Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb'];
 const MONTHS = [
-  'January', 'February', 'March', 'April', 'May', 'June',
-  'July', 'August', 'September', 'October', 'November', 'December'
+  'Janeiro', 'Fevereiro', 'Março', 'Abril', 'Maio', 'Junho',
+  'Julho', 'Agosto', 'Setembro', 'Outubro', 'Novembro', 'Dezembro'
 ];
 
 export default function CalendarScreen() {
@@ -97,8 +97,8 @@ export default function CalendarScreen() {
   };
 
   const formatDate = (date: Date | null) => {
-    if (!date) return 'Select';
-    return date.toLocaleDateString('en-US', {
+    if (!date) return 'Selecionar';
+    return date.toLocaleDateString('pt-PT', {
       month: 'short',
       day: 'numeric',
     });
@@ -173,7 +173,7 @@ export default function CalendarScreen() {
         >
           <ArrowLeft size={24} color="#171717" strokeWidth={2} />
         </TouchableOpacity>
-        <Text className="text-lg font-semibold text-gray-900">Select Dates</Text>
+        <Text className="text-lg font-semibold text-gray-900">Selecionar Datas</Text>
         <View className="w-10" />
       </Animatable.View>
 
@@ -287,7 +287,7 @@ export default function CalendarScreen() {
         {checkIn && checkOut && (
           <Animatable.View ref={nightsRef} animation="bounceIn" duration={500} className="items-center py-5">
             <Text className="text-sm font-semibold text-secondary">
-              {getNights()} {getNights() === 1 ? 'night' : 'nights'} selected
+              {getNights()} {getNights() === 1 ? 'noite' : 'noites'} selecionada{getNights() !== 1 ? 's' : ''}
             </Text>
           </Animatable.View>
         )}
@@ -302,17 +302,17 @@ export default function CalendarScreen() {
         >
           <View className="flex-row items-center mb-4">
             <Users size={20} color="#171717" strokeWidth={2} />
-            <Text className="text-base font-semibold text-gray-900 ml-2">Guests</Text>
+            <Text className="text-base font-semibold text-gray-900 ml-2">Hóspedes</Text>
             <Text className="text-sm text-gray-500 ml-auto">
-              {getTotalGuests()} {getTotalGuests() === 1 ? 'guest' : 'guests'}
+              {getTotalGuests()} {getTotalGuests() === 1 ? 'hóspede' : 'hóspedes'}
             </Text>
           </View>
 
           {/* Adults Counter */}
           <View className="flex-row items-center justify-between py-3 border-b border-gray-200">
             <View>
-              <Text className="text-base font-medium text-gray-900">Adults</Text>
-              <Text className="text-xs text-gray-500">Ages 13 or above</Text>
+              <Text className="text-base font-medium text-gray-900">Adultos</Text>
+              <Text className="text-xs text-gray-500">13 anos ou mais</Text>
             </View>
             <View className="flex-row items-center gap-3">
               <TouchableOpacity
@@ -342,8 +342,8 @@ export default function CalendarScreen() {
           {/* Children Counter */}
           <View className="flex-row items-center justify-between py-3">
             <View>
-              <Text className="text-base font-medium text-gray-900">Children</Text>
-              <Text className="text-xs text-gray-500">Ages 2-12</Text>
+              <Text className="text-base font-medium text-gray-900">Crianças</Text>
+              <Text className="text-xs text-gray-500">2 a 12 anos</Text>
             </View>
             <View className="flex-row items-center gap-3">
               <TouchableOpacity
@@ -397,8 +397,8 @@ export default function CalendarScreen() {
         >
           <Text className="text-base font-semibold text-white">
             {checkIn && checkOut
-              ? `Continue · ${getNights()} ${getNights() === 1 ? 'night' : 'nights'}`
-              : 'Select dates'}
+              ? `Continuar · ${getNights()} ${getNights() === 1 ? 'noite' : 'noites'}`
+              : 'Selecionar datas'}
           </Text>
         </TouchableOpacity>
       </Animatable.View>

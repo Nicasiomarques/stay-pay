@@ -40,6 +40,7 @@ export default function BookingsScreen() {
   }
 
   const bookings = data?.bookings || [];
+
   const getStatusColor = (status: string) => {
     switch (status) {
       case 'Confirmed':
@@ -50,6 +51,19 @@ export default function BookingsScreen() {
         return colors.status.cancelled;
       default:
         return colors.gray500;
+    }
+  };
+
+  const getStatusLabel = (status: string) => {
+    switch (status) {
+      case 'Confirmed':
+        return 'Confirmada';
+      case 'Completed':
+        return 'Concluída';
+      case 'Cancelled':
+        return 'Cancelada';
+      default:
+        return status;
     }
   };
 
@@ -107,7 +121,7 @@ export default function BookingsScreen() {
                         className="text-xs font-semibold"
                         style={{ color: getStatusColor(item.status) }}
                       >
-                        {item.status}
+                        {getStatusLabel(item.status)}
                       </Text>
                     </Animatable.View>
                   </View>

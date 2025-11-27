@@ -1,7 +1,7 @@
 import { Tabs } from 'expo-router';
 import { View, Dimensions, Pressable, Text } from 'react-native';
 import { BlurView } from 'expo-blur';
-import { Compass, Heart, Calendar, MessageCircle } from 'lucide-react-native';
+import { Compass, Heart, Calendar, User } from 'lucide-react-native';
 import type { BottomTabBarProps } from '@react-navigation/bottom-tabs';
 import { shadows } from '@/utils/shadows';
 
@@ -12,14 +12,14 @@ const icons = {
   index: Compass,
   favorites: Heart,
   bookings: Calendar,
-  profile: MessageCircle,
+  profile: User,
 };
 
 const labels = {
-  index: 'Discover',
-  favorites: 'Favorites',
-  bookings: 'Bookings',
-  profile: 'Messages',
+  index: 'Explorar',
+  favorites: 'Favoritos',
+  bookings: 'Reservas',
+  profile: 'Perfil',
 };
 
 function CustomTabBar({ state, navigation }: BottomTabBarProps) {

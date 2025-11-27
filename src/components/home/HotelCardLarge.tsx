@@ -109,15 +109,15 @@ export function HotelCardLarge({
           <View className="flex-row gap-4">
             <View className="flex-row items-center gap-1.5">
               <Bed size={14} color="#737373" strokeWidth={2} />
-              <Text className="text-[13px] text-gray-500 font-medium">{beds} Beds</Text>
+              <Text className="text-[13px] text-gray-500 font-medium">{beds} Camas</Text>
             </View>
             <View className="flex-row items-center gap-1.5">
               <Bath size={14} color="#737373" strokeWidth={2} />
-              <Text className="text-[13px] text-gray-500 font-medium">{baths} Baths</Text>
+              <Text className="text-[13px] text-gray-500 font-medium">{baths} WC</Text>
             </View>
             <View className="flex-row items-center gap-1.5">
               <Users size={14} color="#737373" strokeWidth={2} />
-              <Text className="text-[13px] text-gray-500 font-medium">{guests} Guests</Text>
+              <Text className="text-[13px] text-gray-500 font-medium">{guests} Hóspedes</Text>
             </View>
           </View>
         </View>

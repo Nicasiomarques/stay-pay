@@ -73,9 +73,9 @@ export function SearchHeader({
           {/* Greeting Text - Animated */}
           <Animatable.View animation="fadeInUp" delay={100} duration={400} className="mb-4">
             <Text className="text-white text-2xl font-bold">
-              Hey, {userName}! Tell us where you
+              Olá, {userName}! Diz-nos para onde
             </Text>
-            <Text className="text-white text-2xl font-bold">want to go</Text>
+            <Text className="text-white text-2xl font-bold">queres ir</Text>
           </Animatable.View>
 
           {/* Glass Search Bar with Blur - Animated */}
@@ -105,9 +105,9 @@ export function SearchHeader({
               >
                 <Search size={20} color="#fff" strokeWidth={2} />
                 <View className="flex-1 ml-3">
-                  <Text className="text-white text-base font-medium">Search places</Text>
+                  <Text className="text-white text-base font-medium">Pesquisar locais</Text>
                   <Text className="text-white/70 text-xs">
-                    Date range • Number of guests
+                    Datas • Número de hóspedes
                   </Text>
                 </View>
               </TouchableOpacity>

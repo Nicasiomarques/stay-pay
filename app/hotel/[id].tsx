@@ -82,7 +82,7 @@ export default function HotelDetailScreen() {
     return (
       <SafeAreaView className="flex-1 bg-white">
         <View className="flex-1 justify-center items-center">
-          <Text className="text-base text-gray-500">Loading...</Text>
+          <Text className="text-base text-gray-500">A carregar...</Text>
         </View>
       </SafeAreaView>
     );
@@ -92,9 +92,9 @@ export default function HotelDetailScreen() {
     return (
       <SafeAreaView className="flex-1 bg-white">
         <View className="flex-1 justify-center items-center gap-4">
-          <Text className="text-lg font-semibold text-gray-900">Hotel not found</Text>
+          <Text className="text-lg font-semibold text-gray-900">Hotel não encontrado</Text>
           <TouchableOpacity onPress={handleBack}>
-            <Text className="text-base font-semibold text-secondary">Go Back</Text>
+            <Text className="text-base font-semibold text-secondary">Voltar</Text>
           </TouchableOpacity>
         </View>
       </SafeAreaView>
@@ -109,10 +109,10 @@ export default function HotelDetailScreen() {
 
   // Highlights from Figma
   const highlights = [
-    { icon: Waves, label: 'Swimming pool' },
-    { icon: Baby, label: 'Kid friendly' },
-    { icon: Accessibility, label: 'Chair accessible' },
-    { icon: Car, label: 'Free parking' },
+    { icon: Waves, label: 'Piscina' },
+    { icon: Baby, label: 'Ideal para crianças' },
+    { icon: Accessibility, label: 'Acessível' },
+    { icon: Car, label: 'Estacionamento grátis' },
   ];
 
   return (
@@ -208,7 +208,7 @@ export default function HotelDetailScreen() {
               <Star size={16} color="#F59E0B" fill="#F59E0B" strokeWidth={0} />
               <Text className="text-sm font-semibold text-gray-900">{hotel.rating}</Text>
               <Text className="text-sm text-gray-500">
-                ({(hotel.reviews / 1000).toFixed(1)}k reviews)
+                ({(hotel.reviews / 1000).toFixed(1)}k avaliações)
               </Text>
               <ChevronRight size={16} color="#737373" strokeWidth={2} />
             </View>
@@ -223,23 +223,23 @@ export default function HotelDetailScreen() {
           >
             <View className="flex-row items-center gap-2">
               <Users size={18} color="#737373" strokeWidth={2} />
-              <Text className="text-sm text-gray-500 font-medium">4 Guests</Text>
+              <Text className="text-sm text-gray-500 font-medium">4 Hóspedes</Text>
             </View>
             <View className="w-1 h-1 rounded-full bg-gray-300 mx-4" />
             <View className="flex-row items-center gap-2">
               <Bed size={18} color="#737373" strokeWidth={2} />
-              <Text className="text-sm text-gray-500 font-medium">2 Beds</Text>
+              <Text className="text-sm text-gray-500 font-medium">2 Camas</Text>
             </View>
             <View className="w-1 h-1 rounded-full bg-gray-300 mx-4" />
             <View className="flex-row items-center gap-2">
               <Bath size={18} color="#737373" strokeWidth={2} />
-              <Text className="text-sm text-gray-500 font-medium">2 Baths</Text>
+              <Text className="text-sm text-gray-500 font-medium">2 Casas de banho</Text>
             </View>
           </Animatable.View>
 
           {/* Highlights Section */}
           <Animatable.View animation="fadeInUp" delay={400} duration={500} className="mb-6">
-            <Text className="text-lg font-semibold text-gray-900 mb-4">Highlights</Text>
+            <Text className="text-lg font-semibold text-gray-900 mb-4">Destaques</Text>
             <View className="flex-row flex-wrap gap-3">
               {highlights.map((highlight, index) => {
                 const IconComponent = highlight.icon;
@@ -260,20 +260,20 @@ export default function HotelDetailScreen() {
 
           {/* Description Section */}
           <Animatable.View animation="fadeInUp" delay={600} duration={500} className="mb-6">
-            <Text className="text-lg font-semibold text-gray-900 mb-4">Description</Text>
+            <Text className="text-lg font-semibold text-gray-900 mb-4">Descrição</Text>
             <Text
               className="text-[15px] text-neutral-600 leading-6"
               numberOfLines={showFullDescription ? undefined : 3}
             >
               {hotel.description ||
-                'I like traveling, discovering new cultures and traditions, and tasting new cuisines. I enjoy exploring different places and meeting people from various backgrounds.'}
+                'Um hotel encantador que oferece uma experiência única de hospedagem. Localização privilegiada, quartos confortáveis e serviço de excelência para tornar a sua estadia inesquecível.'}
             </Text>
             <TouchableOpacity
               onPress={() => setShowFullDescription(!showFullDescription)}
               activeOpacity={0.7}
             >
               <Text className="text-[15px] font-semibold text-primary mt-1">
-                {showFullDescription ? 'Less' : '...More'}
+                {showFullDescription ? 'Menos' : '...Mais'}
               </Text>
             </TouchableOpacity>
           </Animatable.View>
@@ -290,7 +290,7 @@ export default function HotelDetailScreen() {
       >
         <View className="flex-1">
           <Text className="text-sm text-gray-400">
-            {nights} days · ${pricePerNight.toLocaleString()}/night
+            {nights} noites · €{pricePerNight.toLocaleString()}/noite
           </Text>
           <Text className="text-xl font-bold text-white">€{totalPrice.toLocaleString()}</Text>
         </View>
@@ -299,7 +299,7 @@ export default function HotelDetailScreen() {
           onPress={handleBookNow}
           activeOpacity={0.9}
         >
-          <Text className="text-sm font-bold text-neutral-900">Book now</Text>
+          <Text className="text-sm font-bold text-neutral-900">Reservar</Text>
         </TouchableOpacity>
       </Animatable.View>
     </View>

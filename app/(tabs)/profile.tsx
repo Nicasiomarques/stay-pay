@@ -23,19 +23,19 @@ import { shadows } from '@/utils/shadows';
 
 const MENU_SECTIONS = [
   {
-    title: 'Account',
+    title: 'Conta',
     items: [
-      { icon: User, label: 'Personal Information', route: '/profile/personal' },
-      { icon: CreditCard, label: 'Payment Methods', route: '/profile/payments' },
-      { icon: Bell, label: 'Notifications', route: '/profile/notifications' },
+      { icon: User, label: 'Informações Pessoais', route: '/profile/personal' },
+      { icon: CreditCard, label: 'Métodos de Pagamento', route: '/profile/payments' },
+      { icon: Bell, label: 'Notificações', route: '/profile/notifications' },
     ],
   },
   {
-    title: 'Support',
+    title: 'Suporte',
     items: [
-      { icon: HelpCircle, label: 'Help Center', route: '/help' },
-      { icon: Shield, label: 'Privacy & Security', route: '/privacy' },
-      { icon: Settings, label: 'Settings', route: '/settings' },
+      { icon: HelpCircle, label: 'Central de Ajuda', route: '/help' },
+      { icon: Shield, label: 'Privacidade e Segurança', route: '/privacy' },
+      { icon: Settings, label: 'Configurações', route: '/settings' },
     ],
   },
 ];
@@ -65,7 +65,7 @@ export default function ProfileScreen() {
       >
         {/* Header */}
         <Animatable.View animation="fadeIn" duration={400} className="px-5 py-4 bg-white">
-          <Text className="text-2xl font-bold text-gray-900">Profile</Text>
+          <Text className="text-2xl font-bold text-gray-900">Perfil</Text>
         </Animatable.View>
 
         {/* Profile Card */}
@@ -96,17 +96,17 @@ export default function ProfileScreen() {
           <View className="flex-row items-center w-full pt-4 border-t border-gray-100">
             <Animatable.View animation="fadeIn" delay={200} className="flex-1 items-center">
               <Text className="text-xl font-bold text-gray-900 mb-1">12</Text>
-              <Text className="text-xs text-gray-500">Bookings</Text>
+              <Text className="text-xs text-gray-500">Reservas</Text>
             </Animatable.View>
             <View className="w-px h-8 bg-gray-200" />
             <Animatable.View animation="fadeIn" delay={300} className="flex-1 items-center">
               <Text className="text-xl font-bold text-gray-900 mb-1">8</Text>
-              <Text className="text-xs text-gray-500">Reviews</Text>
+              <Text className="text-xs text-gray-500">Avaliações</Text>
             </Animatable.View>
             <View className="w-px h-8 bg-gray-200" />
             <Animatable.View animation="fadeIn" delay={400} className="flex-1 items-center">
               <Text className="text-xl font-bold text-gray-900 mb-1">5</Text>
-              <Text className="text-xs text-gray-500">Favorites</Text>
+              <Text className="text-xs text-gray-500">Favoritos</Text>
             </Animatable.View>
           </View>
         </Animatable.View>
@@ -166,13 +166,13 @@ export default function ProfileScreen() {
             activeOpacity={0.7}
           >
             <LogOut size={20} color="#EF4444" strokeWidth={2} />
-            <Text className="text-base font-semibold text-error">Log Out</Text>
+            <Text className="text-base font-semibold text-error">Sair</Text>
           </TouchableOpacity>
         </Animatable.View>
 
         {/* Version */}
         <Animatable.Text animation="fadeIn" delay={700} className="text-center text-xs text-gray-400 mt-6">
-          Version 1.0.0
+          Versão 1.0.0
         </Animatable.Text>
       </ScrollView>
     </SafeAreaView>
